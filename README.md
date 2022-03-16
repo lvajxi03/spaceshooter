@@ -48,12 +48,55 @@ Application works with `PyQt5` as well.
 Default font is ugly, so please download some free `TTF` file that resembles you the 80s and install.
 Then, please let the program know about it: change `DEFAULT_FONT` in `pysrc/shooter_qt.py` file
 
+## Running
+
+In Windows, please use
+
+```cmd
+C:\> launch.bat
+```
+
+For Linux/MacOS:
+
+```bash
+$ ./launch.sh
+```
+
+## Navigation
+
+### Menu
+
+You can use `up/down arrow` keys and `Enter` to select a menu option, as well as mouse left button.
+Language icons are available only with mouse.
+
+Also `q` terminates the program.
+
+### Ship selection
+
+You can use `left/right arrow` keys and `Enter` to select you ship, as well as mouse left button.
+Language icons are available only with mouse.
+
+### Other screens
+
+Follow the status line about available keys and actions.
+
+### Game play
+
+Default keys are as follows:
+
+* `up/down/left/right arrows` for ship navigation
+* `space` for missiles
+* `b` for bombs
+* `t` for TNTs, if available
+* `ESC` for pause
+* `q` for leaving game and back to the menu
+
+You can reconfigure navigation keys, missiles, bombs and TNTs.
 
 ## MacOS
 
 Application works with MacOS, *however*, there may be issues with `log_usage` decorator in `pysrc/spaceshooter.py` file.
 If so, then please, comment out lines `81-82` and `84-85`
-
 
 ## Other
 
