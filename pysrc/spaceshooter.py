@@ -78,11 +78,11 @@ def log_usage(function):
     :return: None
     """
     def wrapper(*args):
-        logger.debug("[START]" + function.__name__)
-        na = time.time_ns()
+        # logger.debug("[START]" + function.__name__)
+        # na = time.time_ns()
         function(*args)
-        nb = time.time_ns()
-        logger.debug("[ END ]" + function.__name__ + ": %(x).3f ms" % {'x': (nb-na) / 1_000_000})
+        # nb = time.time_ns()
+        # logger.debug("[ END ]" + function.__name__ + ": %(x).3f ms" % {'x': (nb-na) / 1_000_000})
 
     return wrapper
 
@@ -3430,6 +3430,3 @@ class Game:
 
     def missile_timer(self):
         self.missile_lock = False
-###ef missile_timer(self):
-        self.missile_lock = False
-#####

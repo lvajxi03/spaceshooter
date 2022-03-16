@@ -77,6 +77,7 @@ class Controller(QMainWindow):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.parent = parent
         self.game = None
+        self.setWindowTitle(APPLICATION_TITLE)
 
     def pos2arena(self, event):
         """
@@ -1730,6 +1731,11 @@ class SpaceShooter(QApplication):
 
 
 if __name__ == "__main__":
+    fixed = False
+    try:
+        fixed = (sys.argv[1] == "-f")
+    except IndexError:
+        pass
     random.seed()
     shooter = SpaceShooter(sys.argv)
     shooter.game = Game(shooter)
@@ -1741,6 +1747,10 @@ if __name__ == "__main__":
     shooter.game.arena = arena
     window.setCentralWidget(arena)
     arena.window = window
-    window.showFullScreen()
+    if fixed:
+        window.showFullScreen()
+    else:
+        window.setFixedSize(ARENA_WIDTH, ARENA_HEIGHT)
+        window.show()
     shooter.game.change_board(Board.WELCOME)
     sys.exit(shooter.exec_())
