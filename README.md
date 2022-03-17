@@ -50,7 +50,9 @@ Then, please let the program know about it: change `DEFAULT_FONT` in `pysrc/shoo
 
 ## Running
 
-In Windows, please use
+### Windowed mode
+
+In Windows, please use:
 
 ```cmd
 C:\> launch.bat
@@ -60,6 +62,22 @@ For Linux/MacOS:
 
 ```bash
 $ ./launch.sh
+```
+
+### Full screen
+
+For full screen, please use `-f` parameter for launcher files.
+
+In Windows, please use:
+
+```cmd
+C:\> launch.bat -f
+```
+
+For Linux/MacOS:
+
+```bash
+$ ./launch.sh -f
 ```
 
 ## Navigation
