@@ -1437,7 +1437,7 @@ class SpaceShooter(QApplication):
                        'SHIELD',
                        'TNT',
                        'FREEZE',
-                       'LIGHTBULB'
+                       'LIGHTBALLS'
                        ],
                 'pl': ['POKONAJ HORDE WROGICH STATKOW, A NA KONCU ICH BOSSA!',
                        'WROGOWIE',
@@ -1447,7 +1447,7 @@ class SpaceShooter(QApplication):
                        'TARCZA',
                        'TNT',
                        'MROZ',
-                       'ZAROWKA'
+                       'KULE SWIATLA'
                        ],
             },
             'about': {
