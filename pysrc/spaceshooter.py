@@ -1,8 +1,4 @@
 #!/usr/bin/env python
-SHIELD_SPEEDX = -1
-
-ARENA_WIDTH = 1920
-ARENA_HEIGHT = 1080
 
 import enum
 import random
@@ -11,6 +7,11 @@ import os
 import math
 import logging
 import time
+
+SHIELD_SPEEDX = -1
+
+ARENA_WIDTH = 1920
+ARENA_HEIGHT = 1080
 
 BOTTOM_BAR = 60
 
@@ -593,11 +594,13 @@ class Rect:
         :param r: Rectangle to check
         :return: True if collides, false otherwise
         """
-        if self.x >= r.x + r.w or self.x + self.w <= r.x:
-            return False
-        if self.y >= r.y + r.h or self.y + self.h <= r.y:
-            return False
-        return True
+        if r is not None:
+            if self.x >= r.x + r.w or self.x + self.w <= r.x:
+                return False
+            if self.y >= r.y + r.h or self.y + self.h <= r.y:
+                return False
+            return True
+        return False
 
 
 class ShooterConfig:
@@ -2657,7 +2660,6 @@ class Game:
 
     @log_usage
     def init_quit(self):
-        self.shooter.timers['menu-update-event'].stop()
         self.config.save()
         self.arena.window.close()
 
@@ -3023,9 +3025,6 @@ class Game:
     def keypress_gameover(self, key, _):
         pass
 
-    def menu_update_event(self):
-        pass
-
     @log_usage
     def stars_update_event(self):
         for star in self.stars:
@@ -3267,7 +3266,6 @@ class Game:
                 self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
                 if self.shield_timer == 0 and self.frozen_timer == 0 and self.options_pos != Options.UNLIMITED:
                     self.decrease_hp()
-
 
     def explode(self, x, y):
         e = Explosion(x, y, self.shooter.images['explosions'])
