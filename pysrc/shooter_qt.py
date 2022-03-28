@@ -38,7 +38,6 @@ try:
     from PySide2.QtCore import QSize
     from PySide2.QtCore import QPoint
     from PySide2.QtCore import QTimer
-    from PySide2.QtCore import QMutex
     from PySide2.QtCore import QRect
 
     from PySide2.QtCore import Qt
@@ -65,7 +64,6 @@ except ImportError:
     from PyQt5.QtCore import QSize
     from PyQt5.QtCore import QPoint
     from PyQt5.QtCore import QTimer
-    from PyQt5.QtCore import QMutex
     from PyQt5.QtCore import QRect
 
     from PyQt5.QtCore import Qt
@@ -937,6 +935,16 @@ class Arena(QLabel):
         # Movables
         for movable in self.game.movables:
             movable.paint(self.painter)
+            # Smoke
+            if movable.etype in self.shooter.smoke_spots:
+                spots = self.shooter.smoke_spots[movable.etype]
+                smoke = self.shooter.images['smokes'][self.game.smoke_counter]
+                for spot in spots:
+                    x, y = spot
+                    x += movable.x - smoke.width()
+                    y += movable.y - smoke.height()
+                    self.painter.drawPixmap(x, y, smoke)
+
         self.game.player.paint(self.painter)
         level_text = self.shooter.labels[
                          'game']['level-x'][self.game.config['lang']] % {
@@ -981,6 +989,15 @@ class Arena(QLabel):
         # Movables
         for movable in self.game.movables:
             movable.paint(painter)
+            # Smoke
+            if movable.etype in self.shooter.smoke_spots:
+                spots = self.shooter.smoke_spots[movable.etype]
+                smoke = self.shooter.images['smokes'][self.game.smoke_counter]
+                for spot in spots:
+                    x, y = spot
+                    x += movable.x - smoke.width()
+                    y += movable.y - smoke.height()
+                    painter.drawPixmap(x, y, smoke)
         # IceBoxes:
         for icebox in self.game.iceboxes:
             icebox.paint(painter)
@@ -1235,7 +1252,6 @@ class Arena(QLabel):
 class SpaceShooter(QApplication):
     def __init__(self, args: list):
         super().__init__(args)
-        self.mutex = QMutex()
         self.window = None
         self.keymapping = {
             Qt.Key_Return: Key.KEY_ENTER,
@@ -1498,7 +1514,7 @@ class SpaceShooter(QApplication):
                     'pl': 'GAME OVER'
                 },
                 'description': {
-                    'en': "THAT'S ALL, FOLKS BUDDIES!",
+                    'en': "THAT'S ALL, FOLKS!",
                     'pl': 'KUP SE ROWER'
                 },
                 'description2': {
@@ -1532,6 +1548,11 @@ class SpaceShooter(QApplication):
             'bottom-bar': QBrush(QColor(47, 47, 47)),
             'logofront': QBrush(self.colors['logofront'])
         }
+        self.smoke_spots = {
+            MovableType.FABRYKA1: [(124, 80), (246, 80), (322, 0)],
+            MovableType.FABRYKA2: [(95, 130), (165, 0), (253, 0), (328, 0)],
+            MovableType.FABRYKA3: [(232, 0)]
+        }
         self.images = {
             'star': QPixmap("images/star.png"),
             'players': [
@@ -1558,6 +1579,12 @@ class SpaceShooter(QApplication):
                 MovableType.WIEZOWIEC2: QPixmap("images/wiezowiec2.png"),
                 MovableType.WIEZOWIEC3: QPixmap("images/wiezowiec3.png")
             },
+            'smokes': [
+                QPixmap("images/smoke-1.png"),
+                QPixmap("images/smoke-2.png"),
+                QPixmap("images/smoke-3.png"),
+                QPixmap("images/smoke-4.png")
+            ],
             'enemies': [
                 QPixmap("images/enemy4.png"),
                 QPixmap("images/enemy5.png"),
@@ -1622,6 +1649,7 @@ class SpaceShooter(QApplication):
             'player-move-event': QTimer(),
             'bomb-timer': QTimer(),
             'missile-timer': QTimer(),
+            'smoke-timer': QTimer()
         }
         self.timer_handlers = {
             'stars-update-event': self.game_stars_event,
@@ -1640,7 +1668,8 @@ class SpaceShooter(QApplication):
             'newscore-event': self.newscore_event,
             'player-move-event': self.player_move_event,
             'bomb-timer': self.bomb_timer,
-            'missile-timer': self.missile_timer
+            'missile-timer': self.missile_timer,
+            'smoke-timer': self.smoke_timer
         }
         for name in self.timers:
             self.timers[name].timeout.connect(self.timer_handlers[name])
@@ -1696,6 +1725,9 @@ class SpaceShooter(QApplication):
 
     def missile_timer(self):
         self.game.missile_timer()
+
+    def smoke_timer(self):
+        self.game.smoke_timer()
 
 
 if __name__ == "__main__":
