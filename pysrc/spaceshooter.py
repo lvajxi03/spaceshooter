@@ -6,7 +6,7 @@ import json
 import os
 import math
 import logging
-import time
+# import time <- for logging decorator
 
 SHIELD_SPEEDX = -1
 
@@ -377,12 +377,12 @@ class MovableType(enum.IntEnum):
         scenario = [MovableType.DOM1,
                     MovableType.FABRYKA1,
                     MovableType.WIEZOWIEC1,
-                    MovableType.DZIALO,
                     MovableType.DOM2,
                     MovableType.FABRYKA2,
-                    MovableType.WIEZOWIEC3,
                     MovableType.DZIALO,
+                    MovableType.WIEZOWIEC2,
                     MovableType.DOM3,
+                    MovableType.FABRYKA3,
                     MovableType.WIEZOWIEC3,
                     MovableType.DZIALO]
         sc_copy = [x for x in scenario]
@@ -397,15 +397,15 @@ class MovableType(enum.IntEnum):
         """
         scenario = [MovableType.DOM1,
                     MovableType.FABRYKA1,
-                    MovableType.DZIALO,
                     MovableType.WIEZOWIEC1,
-                    MovableType.DOM2,
                     MovableType.DZIALO,
+                    MovableType.DOM2,
                     MovableType.FABRYKA2,
                     MovableType.WIEZOWIEC3,
                     MovableType.DZIALO,
                     MovableType.DOM3,
                     MovableType.WIEZOWIEC3,
+                    MovableType.FABRYKA3,
                     MovableType.DZIALO]
         sc_copy = [x for x in scenario]
         generator = cycle(sc_copy)
@@ -418,21 +418,19 @@ class MovableType(enum.IntEnum):
         :return: None
         """
         scenario = [MovableType.DOM1,
-                    MovableType.DZIALO,
                     MovableType.FABRYKA1,
-                    MovableType.DZIALO,
                     MovableType.WIEZOWIEC1,
                     MovableType.DZIALO,
+                    MovableType.DZIALO,
                     MovableType.DOM2,
-                    MovableType.DZIALO,
-                    MovableType.DZIALO,
                     MovableType.FABRYKA2,
+                    MovableType.WIEZOWIEC2,
                     MovableType.DZIALO,
-                    MovableType.WIEZOWIEC3,
                     MovableType.DZIALO,
                     MovableType.DOM3,
-                    MovableType.DZIALO,
+                    MovableType.FABRYKA3,
                     MovableType.WIEZOWIEC3,
+                    MovableType.DZIALO,
                     MovableType.DZIALO]
         sc_copy = [x for x in scenario]
         generator = cycle(sc_copy)
@@ -445,24 +443,19 @@ class MovableType(enum.IntEnum):
         :return: None
         """
         scenario = [MovableType.DOM1,
-                    MovableType.DZIALO,
-                    MovableType.FABRYKA1,
-                    MovableType.DZIALO,
-                    MovableType.DZIALO,
                     MovableType.WIEZOWIEC1,
                     MovableType.DZIALO,
+                    MovableType.FABRYKA1,
                     MovableType.DOM2,
                     MovableType.DZIALO,
-                    MovableType.DZIALO,
+                    MovableType.WIEZOWIEC2,
                     MovableType.FABRYKA2,
                     MovableType.DZIALO,
-                    MovableType.WIEZOWIEC3,
-                    MovableType.DZIALO,
-                    MovableType.DZIALO,
                     MovableType.DOM3,
+                    MovableType.FABRYKA3,
                     MovableType.DZIALO,
                     MovableType.WIEZOWIEC3,
-                    MovableType.DZIALO,
+                    MovableType.DOM2,
                     MovableType.DZIALO]
         sc_copy = [x for x in scenario]
         generator = cycle(sc_copy)
@@ -475,27 +468,23 @@ class MovableType(enum.IntEnum):
         :return:
         """
         scenario = [MovableType.DOM1,
-                    MovableType.DZIALO,
-                    MovableType.DZIALO,
-                    MovableType.FABRYKA1,
-                    MovableType.DZIALO,
-                    MovableType.DZIALO,
                     MovableType.WIEZOWIEC1,
                     MovableType.DZIALO,
                     MovableType.DZIALO,
+                    MovableType.FABRYKA1,
                     MovableType.DOM2,
                     MovableType.DZIALO,
                     MovableType.DZIALO,
+                    MovableType.WIEZOWIEC2,
                     MovableType.FABRYKA2,
                     MovableType.DZIALO,
                     MovableType.DZIALO,
-                    MovableType.WIEZOWIEC3,
-                    MovableType.DZIALO,
-                    MovableType.DZIALO,
                     MovableType.DOM3,
+                    MovableType.FABRYKA3,
                     MovableType.DZIALO,
                     MovableType.DZIALO,
                     MovableType.WIEZOWIEC3,
+                    MovableType.DOM2,
                     MovableType.DZIALO,
                     MovableType.DZIALO]
         sc_copy = [x for x in scenario]
@@ -1258,27 +1247,34 @@ class GameEvent(enum.IntEnum):
     @staticmethod
     def from_factory_level_1(num=0):
         num = 3 if num < 1 else num
-        # num = 300 if num < 1 else num
-        scenario = [GameEvent.LIGHTBALL,
+        scenario = [GameEvent.NONE,
                     GameEvent.DROP,
+                    GameEvent.MISSILES_ODD,
                     GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.SHIELD,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.TNT,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.FREEZE,
-                    GameEvent.SHIELD,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
                     GameEvent.LIGHTBALL,
                     GameEvent.NONE,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.NONE,
+                    GameEvent.FREEZE,
+                    GameEvent.NONE,
+                    GameEvent.SHIELD,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.MEDKIT,
-                    GameEvent.DROPS,
-                    GameEvent.FREEZE]
+                    GameEvent.NONE,
+                    GameEvent.TNT,
+                    GameEvent.MISSILES,
+                    GameEvent.DROP,
+                    GameEvent.LIGHTBALL,
+                    GameEvent.NONE,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.NONE,
+                    GameEvent.MEDKIT,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.DROP,
+                    GameEvent.TNT,
+                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.NONE]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
         sc_copy = [x for x in scenario]
@@ -1288,52 +1284,51 @@ class GameEvent(enum.IntEnum):
         while counter < num:
             event = next(gen)
             events.append(event)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.MISSILES_ODD)
             counter += 1
         return events
 
     @staticmethod
     def from_factory_level_2(num=0):
         num = 3 if num < 1 else num
-        # num = 300 if num < 1 else num
-        scenario = [GameEvent.NONE,
-                    GameEvent.DROP,
+        scenario = [GameEvent.DROP,
                     GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
+                    GameEvent.MISSILES,
                     GameEvent.NONE,
                     GameEvent.DROP,
-                    GameEvent.NONE,
                     GameEvent.TNT,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.NONE,
                     GameEvent.DROP,
-                    GameEvent.NONE,
+                    GameEvent.LIGHTBALL,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.DROP,
                     GameEvent.SHIELD,
                     GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
                     GameEvent.MEDKIT,
-                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.DROPS,
                     GameEvent.NONE,
-                    GameEvent.DROP,
+                    GameEvent.MISSILES,
                     GameEvent.NONE,
+                    GameEvent.DROP,
+                    GameEvent.FREEZE,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.MEDKIT,
+                    GameEvent.DROPS,
+                    GameEvent.NONE,
+                    GameEvent.MISSILES,
                     GameEvent.DROPS,
                     GameEvent.NONE,
                     GameEvent.LIGHTBALL,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.MEDKIT,
                     GameEvent.NONE,
+                    GameEvent.DROP,
+                    GameEvent.SHIELD,
+                    GameEvent.MISSILES,
                     GameEvent.DROPS,
                     GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.FREEZE]
+                    GameEvent.LIGHTBALL]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
         sc_copy = [x for x in scenario]
@@ -1343,68 +1338,50 @@ class GameEvent(enum.IntEnum):
         while counter < num:
             event = next(gen)
             events.append(event)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
             counter += 1
         return events
 
     @staticmethod
     def from_factory_level_3(num=0):
         num = 3 if num < 1 else num
-        # num = 300 if num < 1 else num
-        scenario = [GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROP,
+        scenario = [GameEvent.MISSILES_ODD,
+                    GameEvent.DROPS,
                     GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.DROPS,
                     GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
+                    GameEvent.MISSILES_EVEN,
                     GameEvent.TNT,
-                    GameEvent.NONE,
+                    GameEvent.DROPS,
+                    GameEvent.MISSILES,
+                    GameEvent.FREEZE,
                     GameEvent.DROP,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.SHIELD,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.DROPS,
                     GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
+                    GameEvent.MISSILES,
                     GameEvent.LIGHTBALL,
-                    GameEvent.NONE,
                     GameEvent.DROPS,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.SHIELD,
                     GameEvent.DROPS,
-                    GameEvent.NONE,
+                    GameEvent.MISSILES,
+                    GameEvent.TNT,
+                    GameEvent.DROP,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.DROP,
+                    GameEvent.MEDKIT,
+                    GameEvent.MISSILES,
+                    GameEvent.SHIELD,
                     GameEvent.DROPS,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.TNT,
+                    GameEvent.DROP,
+                    GameEvent.MISSILES_EVEN,
                     GameEvent.DROPS,
-                    GameEvent.FREEZE]
+                    GameEvent.LIGHTBALL,
+                    GameEvent.MISSILES,
+                    GameEvent.DROPS]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
         sc_copy = [x for x in scenario]
@@ -1414,79 +1391,54 @@ class GameEvent(enum.IntEnum):
         while counter < num:
             event = next(gen)
             events.append(event)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.NONE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
             counter += 1
         return events
 
     @staticmethod
     def from_factory_level_4(num=0):
-        # num = 300 if num < 1 else num
         num = 3 if num < 1 else num
-        scenario = [GameEvent.NONE,
+        scenario = [GameEvent.MISSILES_EVEN,
                     GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.TNT,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.SHIELD,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
+                    GameEvent.MISSILES_ODD,
                     GameEvent.LIGHTBALL,
-                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.TNT,
+                    GameEvent.MISSILES,
+                    GameEvent.DROP,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.MEDKIT,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.FREEZE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.SHIELD,
+                    GameEvent.MISSILES,
+                    GameEvent.DROP,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.MEDKIT,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.DROP,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.LIGHTBALL,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.TNT,
+                    GameEvent.MISSILES,
+                    GameEvent.FREEZE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.SHIELD,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.TNT,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.DROPS,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.DROP,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.MEDKIT,
+                    GameEvent.MISSILES,
+                    GameEvent.TNT,
+                    GameEvent.MISSILES,
                     GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.FREEZE]
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.LIGHTBALL]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
         sc_copy = [x for x in scenario]
@@ -1496,83 +1448,60 @@ class GameEvent(enum.IntEnum):
         while counter < num:
             event = next(gen)
             events.append(event)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.GUN_MISSILE)
             counter += 1
         return events
 
     @staticmethod
     def from_factory_level_5(num=0):
-        # num = 300 if num < 1 else num
         num = 3 if num < 1 else num
-        scenario = [GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
+        scenario = [GameEvent.MISSILES,
                     GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.TNT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.SHIELD,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.LIGHTBALL,
-                    GameEvent.NONE,
+                    GameEvent.MISSILES,
                     GameEvent.DROPS,
-                    GameEvent.NONE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.SHIELD,
+                    GameEvent.MISSILES,
                     GameEvent.DROPS,
+                    GameEvent.MISSILES,
+                    GameEvent.MISSILES,
+                    GameEvent.LIGHTBALL,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.MEDKIT,
+                    GameEvent.MISSILES,
+                    GameEvent.MISSILES,
                     GameEvent.DROPS,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.DROPS,
+                    GameEvent.MISSILES,
+                    GameEvent.MISSILES,
+                    GameEvent.TNT,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.FREEZE,
+                    GameEvent.MISSILES,
+                    GameEvent.MISSILES,
+                    GameEvent.MEDKIT,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.GUN_MISSILE,
                     GameEvent.DROPS,
-                    GameEvent.FREEZE]
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.DROPS,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.TNT,
+                    GameEvent.MISSILES,
+                    GameEvent.LIGHTBALL,
+                    GameEvent.GUN_MISSILE,
+                    GameEvent.SHIELD,
+                    GameEvent.MISSILES_EVEN,
+                    GameEvent.MISSILES_ODD,
+                    GameEvent.MEDKIT]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
         sc_copy = [x for x in scenario]
@@ -1582,28 +1511,6 @@ class GameEvent(enum.IntEnum):
         while counter < num:
             event = next(gen)
             events.append(event)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.MISSILES_EVEN)
-            events.append(GameEvent.GUN_MISSILE)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.MISSILES_ODD)
-            events.append(GameEvent.GUN_MISSILE)
             counter += 1
         return events
 
@@ -1840,7 +1747,7 @@ class EventManager:
                     self.parent.missiles.append(m)
 
     def create_missiles(self):
-        if len(self.parent.enemies) > 0 and self.parent.frozen_timer == 0:
+        if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
             image = self.shooter.images['missiles'][MissileType.TO]
             w = image.width()
             h = image.height()
@@ -2416,6 +2323,8 @@ class Game:
         self.bomb_lock = False
         # Missiles related
         self.missile_lock = False
+        # Smoke related
+        self.smoke_counter = 0
 
     def has_key_setup(self, key):
         return True if key in self.temp_setup else False
@@ -2627,6 +2536,7 @@ class Game:
                       "game-shield-event",
                       "game-freeze-event",
                       "game-light-event",
+                      "smoke-timer"
                       ]:
             self.shooter.timers[event].stop()
 
@@ -2661,7 +2571,7 @@ class Game:
     @log_usage
     def init_quit(self):
         self.config.save()
-        self.arena.window.close()
+        self.arena.parent.close()
 
     def init_newscore(self):
         self.shooter.timers['newscore-event'].start(TIMEOUT_NEWSCORE)
@@ -2692,6 +2602,7 @@ class Game:
         self.eventmanager = EventManager(self, self.shooter)
         self.enemymanager = EnemyManager(self, self.shooter)
         self.change_mode(Mode.PREPARE)
+        self.shooter.timers['smoke-timer'].start(TIMEOUT_SMOKE)
 
     def init_prepare(self):
         if self.level < MAX_LEVEL:
@@ -2732,12 +2643,14 @@ class Game:
         self.shooter.timers['game-counter-event'].start(TIMEOUT_GAME_COUNTER)
         self.shooter.timers['game-events'].start(timeout_ge)
         self.shooter.timers['enemies-event'].start(timeout_ee)
+        self.shooter.timers['smoke-timer'].start(TIMEOUT_SMOKE)
 
     def init_paused(self):
         self.shooter.timers['game-update-event'].stop()
         self.shooter.timers['game-counter-event'].stop()
         self.shooter.timers['game-events'].stop()
         self.shooter.timers['enemies-event'].stop()
+        self.shooter.timers['smoke-timer'].stop()
 
     def init_killed(self):
         self.__stop_timers()
@@ -2856,12 +2769,24 @@ class Game:
                                 self.temp_position = 6
 
     def keyrelease_about(self, key, _):
+        """
+        Key handler for ABOUT board.
+        :param key: key to handle
+        :param _: unused
+        :return: None
+        """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
     def keyrelease_quit(self, _k, _t):
-        self.arena.window.close()
+        """
+        Key handler for QUIT board
+        :param _k: unused
+        :param _t: unused
+        :return: None
+        """
+        self.arena.parent.close()
 
     def keyrelease_newscore(self, key, _t):
         if key:
@@ -3428,3 +3353,8 @@ class Game:
 
     def missile_timer(self):
         self.missile_lock = False
+
+
+    def smoke_timer(self):
+        self.smoke_counter += 1
+        self.smoke_counter %= 4
