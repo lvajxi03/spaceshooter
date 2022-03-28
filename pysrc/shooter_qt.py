@@ -320,7 +320,9 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_game(self):
         painter = self.paint_subprocs[self.game.mode]
@@ -339,7 +341,9 @@ class Arena(QLabel):
             self.painter.drawRect(0, i * 20, ARENA_WIDTH, (i + 1) * 20)
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_options(self):
         self.canvas.fill(self.shooter.colors['background'])
@@ -399,7 +403,10 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio, Qt.FastTransformation))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio,
+                                          Qt.FastTransformation))
 
     def paint_hiscores(self):
         self.canvas.fill(self.shooter.colors['background'])
@@ -459,7 +466,9 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_setup(self):
         self.canvas.fill(self.shooter.colors['background'])
@@ -623,7 +632,10 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio, Qt.FastTransformation))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio,
+                                          Qt.FastTransformation))
 
     def paint_help(self):
         self.canvas.fill(self.shooter.colors['background'])
@@ -717,7 +729,9 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_player(self):
         self.canvas.fill(self.shooter.colors['background'])
@@ -773,7 +787,9 @@ class Arena(QLabel):
         self.painter.setPen(self.shooter.pens['textfront'])
         self.painter.drawText(l_x, 1045, l)
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_about(self):
         """
@@ -834,7 +850,9 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_newscore(self):
         self.canvas.fill(self.shooter.colors['background'])
@@ -921,7 +939,9 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_game_init(self):
         pass  # Nothing to paint
@@ -969,7 +989,9 @@ class Arena(QLabel):
         self.paint_bottom_bar(self.painter)
         # ... dotąd
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     @log_usage
     def update_pixmap_play(self, painter):
@@ -1069,7 +1091,10 @@ class Arena(QLabel):
         self.painter.begin(self.canvas)
         self.update_pixmap_play(self.painter)
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio, Qt.FastTransformation))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio,
+                                          Qt.FastTransformation))
 
     def paint_game_paused(self):
         """
@@ -1096,7 +1121,9 @@ class Arena(QLabel):
         self.painter.setPen(self.shooter.pens['textfront'])
         self.painter.drawText(e_x, 650, e)
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_game_killed(self):
         """
@@ -1125,7 +1152,9 @@ class Arena(QLabel):
         self.painter.drawText(e_x, 650, e)
         # dotąd...
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     @log_usage
     def paint_game_congrats(self):
@@ -1168,7 +1197,9 @@ class Arena(QLabel):
             ARENA_HEIGHT - 60,
             self.shooter.images['icons']['en'])
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
     def paint_game_over(self):
         """
@@ -1246,10 +1277,16 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # dotąd...
         self.painter.end()
-        self.setPixmap(self.canvas.scaled(self.full_w, self.full_h, Qt.IgnoreAspectRatio))
+        self.setPixmap(self.canvas.scaled(self.full_w,
+                                          self.full_h,
+                                          Qt.IgnoreAspectRatio))
 
 
 class SpaceShooter(QApplication):
+    """
+    Main SpaceShooter application class
+    This class holds all the Qt resouces (pixmaps, pens, colors, etc)
+    """
     def __init__(self, args: list):
         super().__init__(args)
         self.window = None
@@ -1746,7 +1783,6 @@ if __name__ == "__main__":
     arena.shooter = shooter
     shooter.game.arena = arena
     window.setCentralWidget(arena)
-    arena.window = window
     if fixed:
         window.showFullScreen()
     else:

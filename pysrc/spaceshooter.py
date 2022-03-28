@@ -6,7 +6,7 @@ import json
 import os
 import math
 import logging
-import time
+# import time <- for logging decorator
 
 SHIELD_SPEEDX = -1
 
@@ -2571,7 +2571,7 @@ class Game:
     @log_usage
     def init_quit(self):
         self.config.save()
-        self.arena.window.close()
+        self.arena.parent.close()
 
     def init_newscore(self):
         self.shooter.timers['newscore-event'].start(TIMEOUT_NEWSCORE)
@@ -2769,12 +2769,24 @@ class Game:
                                 self.temp_position = 6
 
     def keyrelease_about(self, key, _):
+        """
+        Key handler for ABOUT board.
+        :param key: key to handle
+        :param _: unused
+        :return: None
+        """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
     def keyrelease_quit(self, _k, _t):
-        self.arena.window.close()
+        """
+        Key handler for QUIT board
+        :param _k: unused
+        :param _t: unused
+        :return: None
+        """
+        self.arena.parent.close()
 
     def keyrelease_newscore(self, key, _t):
         if key:
