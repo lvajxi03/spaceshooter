@@ -15,64 +15,60 @@ DEFAULT_FONT = "Commodore 64 Rounded"
 APPLICATION_TITLE = "SpaceShooter"
 
 import sys
+import random
 
 # This is us:
 from spaceshooter import *
 
 try:
-    from PySide2.QtWidgets import QApplication
-    from PySide2.QtWidgets import QMainWindow
-    from PySide2.QtWidgets import QLabel
-
-    from PySide2.QtGui import QPixmap
-    from PySide2.QtGui import QPainter
-    from PySide2.QtGui import QFont
-    from PySide2.QtGui import QFontMetrics
-    from PySide2.QtGui import QPolygon
-    from PySide2.QtGui import QColor
-    from PySide2.QtGui import QBrush
-    from PySide2.QtGui import QPen
-
-    from PySide2.QtMultimedia import QSound
-
-    from PySide2.QtCore import QSize
-    from PySide2.QtCore import QPoint
-    from PySide2.QtCore import QTimer
-    from PySide2.QtCore import QRect
-
-    from PySide2.QtCore import Qt
-
+    from PySide6.QtWidgets import QApplication
+    from PySide6.QtWidgets import QMainWindow
+    from PySide6.QtWidgets import QLabel
+    from PySide6.QtGui import QPixmap
+    from PySide6.QtGui import QPainter
+    from PySide6.QtGui import QFont
+    from PySide6.QtGui import QFontMetrics
+    from PySide6.QtGui import QPolygon
+    from PySide6.QtGui import QColor
+    from PySide6.QtGui import QBrush
+    from PySide6.QtGui import QPen
+    from PySide6.QtCore import QSize
+    from PySide6.QtCore import QPoint
+    from PySide6.QtCore import QTimer
+    from PySide6.QtCore import QRect
+    from PySide6.QtCore import Qt
 except ImportError:
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtWidgets import QMainWindow
-    from PyQt5.QtWidgets import QLabel
-
-    from PyQt5.QtGui import QPixmap
-    from PyQt5.QtGui import QImage
-    from PyQt5.QtGui import QPainter
-    from PyQt5.QtGui import QFont
-    from PyQt5.QtGui import QFontMetrics
-    from PyQt5.QtGui import QPolygon
-    from PyQt5.QtGui import QColor
-    from PyQt5.QtGui import qRgb
-    from PyQt5.QtGui import qRed
-    from PyQt5.QtGui import QBrush
-    from PyQt5.QtGui import QPen
-
-    from PyQt5.QtMultimedia import QSound
-
-    from PyQt5.QtCore import QSize
-    from PyQt5.QtCore import QPoint
-    from PyQt5.QtCore import QTimer
-    from PyQt5.QtCore import QRect
-
-    from PyQt5.QtCore import Qt
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtWidgets import QMainWindow
+    from PyQt6.QtWidgets import QLabel
+    from PyQt6.QtGui import QPixmap
+    from PyQt6.QtGui import QImage
+    from PyQt6.QtGui import QPainter
+    from PyQt6.QtGui import QFont
+    from PyQt6.QtGui import QFontMetrics
+    from PyQt6.QtGui import QPolygon
+    from PyQt6.QtGui import QColor
+    from PyQt6.QtGui import QBrush
+    from PyQt6.QtGui import QPen
+    from PyQt6.QtCore import QSize
+    from PyQt6.QtCore import QPoint
+    from PyQt6.QtCore import QTimer
+    from PyQt6.QtCore import QRect
+    from PyQt6.QtCore import Qt
 
 
 class Controller(QMainWindow):
+    """
+    Main application window
+    """
     def __init__(self, parent):
+        """
+        Create window object
+        :param parent: application instance handle
+        """
         super().__init__()
         self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setWindowFlag(Qt.FramelessWindowHint)
         self.parent = parent
         self.game = None
         self.setWindowTitle(APPLICATION_TITLE)
@@ -111,14 +107,19 @@ class Controller(QMainWindow):
 
 
 class Arena(QLabel):
+    """
+    Game arena
+    """
     def __init__(self, parent):
+        """
+        Create Arena object
+        :param parent: handle to parent window
+        """
         super().__init__()
         self.parent = parent
         self.shooter = None
         self.canvas = QPixmap(ARENA_WIDTH, ARENA_HEIGHT)
         self.painter = QPainter()
-        self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setWindowTitle(APPLICATION_TITLE)
         self.setMouseTracking(True)
         self.game = parent.game
         self.paint_procs = {

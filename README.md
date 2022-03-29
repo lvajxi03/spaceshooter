@@ -35,15 +35,17 @@ Several items are quite useful and can be collected:
 
 ## Installation and configuration
 
-All you have to do is to clone this repo, install `Python` and `PySide2` library.
+All you have to do is to clone this repo, install `Python` and `PySide6`/`PyQt6` library.
 
-(`PySide2` installation can be done via
+(`PySide6` installation can be done via
 ```bash
-$ python -m pip install PySide2
+$ python -m pip install PySide6
+```
+while `PyQt6` installation can be done via
+```bash
+$ python -m pip install PyQt6
 ```
 )
-
-Application works with `PyQt5` as well.
 
 Default font is ugly, so please download some free `TTF` file that resembles you the 80s and install.
 Then, please let the program know about it: change `DEFAULT_FONT` in `pysrc/shooter_qt.py` file
