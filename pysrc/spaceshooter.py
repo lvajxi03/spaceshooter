@@ -2483,7 +2483,7 @@ class Game:
         fm = self.arena.metrics['menu']
         c = 3
         for label in self.shooter.labels['menu'][self.config['lang']]:
-            r = Rect(400, c * 100 - fm.height(), fm.width(label), fm.height())
+            r = Rect(400, c * 100 - fm.height(), fm.horizontalAdvance(label), fm.height())
             self.menu_rectangles.append(r)
             c += 1
 
@@ -2492,7 +2492,7 @@ class Game:
         fm = self.arena.metrics['options']
         c = 3
         for label in self.shooter.labels['options'][self.config['lang']]:
-            r = Rect(400, c * 100 - fm.height(), fm.width(label), fm.height())
+            r = Rect(400, c * 100 - fm.height(), fm.horizontalAdvance(label), fm.height())
             self.options_rectangles.append(r)
             c += 1
 
