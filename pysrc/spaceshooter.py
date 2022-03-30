@@ -846,7 +846,7 @@ class Player(FlyingObject):
     """
     Player object
     """
-    OFFSET = 20 # TODO: const?
+    OFFSET = 20  # TODO: const?
 
     def __init__(self, x, y, image):
         super().__init__(x, y, image)
@@ -1016,7 +1016,7 @@ class Shield(FlyingObject):
 
 
 class Missile(FlyingObject):
-    def __init__(self, x, y, etype, image, **kwargs):
+    def __init__(self, x, y, etype, image):
         super().__init__(x, y, image)
         self.etype = etype
         self.speedx = 12
@@ -1951,8 +1951,8 @@ class EnemyManager:
                 250 + 70 * i,
                 odd,
                 image,
-                speedx=-5,
-                speedy=10)
+                speedx=-8,
+                speedy=15)
             self.enemies.append(enemy)
 
     def create_boss(self):
@@ -2653,6 +2653,10 @@ class Game:
         self.shooter.timers['smoke-timer'].stop()
 
     def init_killed(self):
+        """
+        Perform all the actions needed when killed
+        :return: None
+        """
         self.__stop_timers()
         # No enemies while killed and waiting for RET key:
         self.enemymanager.clear()
@@ -2667,11 +2671,20 @@ class Game:
         # Clear any other timers:
         self.lightball_timer = 0
         self.shield_timer = 0
+        self.frozen_timer = 0
 
     def init_help(self):
+        """
+        Initial actions done when help (no actions)
+        :return: None
+        """
         pass
 
     def init_gameover(self):
+        """
+        Initial actions done when game over
+        :return: None
+        """
         self.__stop_timers()
         self.shooter.timers['player-move-event'].stop()
 
@@ -2727,11 +2740,23 @@ class Game:
             self.change_board(Board.MENU)
 
     def keyrelease_hiscores(self, key, _):
+        """
+        Handle heyrelease when in HiScores board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
     def keyrelease_prepare(self, key, _):
+        """
+        Handle keyrelease when in Prepare board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
@@ -3057,6 +3082,7 @@ class Game:
         self.check_collision_lightball()
         self.check_collision_icebox()
         self.check_collision_bomb()
+        self.check_collision_movables()
 
     def enemies_event(self):
         if not self.enemymanager.run():
@@ -3078,12 +3104,12 @@ class Game:
 
     def check_collision_drops(self):
         """
-        Check if any of the drop collided a player
+        Check if any of the drop collided a player - only in normal and hard mode
         and perform an action:
         * if not shield/unlimited mode explode player
         * if not shield/unlimited mode decrease indicator points
         """
-        if self.shield_timer == 0 and self.options_pos != Options.UNLIMITED:
+        if self.shield_timer == 0 and self.options_pos not in (Options.EASY, Options.UNLIMITED):
             for drop in self.drops:
                 if drop.collides(self.player):
                     drop.valid = False
@@ -3160,7 +3186,7 @@ class Game:
             self.indicators -= 1
         if self.indicators == 0:
             self.lives -= 1
-            if self.lives <= 0: # In case of two timers did the lives < 0
+            if self.lives <= 0:  # In case of two timers did the lives < 0
                 self.change_mode(Mode.GAMEOVER)
             else:
                 self.process_killed()
@@ -3190,6 +3216,25 @@ class Game:
                              enemy.y + enemy.h // 2)
                 self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
                 if self.shield_timer == 0 and self.frozen_timer == 0 and self.options_pos != Options.UNLIMITED:
+                    self.decrease_hp()
+
+    def check_collision_movables(self):
+        """
+        Check if player collided with a movable: only hardcore mode.
+        Action:
+        * increase game points
+        * decrease HP
+        * explode building
+        :return: None
+        """
+        if self.options_pos == Options.HARD:
+            for movable in self.movables:
+                if movable.collides(self.player):
+                    self.points += 1
+                    movable.valid = False
+                    self.explode(movable.x + movable.w // 2,
+                                 movable.y + movable.h // 2)
+                    self.movables = [x for x in self.movables if x.is_valid()]
                     self.decrease_hp()
 
     def explode(self, x, y):
@@ -3280,6 +3325,13 @@ class Game:
         self.bombs = [x for x in self.bombs if x.is_valid()]
 
     def create_bomb(self, x, y):
+        """
+        Create bomb at given location
+        (and start bomb timer)
+        :param x: X coordinate of the bomb
+        :param y: Y coordinate of the bomb
+        :return: None
+        """
         if not self.bomb_lock:
             self.bomb_lock = True
             b = Bomb(x, y, self.shooter.images['indicators']['bomb'])
@@ -3299,6 +3351,11 @@ class Game:
             self.shooter.timers['game-light-event'].stop()
 
     def freeze_event(self):
+        """
+        Handle freeze event
+        (decrease timer or expire freeze)
+        :return: None
+        """
         if self.frozen_timer > 0:
             self.frozen_timer -= 1
         else:
@@ -3309,7 +3366,7 @@ class Game:
         Create fire missile, which in fact contains 3 fireballs
         :param x: initial X position of firemissile
         :param y: initial Y position of firemissile
-        :return:
+        :return: None
         """
         if not self.missile_lock:
             self.missile_lock = True
@@ -3331,9 +3388,19 @@ class Game:
             self.firemissiles.append(f)
 
     def newscore_event(self):
+        """
+        Handle newscore event
+        (cursor blinking)
+        :return: None
+        """
         self.newscore_counter = 0 if self.newscore_counter == 1 else 1
 
     def player_move_event(self):
+        """
+        Handle player event
+        (smooth moving in every direction
+        :return: None
+        """
         if self.player:
             if self.player_ymove_counter > 0:
                 self.player.go_up()
@@ -3349,12 +3416,26 @@ class Game:
                 self.player_xmove_counter += 1
 
     def bomb_timer(self):
+        """
+        Handle bomb timer
+        (disallow creating too many bombs at once)
+        :return:
+        """
         self.bomb_lock = False
 
     def missile_timer(self):
+        """
+        Handle missile timer
+        (disallow creating too many missiles at once)
+        :return:
+        """
         self.missile_lock = False
 
-
     def smoke_timer(self):
+        """
+        Handle smoke timer
+        (rorate smoke frame)
+        :return:
+        """
         self.smoke_counter += 1
         self.smoke_counter %= 4
