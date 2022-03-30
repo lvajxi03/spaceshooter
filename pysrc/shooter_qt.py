@@ -15,64 +15,60 @@ DEFAULT_FONT = "Commodore 64 Rounded"
 APPLICATION_TITLE = "SpaceShooter"
 
 import sys
+import random
 
 # This is us:
 from spaceshooter import *
 
 try:
-    from PySide2.QtWidgets import QApplication
-    from PySide2.QtWidgets import QMainWindow
-    from PySide2.QtWidgets import QLabel
-
-    from PySide2.QtGui import QPixmap
-    from PySide2.QtGui import QPainter
-    from PySide2.QtGui import QFont
-    from PySide2.QtGui import QFontMetrics
-    from PySide2.QtGui import QPolygon
-    from PySide2.QtGui import QColor
-    from PySide2.QtGui import QBrush
-    from PySide2.QtGui import QPen
-
-    from PySide2.QtMultimedia import QSound
-
-    from PySide2.QtCore import QSize
-    from PySide2.QtCore import QPoint
-    from PySide2.QtCore import QTimer
-    from PySide2.QtCore import QRect
-
-    from PySide2.QtCore import Qt
-
+    from PySide6.QtWidgets import QApplication
+    from PySide6.QtWidgets import QMainWindow
+    from PySide6.QtWidgets import QLabel
+    from PySide6.QtGui import QPixmap
+    from PySide6.QtGui import QPainter
+    from PySide6.QtGui import QFont
+    from PySide6.QtGui import QFontMetrics
+    from PySide6.QtGui import QPolygon
+    from PySide6.QtGui import QColor
+    from PySide6.QtGui import QBrush
+    from PySide6.QtGui import QPen
+    from PySide6.QtCore import QSize
+    from PySide6.QtCore import QPoint
+    from PySide6.QtCore import QTimer
+    from PySide6.QtCore import QRect
+    from PySide6.QtCore import Qt
 except ImportError:
-    from PyQt5.QtWidgets import QApplication
-    from PyQt5.QtWidgets import QMainWindow
-    from PyQt5.QtWidgets import QLabel
-
-    from PyQt5.QtGui import QPixmap
-    from PyQt5.QtGui import QImage
-    from PyQt5.QtGui import QPainter
-    from PyQt5.QtGui import QFont
-    from PyQt5.QtGui import QFontMetrics
-    from PyQt5.QtGui import QPolygon
-    from PyQt5.QtGui import QColor
-    from PyQt5.QtGui import qRgb
-    from PyQt5.QtGui import qRed
-    from PyQt5.QtGui import QBrush
-    from PyQt5.QtGui import QPen
-
-    from PyQt5.QtMultimedia import QSound
-
-    from PyQt5.QtCore import QSize
-    from PyQt5.QtCore import QPoint
-    from PyQt5.QtCore import QTimer
-    from PyQt5.QtCore import QRect
-
-    from PyQt5.QtCore import Qt
+    from PyQt6.QtWidgets import QApplication
+    from PyQt6.QtWidgets import QMainWindow
+    from PyQt6.QtWidgets import QLabel
+    from PyQt6.QtGui import QPixmap
+    from PyQt6.QtGui import QImage
+    from PyQt6.QtGui import QPainter
+    from PyQt6.QtGui import QFont
+    from PyQt6.QtGui import QFontMetrics
+    from PyQt6.QtGui import QPolygon
+    from PyQt6.QtGui import QColor
+    from PyQt6.QtGui import QBrush
+    from PyQt6.QtGui import QPen
+    from PyQt6.QtCore import QSize
+    from PyQt6.QtCore import QPoint
+    from PyQt6.QtCore import QTimer
+    from PyQt6.QtCore import QRect
+    from PyQt6.QtCore import Qt
 
 
 class Controller(QMainWindow):
+    """
+    Main application window
+    """
     def __init__(self, parent):
+        """
+        Create window object
+        :param parent: application instance handle
+        """
         super().__init__()
         self.setAttribute(Qt.WA_TranslucentBackground, True)
+        self.setWindowFlag(Qt.FramelessWindowHint)
         self.parent = parent
         self.game = None
         self.setWindowTitle(APPLICATION_TITLE)
@@ -80,12 +76,8 @@ class Controller(QMainWindow):
     def pos2arena(self, event):
         """
         Translate screen position to arena-oriented coordinates
-
-        Parameters:
-        * event: QMouseEvent to translate
-
-        Return
-        MouseEvent with translated coordinates
+        :param event: QMouseEvent to translate
+        :return: MouseEvent with translated coordinates
         """
         pos = event.pos()
         return MouseEvent(
@@ -111,14 +103,19 @@ class Controller(QMainWindow):
 
 
 class Arena(QLabel):
+    """
+    Game arena
+    """
     def __init__(self, parent):
+        """
+        Create Arena object
+        :param parent: handle to parent window
+        """
         super().__init__()
         self.parent = parent
         self.shooter = None
         self.canvas = QPixmap(ARENA_WIDTH, ARENA_HEIGHT)
         self.painter = QPainter()
-        self.setWindowFlag(Qt.FramelessWindowHint)
-        self.setWindowTitle(APPLICATION_TITLE)
         self.setMouseTracking(True)
         self.game = parent.game
         self.paint_procs = {
@@ -223,7 +220,7 @@ class Arena(QLabel):
                 x,
                 STAGE_HEIGHT + 50,
                 text)
-            x += self.metrics['status-line'].width(text) + 20
+            x += self.metrics['status-line'].horizontalAdvance(text) + 20
         # Shield Timer
         if self.game.shield_timer > 0:
             painter.drawPixmap(
@@ -236,7 +233,7 @@ class Arena(QLabel):
                 x,
                 STAGE_HEIGHT + 50,
                 text)
-            x += self.metrics['status-line'].width(text) + 20
+            x += self.metrics['status-line'].horizontalAdvance(text) + 20
         # LightBall Timer
         if self.game.lightball_timer > 0:
             painter.drawPixmap(
@@ -249,7 +246,7 @@ class Arena(QLabel):
                 x,
                 STAGE_HEIGHT + 50,
                 text)
-            x += self.metrics['status-line'].width(text) + 20
+            x += self.metrics['status-line'].horizontalAdvance(text) + 20
         # Frozen Timer
         if self.game.frozen_timer > 0:
             painter.drawPixmap(
@@ -265,7 +262,7 @@ class Arena(QLabel):
         # Punkty:
         if self.game.points > 0:
             text = "P: %(f)04d" % {'f': self.game.points}
-            w = self.metrics['status-line'].width(text) + 20
+            w = self.metrics['status-line'].horizontalAdvance(text) + 20
             painter.drawText(
                 ARENA_WIDTH - w,
                 STAGE_HEIGHT + 50,
@@ -287,7 +284,7 @@ class Arena(QLabel):
             star.paint(self.painter)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(QPen(QColor(12, 12, 12, 127), 2, Qt.SolidLine))
-        x = (ARENA_WIDTH - self.metrics["logo"].width(
+        x = (ARENA_WIDTH - self.metrics["logo"].horizontalAdvance(
             self.shooter.labels['title'])) // 2
         self.painter.drawText(x + 5, 150, self.shooter.labels['title'])
         self.painter.setPen(QPen(QColor(250, 79, 141, 127), 2, Qt.SolidLine))
@@ -353,7 +350,7 @@ class Arena(QLabel):
             star.paint(self.painter)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(QPen(QColor(12, 12, 12, 127), 2, Qt.SolidLine))
-        x = (ARENA_WIDTH - self.metrics["logo"].width(
+        x = (ARENA_WIDTH - self.metrics["logo"].horizontalAdvance(
             self.shooter.labels['options']['title'][self.game.config['lang']])) // 2
         self.painter.drawText(x + 5, 150,
                     self.shooter.labels['options']['title'][self.game.config['lang']])
@@ -378,7 +375,7 @@ class Arena(QLabel):
             c += 1
             counter += 1
         l = self.shooter.labels['options']['line1'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -386,7 +383,7 @@ class Arena(QLabel):
         self.painter.setPen(self.shooter.pens['textfront'])
         self.painter.drawText(l_x, 990, l)
         l = self.shooter.labels['options']['line2'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -416,7 +413,7 @@ class Arena(QLabel):
             star.paint(self.painter)
         self.painter.setFont(self.fonts['logo'])
         l = self.shooter.labels['hiscores']['title'][self.game.config['lang']]
-        l_w = self.metrics['logo'].width(l)
+        l_w = self.metrics['logo'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(l_x + 5, 150, l)
@@ -449,7 +446,7 @@ class Arena(QLabel):
                 self.painter.drawText(400, 250 + i * 75, "---")
                 self.painter.drawText(1200, 250 + i * 75, "---")
         l = self.shooter.labels['standard-line'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -479,7 +476,7 @@ class Arena(QLabel):
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
         l = self.shooter.labels['setup']['title'][self.game.config['lang']]
-        l_w = self.metrics['logo'].width(l)
+        l_w = self.metrics['logo'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.drawText(l_x + 5, 155, l)
         self.painter.setPen(self.shooter.pens['logofront'])
@@ -489,7 +486,7 @@ class Arena(QLabel):
             self.painter.setFont(self.fonts['help'])
             self.painter.setPen(self.shooter.pens['textback'])
             l = self.shooter.labels['setup']['enter-lead'][self.game.config['lang']]
-            l_w = self.metrics['status-line'].width(l)
+            l_w = self.metrics['status-line'].horizontalAdvance(l)
             l_x = (ARENA_WIDTH - l_w) // 2
             self.painter.drawText(l_x + 5, 255, l)
             self.painter.setPen(self.shooter.pens['textfront'])
@@ -536,7 +533,7 @@ class Arena(QLabel):
             self.painter.setFont(self.fonts['help'])
             self.painter.setPen(self.shooter.pens['textback'])
             l = self.shooter.labels['setup']['display-lead'][self.game.config['lang']]
-            l_w = self.metrics['status-line'].width(l)
+            l_w = self.metrics['status-line'].horizontalAdvance(l)
             l_x = (ARENA_WIDTH - l_w) // 2
             self.painter.drawText(l_x + 5, 255, l)
             self.painter.setPen(self.shooter.pens['textfront'])
@@ -615,7 +612,7 @@ class Arena(QLabel):
                         str(self.game.config.get_key(UserInput.TNT)))
             # End keys
             l = self.shooter.labels['standard-line'][self.game.config['lang']]
-            l_w = self.metrics['status-line'].width(l)
+            l_w = self.metrics['status-line'].horizontalAdvance(l)
             l_x = (ARENA_WIDTH - l_w) // 2
             self.painter.setFont(self.fonts['help'])
             self.painter.setPen(self.shooter.pens['textback'])
@@ -644,7 +641,7 @@ class Arena(QLabel):
         for star in self.game.stars:
             star.paint(painter)
         e = self.shooter.labels['help']['title'][self.game.config['lang']]
-        e_w = self.metrics['logo'].width(e)
+        e_w = self.metrics['logo'].horizontalAdvance(e)
         e_x = (ARENA_WIDTH - e_w) // 2
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -662,7 +659,7 @@ class Arena(QLabel):
             self.painter.drawPixmap(x, 475, player)
             x += 20 + player.width()
         e = self.shooter.labels['standard-line'][self.game.config['lang']]
-        e_w = self.metrics['status-line'].width(e)
+        e_w = self.metrics['status-line'].horizontalAdvance(e)
         e_x = (ARENA_WIDTH - e_w) // 2
         # Help text here:
         self.painter.setPen(self.shooter.pens['textback'])
@@ -742,7 +739,7 @@ class Arena(QLabel):
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(QPen(self.shooter.colors['textback'], 2, Qt.SolidLine))
         e = self.shooter.labels['player']['title'][self.game.config['lang']]
-        we = self.metrics['logo'].width(e)
+        we = self.metrics['logo'].horizontalAdvance(e)
         self.painter.drawText((ARENA_WIDTH - we) // 2 + 5 , 155, e)
         self.painter.setPen(QPen(self.shooter.colors['logofront'], 2, Qt.SolidLine))
         self.painter.drawText((ARENA_WIDTH - we) // 2, 150, e)
@@ -771,7 +768,7 @@ class Arena(QLabel):
             self.shooter.images['icons']['en'])
         # ... dotąd
         l = self.shooter.labels['player']['line1'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -779,7 +776,7 @@ class Arena(QLabel):
         self.painter.setPen(self.shooter.pens['textfront'])
         self.painter.drawText(l_x, 990, l)
         l = self.shooter.labels['player']['line2'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -804,7 +801,7 @@ class Arena(QLabel):
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
         label = self.shooter.labels['about']['title'][self.game.config['lang']]
-        label_w = self.metrics['logo'].width(label)
+        label_w = self.metrics['logo'].horizontalAdvance(label)
         label_x = (ARENA_WIDTH - label_w) // 2
         self.painter.drawText(label_x + 5, 155, label)
         self.painter.setPen(self.shooter.pens['logofront'])
@@ -818,7 +815,7 @@ class Arena(QLabel):
             self.painter.drawText(100, 300 + c * 60, item)
             c += 1
         label_s = self.shooter.labels['standard-line'][self.game.config['lang']]
-        label_w = self.metrics['status-line'].width(label_s)
+        label_w = self.metrics['status-line'].horizontalAdvance(label_s)
         label_x = (ARENA_WIDTH - label_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(label_x + 5, 1055, label_s)
@@ -862,7 +859,7 @@ class Arena(QLabel):
             star.paint(self.painter)
         self.painter.setFont(self.fonts['logo'])
         e = self.shooter.labels['newscore']['title'][self.game.config['lang']]
-        e_w = self.metrics['logo'].width(e)
+        e_w = self.metrics['logo'].horizontalAdvance(e)
         e_x = (ARENA_WIDTH - e_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(
@@ -875,7 +872,7 @@ class Arena(QLabel):
             200,
             e
         )
-        wx = self.metrics['logo'].width("W")
+        wx = self.metrics['logo'].horizontalAdvance("W")
         wh = self.metrics['logo'].height()
         wy = (MAX_NICK_LEN + 1) * (wx + 30)
         x0 = (ARENA_WIDTH - wy) // 2
@@ -914,7 +911,7 @@ class Arena(QLabel):
                 self.painter.fillRect(r, self.shooter.brushes['logofront'])
         # Status lines:
         l = self.shooter.labels['newscore']['line1'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -922,7 +919,7 @@ class Arena(QLabel):
         self.painter.setPen(self.shooter.pens['textfront'])
         self.painter.drawText(l_x, 990, l)
         l = self.shooter.labels['newscore']['line2'][self.game.config['lang']]
-        l_w = self.metrics['status-line'].width(l)
+        l_w = self.metrics['status-line'].horizontalAdvance(l)
         l_x = (ARENA_WIDTH - l_w) // 2
         self.painter.setFont(self.fonts['help'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -970,14 +967,14 @@ class Arena(QLabel):
                          'game']['level-x'][self.game.config['lang']] % {
                          'l': self.game.level + 1}
         x2 = (ARENA_WIDTH - self.metrics[
-            'get-ready'].width(level_text)) // 2
+            'get-ready'].horizontalAdvance(level_text)) // 2
         self.painter.setFont(self.fonts['get-ready'])
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(x2 + 5, 405, level_text)
         x3 = 0
         if self.game.get_ready > 0:
             self.painter.setFont(self.fonts['logo'])
-            x3 = (ARENA_WIDTH - self.metrics['logo'].width(
+            x3 = (ARENA_WIDTH - self.metrics['logo'].horizontalAdvance(
                 "%(f)d" % {'f': self.game.get_ready})) // 2
             self.painter.drawText(x3 + 5, 605, "%(f)d" % {'f': self.game.get_ready})
         self.painter.setPen(self.shooter.pens['textfront'])
@@ -1106,7 +1103,7 @@ class Arena(QLabel):
         self.update_pixmap_play(self.painter)
         self.painter.setFont(self.fonts['logo'])
         t = self.shooter.labels['awaiting']['paused'][self.game.config['lang']]
-        t_w = self.metrics['logo'].width(t)
+        t_w = self.metrics['logo'].horizontalAdvance(t)
         t_x = (ARENA_WIDTH - t_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(t_x + 5, 505, t)
@@ -1114,7 +1111,7 @@ class Arena(QLabel):
         self.painter.drawText(t_x, 500, t)
         self.painter.setFont(self.fonts['menu'])
         e = self.shooter.labels['awaiting']['enter'][self.game.config['lang']]
-        e_w = self.metrics['menu'].width(e)
+        e_w = self.metrics['menu'].horizontalAdvance(e)
         e_x = (ARENA_WIDTH - e_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(e_x + 5, 655, e)
@@ -1137,14 +1134,14 @@ class Arena(QLabel):
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
         t = self.shooter.labels['awaiting']['killed'][self.game.config['lang']]
-        t_w = self.metrics['logo'].width(t)
+        t_w = self.metrics['logo'].horizontalAdvance(t)
         t_x = (ARENA_WIDTH - t_w) // 2
         self.painter.drawText(t_x + 5, 505, t)
         self.painter.setPen(self.shooter.pens['logofront2'])
         self.painter.drawText(t_x, 500, t)
         self.painter.setFont(self.fonts['menu'])
         e = self.shooter.labels['awaiting']['enter'][self.game.config['lang']]
-        e_w = self.metrics['menu'].width(e)
+        e_w = self.metrics['menu'].horizontalAdvance(e)
         e_x = (ARENA_WIDTH - e_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(e_x + 5, 655, e)
@@ -1164,7 +1161,7 @@ class Arena(QLabel):
         for star in self.game.stars:
             star.paint(self.painter)
         x = self.shooter.labels['gameover']['win'][self.game.config['lang']]
-        wx = self.metrics['logo'].width(x)
+        wx = self.metrics['logo'].horizontalAdvance(x)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(QPen(self.shooter.colors['textback'], 2, Qt.SolidLine))
         self.painter.drawText((ARENA_WIDTH - wx) // 2 + 5,
@@ -1175,12 +1172,12 @@ class Arena(QLabel):
                     300,
                     x)
         self.painter.drawPixmap(
-            (ARENA_WIDTH - self.shooter.images['indicators']['cup'].width()) // 2,
+            (ARENA_WIDTH - self.shooter.images['indicators']['cup'].horizontalAdvance()) // 2,
             400,
             self.shooter.images['indicators']['cup'])
         # Status line
         label_s = self.shooter.labels['standard-line'][self.game.config['lang']]
-        label_w = self.metrics['status-line'].width(label_s)
+        label_w = self.metrics['status-line'].horizontalAdvance(label_s)
         label_x = (ARENA_WIDTH - label_w) // 2
         self.painter.setFont(self.fonts['status-line'])
         self.painter.setPen(self.shooter.pens['textback'])
@@ -1215,12 +1212,12 @@ class Arena(QLabel):
         f = self.shooter.labels['gameover']['description'][self.game.config['lang']]
         g = self.shooter.labels['gameover']['description2'][self.game.config['lang']]
         h = self.shooter.labels['gameover']['description3'][self.game.config['lang']]
-        we = self.metrics['logo'].width(e)
-        wf = self.metrics['menu'].width(f)
-        wg = self.metrics['status-line'].width(g)
-        wh = self.metrics['status-line'].width(h)
+        we = self.metrics['logo'].horizontalAdvance(e)
+        wf = self.metrics['menu'].horizontalAdvance(f)
+        wg = self.metrics['status-line'].horizontalAdvance(g)
+        wh = self.metrics['status-line'].horizontalAdvance(h)
         label_s = self.shooter.labels['standard-line'][self.game.config['lang']]
-        label_w = self.metrics['status-line'].width(label_s)
+        label_w = self.metrics['status-line'].horizontalAdvance(label_s)
         label_x = (ARENA_WIDTH - label_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.setFont(self.fonts['logo'])
@@ -1713,57 +1710,129 @@ class SpaceShooter(QApplication):
         self.game = Game(self)
 
     def newscore_event(self):
+        """
+        Newscore timer delegator
+        :return: None
+        """
         self.game.newscore_event()
 
     def game_enemies_event(self):
+        """
+        Enemies timer delegator
+        :return: None
+        """
         self.game.enemies_event()
 
     def game_events_event(self):
+        """
+        Game Events timer delegator
+        :return: None
+        """
         self.game.events_event()
 
     def game_welcome_event(self):
+        """
+        Welcome timer delegator
+        :return: None
+        """
         self.game.welcome_event()
 
     def game_movable_update_event(self):
+        """
+        Movable timer delegator
+        :return: None
+        """
         self.game.movable_update_event()
 
     def game_update_event(self):
+        """
+        Game update timer delegator
+        :return: None
+        """
         self.game.game_update_event()
 
     def game_shield_event(self):
+        """
+        Shield timer delegator
+        :return: None
+        """
         self.game.shield_event()
 
     def game_light_event(self):
+        """
+        Lightball timer delegator
+        :return: None
+        """
         self.game.light_event()
 
     def game_get_ready_event(self):
+        """
+        GetReady timer delegator
+        :return: None
+        """
         self.game.get_ready_event()
 
     def game_stars_event(self):
+        """
+        Stars timer delegator
+        :return: None
+        """
         self.game.stars_update_event()
 
     def game_paint_event(self):
+        """
+        Paint timer delegator
+        :return: None
+        """
         self.game.game_paint_event()
 
     def game_counter_event(self):
+        """
+        Counter timer delegator
+        :return: None
+        """
         self.game.game_counter_event()
 
     def game_freeze_event(self):
+        """
+        Freeze timer delegator
+        :return: None
+        """
         self.game.freeze_event()
 
     def setup_enter_event(self):
+        """
+        Setup timer delegator
+        :return: None
+        """
         self.game.setup_enter_event()
 
     def player_move_event(self):
+        """
+        Player move timer delegator
+        :return: None
+        """
         self.game.player_move_event()
 
     def bomb_timer(self):
+        """
+        Bomb timer delegator
+        :return: None
+        """
         self.game.bomb_timer()
 
     def missile_timer(self):
+        """
+        Missile timer delegator
+        :return: None
+        """
         self.game.missile_timer()
 
     def smoke_timer(self):
+        """
+        Smoke timer delegator
+        :return: None
+        """
         self.game.smoke_timer()
 
 
@@ -1789,4 +1858,4 @@ if __name__ == "__main__":
         window.setFixedSize(ARENA_WIDTH, ARENA_HEIGHT)
         window.show()
     shooter.game.change_board(Board.WELCOME)
-    sys.exit(shooter.exec_())
+    sys.exit(shooter.exec())
