@@ -1,9 +1,7 @@
 #!/usr/bin/env python
 
-import enum
-import random
 import os
-import math
+
 
 from stypes import (
     UserInput,
@@ -18,918 +16,19 @@ from stypes import (
 )
 from primi import (
     Rect,
-    Tnt,
-    Drop,
     Missile,
-    Medkit,
-    IceBox,
-    Enemy,
-    LightBall,
-    Boss,
     Player,
     Movable,
     Explosion,
     Bomb,
     FireMissile,
-    Shield,
     Star
 )
 from sconfig import ShooterConfig
-from sutils import cycle
 from sdefs import *
-
-
-@enum.unique
-class GameEvent(enum.IntEnum):
-    NONE = 0
-    DROP = 1
-    DROPS = 2
-    MISSILES = 3
-    MISSILES_EVEN = 4
-    MISSILES_ODD = 5
-    MEDKIT = 6
-    TNT = 7
-    FREEZE = 8
-    LIGHTBALL = 9
-    SHIELD = 10
-    GUN_MISSILE = 11
-
-    @staticmethod
-    def from_factory_level_1(num=0):
-        num = 3 if num < 1 else num
-        scenario = [GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.NONE,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.NONE,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.NONE,
-                    GameEvent.FREEZE,
-                    GameEvent.NONE,
-                    GameEvent.SHIELD,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.TNT,
-                    GameEvent.MISSILES,
-                    GameEvent.DROP,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.NONE,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.DROP,
-                    GameEvent.TNT,
-                    GameEvent.NONE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.NONE]
-        # Deep copy of scenario due to later cycling
-        # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
-        counter = 0
-        gen = cycle(sc_copy)
-        events = []
-        while counter < num:
-            event = next(gen)
-            events.append(event)
-            counter += 1
-        return events
-
-    @staticmethod
-    def from_factory_level_2(num=0):
-        num = 3 if num < 1 else num
-        scenario = [GameEvent.DROP,
-                    GameEvent.NONE,
-                    GameEvent.MISSILES,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.TNT,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.DROP,
-                    GameEvent.SHIELD,
-                    GameEvent.NONE,
-                    GameEvent.MEDKIT,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.MISSILES,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.FREEZE,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.MEDKIT,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.MEDKIT,
-                    GameEvent.NONE,
-                    GameEvent.DROP,
-                    GameEvent.SHIELD,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.LIGHTBALL]
-        # Deep copy of scenario due to later cycling
-        # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
-        counter = 0
-        gen = cycle(sc_copy)
-        events = []
-        while counter < num:
-            event = next(gen)
-            events.append(event)
-            counter += 1
-        return events
-
-    @staticmethod
-    def from_factory_level_3(num=0):
-        num = 3 if num < 1 else num
-        scenario = [GameEvent.MISSILES_ODD,
-                    GameEvent.DROPS,
-                    GameEvent.NONE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROPS,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.TNT,
-                    GameEvent.DROPS,
-                    GameEvent.MISSILES,
-                    GameEvent.FREEZE,
-                    GameEvent.DROP,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROPS,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.SHIELD,
-                    GameEvent.DROPS,
-                    GameEvent.MISSILES,
-                    GameEvent.TNT,
-                    GameEvent.DROP,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROP,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES,
-                    GameEvent.SHIELD,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.TNT,
-                    GameEvent.DROP,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.DROPS,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS]
-        # Deep copy of scenario due to later cycling
-        # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
-        counter = 0
-        gen = cycle(sc_copy)
-        events = []
-        while counter < num:
-            event = next(gen)
-            events.append(event)
-            counter += 1
-        return events
-
-    @staticmethod
-    def from_factory_level_4(num=0):
-        num = 3 if num < 1 else num
-        scenario = [GameEvent.MISSILES_EVEN,
-                    GameEvent.DROP,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.TNT,
-                    GameEvent.MISSILES,
-                    GameEvent.DROP,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.FREEZE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.SHIELD,
-                    GameEvent.MISSILES,
-                    GameEvent.DROP,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.DROP,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.TNT,
-                    GameEvent.MISSILES,
-                    GameEvent.FREEZE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.SHIELD,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.TNT,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROPS,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.DROP,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES,
-                    GameEvent.TNT,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.LIGHTBALL]
-        # Deep copy of scenario due to later cycling
-        # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
-        counter = 0
-        gen = cycle(sc_copy)
-        events = []
-        while counter < num:
-            event = next(gen)
-            events.append(event)
-            counter += 1
-        return events
-
-    @staticmethod
-    def from_factory_level_5(num=0):
-        num = 3 if num < 1 else num
-        scenario = [GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.SHIELD,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.MISSILES,
-                    GameEvent.MISSILES,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.MEDKIT,
-                    GameEvent.MISSILES,
-                    GameEvent.MISSILES,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROPS,
-                    GameEvent.MISSILES,
-                    GameEvent.MISSILES,
-                    GameEvent.TNT,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.FREEZE,
-                    GameEvent.MISSILES,
-                    GameEvent.MISSILES,
-                    GameEvent.MEDKIT,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.DROPS,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.DROPS,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.TNT,
-                    GameEvent.MISSILES,
-                    GameEvent.LIGHTBALL,
-                    GameEvent.GUN_MISSILE,
-                    GameEvent.SHIELD,
-                    GameEvent.MISSILES_EVEN,
-                    GameEvent.MISSILES_ODD,
-                    GameEvent.MEDKIT]
-        # Deep copy of scenario due to later cycling
-        # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
-        counter = 0
-        gen = cycle(sc_copy)
-        events = []
-        while counter < num:
-            event = next(gen)
-            events.append(event)
-            counter += 1
-        return events
-
-    @staticmethod
-    def from_factory(level: int, num=0):
-        factories = [
-            GameEvent.from_factory_level_1,
-            GameEvent.from_factory_level_2,
-            GameEvent.from_factory_level_3,
-            GameEvent.from_factory_level_4,
-            GameEvent.from_factory_level_5]
-        level = 0 if level < 0 else level
-        level = 4 if level > 4 else level
-        return factories[level](num)
-
-
-@enum.unique
-class EnemyEvent(enum.IntEnum):
-    NONE = 0
-    CIRCLE = 1
-    SQUARE = 2
-    FRONTBACK = 3
-    UPDOWN = 4
-    SINE = 5
-    WAVE = 6
-    BOSS = 7
-
-    @staticmethod
-    def from_factory_level_1(num=0):
-        enemies = []
-        addons = [EnemyEvent.CIRCLE,
-                  EnemyEvent.SQUARE,
-                  EnemyEvent.FRONTBACK,
-                  EnemyEvent.UPDOWN,
-                  EnemyEvent.SINE,
-                  EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
-        gen = cycle(ad_copy)
-        # num = 30 if num < 1 else num
-        num = 3 if num < 1 else num
-        counter = 0
-        while counter < num:
-            enemy = next(gen)
-            enemies.append(enemy)
-            counter += 1
-        return enemies
-
-    @staticmethod
-    def from_factory_level_2(num=0):
-        enemies = []
-        addons = [EnemyEvent.CIRCLE,
-                  EnemyEvent.SQUARE,
-                  EnemyEvent.FRONTBACK,
-                  EnemyEvent.UPDOWN,
-                  EnemyEvent.SINE,
-                  EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
-        gen = cycle(ad_copy)
-        # num = 30 if num < 1 else num
-        num = 3 if num < 1 else num
-        counter = 0
-        while counter < num:
-            enemy = next(gen)
-            enemies.append(enemy)
-            counter += 1
-        return enemies
-
-    @staticmethod
-    def from_factory_level_3(num=0):
-        enemies = []
-        addons = [EnemyEvent.CIRCLE,
-                  EnemyEvent.SQUARE,
-                  EnemyEvent.FRONTBACK,
-                  EnemyEvent.UPDOWN,
-                  EnemyEvent.SINE,
-                  EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
-        gen = cycle(ad_copy)
-        # num = 30 if num < 1 else num
-        num = 3 if num < 1 else num
-        counter = 0
-        while counter < num:
-            enemy = next(gen)
-            enemies.append(enemy)
-            counter += 1
-        return enemies
-
-    @staticmethod
-    def from_factory_level_4(num=0):
-        enemies = []
-        addons = [EnemyEvent.CIRCLE,
-                  EnemyEvent.SQUARE,
-                  EnemyEvent.FRONTBACK,
-                  EnemyEvent.UPDOWN,
-                  EnemyEvent.SINE,
-                  EnemyEvent.WAVE]
-        # num = 30 if num < 1 else num
-        num = 3 if num < 1 else num
-        counter = 0
-        ad_copy = [x for x in addons]
-        gen = cycle(ad_copy)
-        while counter < num:
-            enemy = next(gen)
-            enemies.append(enemy)
-            counter += 1
-        return enemies
-
-    @staticmethod
-    def from_factory_level_5(num=0):
-        enemies = []
-        addons = [EnemyEvent.CIRCLE,
-                  EnemyEvent.SQUARE,
-                  EnemyEvent.FRONTBACK,
-                  EnemyEvent.UPDOWN,
-                  EnemyEvent.SINE,
-                  EnemyEvent.WAVE]
-        # num = 30 if num < 1 else num
-        num = 3 if num < 1 else num
-        counter = 0
-        ad_copy = [x for x in addons]
-        gen = cycle(ad_copy)
-        while counter < num:
-            enemy = next(gen)
-            enemies.append(enemy)
-            counter += 1
-        return enemies
-
-    @staticmethod
-    def from_factory(level: int, num=0):
-        factories = [
-            EnemyEvent.from_factory_level_1,
-            EnemyEvent.from_factory_level_2,
-            EnemyEvent.from_factory_level_3,
-            EnemyEvent.from_factory_level_4,
-            EnemyEvent.from_factory_level_5]
-        level = 0 if level < 0 else level
-        level = 4 if level > 4 else level
-        return factories[level](num)
-
-
-class EventManager:
-    """
-    Manage game events in efficient way
-    """
-
-    def __init__(self, parent, shooter):
-        """
-        Create EventManager object
-        :param parent: Game parent handler
-        :param shooter: Shooter handler
-        """
-        self.eventq = []
-        self.parent = parent
-        self.shooter = shooter
-        self.level = 0
-        self.creates = {
-            GameEvent.DROP: self.create_drop,
-            GameEvent.DROPS: self.create_drops,
-            GameEvent.MISSILES: self.create_missiles,
-            GameEvent.MISSILES_ODD: self.create_missiles_odd,
-            GameEvent.MISSILES_EVEN: self.create_missiles_even,
-            GameEvent.MEDKIT: self.create_medkit,
-            GameEvent.FREEZE: self.create_freeze,
-            GameEvent.LIGHTBALL: self.create_lightball,
-            GameEvent.SHIELD: self.create_shield,
-            GameEvent.TNT: self.create_tnt,
-            GameEvent.GUN_MISSILE: self.create_gun_missiles
-        }
-
-    def set_level(self, level: int):
-        """
-        Set level to populate events
-        :param level: Game level number
-        """
-        self.level = level
-        iterations = 12 + self.level + self.parent.options_pos
-        self.eventq = GameEvent.from_factory(level, iterations * MAX_EVENTS_FACTOR)
-
-    def pop(self) -> GameEvent:
-        """
-        Get first event from queue
-        :return: GameEvent object
-        """
-        return self.eventq.pop(0)
-
-    def create_tnt(self):
-        """
-        Create a single, random TNT box
-        """
-        t = Tnt(
-            ARENA_WIDTH,
-            random.randint(150, 3 * ARENA_HEIGHT // 4),
-            self.shooter.images['indicators']['tnt'])
-        self.parent.tnts.append(t)
-
-    def create_drop(self):
-        """
-        Create a single, random drop
-        """
-        d = Drop(random.randint(
-            ARENA_WIDTH // 3, ARENA_WIDTH),
-            0,
-            self.shooter.images['indicators']['drop'])
-        self.parent.drops.append(d)
-
-    def create_drops(self):
-        """
-        Create two random drops
-        """
-        d = Drop(random.randint(
-            ARENA_WIDTH // 3, 2 * ARENA_WIDTH // 3),
-            0,
-            self.shooter.images['indicators']['drop'])
-        self.parent.drops.append(d)
-        d = Drop(random.randint(
-            2 * ARENA_WIDTH // 3, ARENA_WIDTH),
-            0,
-            self.shooter.images['indicators']['drop'])
-        self.parent.drops.append(d)
-
-    def create_gun_missiles(self):
-        """
-        Create gun missiles for every visible gun, (if not in frozen mode)
-        :return: None
-        """
-        if self.parent.frozen_timer == 0:
-            for movable in self.parent.movables:
-                if movable.is_valid() and movable.etype == MovableType.DZIALO:
-                    image = self.shooter.images['missiles'][MissileType.TO_NW]
-                    m = Missile(movable.x - image.width(),
-                                movable.y - image.height(),
-                                MissileType.TO_NW,
-                                image)
-                    self.parent.missiles.append(m)
-
-    def create_missiles(self):
-        if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
-            image = self.shooter.images['missiles'][MissileType.TO]
-            w = image.width()
-            h = image.height()
-            for e in self.parent.enemymanager.enemies:
-                m = Missile(e.x - w,
-                            e.y - h // 2,
-                            MissileType.TO,
-                            image)
-                self.parent.missiles.append(m)
-
-    def create_missiles_even(self):
-        if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
-            image = self.shooter.images['missiles'][MissileType.TO]
-            w = image.width()
-            h = image.height()
-            for e in self.parent.enemymanager.enemies:
-                if not e.odd:
-                    m = Missile(e.x - w,
-                                e.y - h // 2,
-                                MissileType.TO,
-                                image)
-                    self.parent.missiles.append(m)
-
-    def create_missiles_odd(self):
-        if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
-            image = self.shooter.images['missiles'][MissileType.TO]
-            w = image.width()
-            h = image.height()
-            for e in self.parent.enemymanager.enemies:
-                if e.odd:
-                    m = Missile(e.x - w,
-                                e.y - h // 2,
-                                MissileType.TO,
-                                image)
-                    self.parent.missiles.append(m)
-
-    def create_medkit(self):
-        m = Medkit(ARENA_WIDTH,
-                   random.randint(250, 3 * ARENA_HEIGHT // 4),
-                   self.shooter.images['indicators']['medkit'])
-        self.parent.medkits.append(m)
-
-    def create_freeze(self):
-        f = IceBox(ARENA_WIDTH,
-                   random.randint(150, 3 * ARENA_HEIGHT // 4),
-                   self.shooter.images['indicators']['frozen-box'])
-        self.parent.iceboxes.append(f)
-
-    def create_lightball(self):
-        """
-        Create random LightBall object
-        """
-        lb = LightBall(ARENA_WIDTH,
-                       random.randint(150, 3 * ARENA_HEIGHT // 4),
-                       self.shooter.images['indicators']['light-ball'])
-        self.parent.lightballs.append(lb)
-
-    def create_shield(self):
-        """
-        Create random Shield object
-        """
-        s = Shield(ARENA_WIDTH,
-                   random.randint(150, 3 * ARENA_HEIGHT // 4),
-                   self.shooter.images['indicators']['shield'])
-        self.parent.shields.append(s)
-
-    def run(self):
-        if len(self.eventq) > 0:
-            event = self.pop()
-            if event is not GameEvent.NONE:
-                creator = self.creates[event]
-                creator()
-
-
-class EnemyManager:
-    """
-    Manage game enemies in efficient way
-    """
-
-    def __init__(self, parent, shooter):
-        self.enemies = []
-        self.parent = parent
-        self.shooter = shooter
-        self.boss = None
-        self.images = [x for x in self.shooter.images['enemies']]
-        self.imagen = cycle(self.images)
-        self.etype = EnemyEvent.NONE
-        self.level = 0
-        self.eventq = []
-        self.creates = {
-            EnemyEvent.CIRCLE: self.create_circle,
-            EnemyEvent.SQUARE: self.create_square,
-            EnemyEvent.FRONTBACK: self.create_frontback,
-            EnemyEvent.UPDOWN: self.create_updown,
-            EnemyEvent.SINE: self.create_sine,
-            EnemyEvent.WAVE: self.create_wave
-        }
-        self.moves = {
-            EnemyEvent.CIRCLE: self.move_circle,
-            EnemyEvent.SQUARE: self.move_square,
-            EnemyEvent.FRONTBACK: self.move_frontback,
-            EnemyEvent.UPDOWN: self.move_updown,
-            EnemyEvent.SINE: self.move_sine,
-            EnemyEvent.WAVE: self.move_wave
-        }
-
-    def set_level(self, level: int):
-        self.level = level
-        iterations = 12 + self.level + self.parent.options_pos
-        self.eventq = EnemyEvent.from_factory(level, iterations)
-
-    def push(self, event: EnemyEvent):
-        self.eventq.append(event)
-
-    def pop(self) -> EnemyEvent:
-        return self.eventq.pop(0)
-
-    def clear(self):
-        self.enemies = []
-        self.boss = None
-
-    def create_frontback(self):
-        image = next(self.imagen)
-        for i in range(8):
-            odd = (i % 2) == 0
-            ax = 400 if odd else 0
-            enemy = Enemy(
-                ARENA_WIDTH - 650 + ax,
-                150 + i * 80 - (0 if odd else 60),
-                odd,
-                image,
-                speedx=-10,
-                speedy=2)
-            self.enemies.append(enemy)
-
-    def create_circle(self):
-        image = next(self.imagen)
-        radius = (ARENA_HEIGHT * 2 / 3 - 100) / 2
-        spotx = int(ARENA_WIDTH / 2 + radius)
-        spoty = int(100 + radius)
-        for i in range(8):
-            odd = (i % 2) == 0
-            enemy = Enemy(
-                spotx,
-                spoty,
-                odd,
-                image,
-                angle=i * 45,
-                radius=radius,
-                speedx=-5)
-            self.enemies.append(enemy)
-        self.move()
-
-    def create_square(self):
-        image = next(self.imagen)
-        for i in range(8):
-            odd = (i % 2) == 0
-            ax = 250 if odd else 0
-            enemy = Enemy(
-                ARENA_WIDTH - 550 + ax,
-                150 + i * 80,
-                odd,
-                image,
-                speedx=-8,
-                speedy=8)
-            self.enemies.append(enemy)
-
-    def create_updown(self):
-        image = next(self.imagen)
-        for i in range(8):
-            odd = (i % 2) == 0
-            enemy = Enemy(
-                int(ARENA_WIDTH * 0.45) + 130 * i,
-                int(ARENA_HEIGHT * 0.1) if odd else int(ARENA_HEIGHT * 0.6),
-                odd,
-                image,
-                speedx=-3,
-                speedy=13 if odd else -13)
-            self.enemies.append(enemy)
-
-    def create_sine(self):
-        image = next(self.imagen)
-        for i in range(8):
-            odd = (i % 2) == 0
-            dx = 250 if odd else 0
-            enemy = Enemy(
-                int(ARENA_WIDTH * 0.9) - dx,
-                (i + 2) * 80,
-                odd,
-                image,
-                speedx=-5,
-                speedy=10)
-            self.enemies.append(enemy)
-
-    def create_wave(self):
-        image = next(self.imagen)
-        for i in range(8):
-            odd = (i % 2) == 0
-            enemy = Enemy(
-                int(0.8 * ARENA_WIDTH) if odd else int(0.9 * ARENA_WIDTH),
-                250 + 70 * i,
-                odd,
-                image,
-                speedx=-8,
-                speedy=15)
-            self.enemies.append(enemy)
-
-    def create_boss(self):
-        self.boss = Boss((2 * ARENA_WIDTH) // 3,
-                         random.randint(5, STAGE_HEIGHT - 100),
-                         self.shooter.images['boss'])
-
-    def create_boss_missiles(self):
-        fixed_height = 32
-        for t in [MissileType.TO, MissileType.TO_SWW, MissileType.TO_NWW]:
-            self.parent.missiles.append(
-                Missile(
-                    self.boss.x - i.width(),
-                    self.boss.y + fixed_height - i.height() // 2,
-                    t,
-                    self.shooter.images['missiles'][t]))
-
-    def move_circle(self):
-        for enemy in self.enemies:
-            enemy.angle += 2
-            enemy.angle %= 360
-            radians = math.pi * enemy.angle / 180.0
-            dx = enemy.radius * math.cos(radians)
-            dy = enemy.radius * math.sin(radians)
-            enemy.x = enemy.spot_x + int(dx) + enemy.speedx
-            enemy.y = enemy.spot_y + int(dy)
-            enemy.spot_x += enemy.speedx
-            if enemy.x + enemy.w < 0:
-                enemy.valid = False
-        self.enemies = [x for x in self.enemies if x.is_valid()]
-
-    def move_square(self):
-        for enemy in self.enemies:
-            enemy.x += enemy.speedx * enemy.dx
-            enemy.y += enemy.speedy * enemy.dy
-            if enemy.moved == 0:
-                enemy.dy = 0
-                enemy.dx = 1 if enemy.odd else -1
-            elif enemy.moved == 40:
-                enemy.dy = 0
-                enemy.dx = -1 if enemy.odd else 1
-            elif enemy.moved == 20:
-                enemy.dx = 0
-                enemy.dy = 1 if enemy.odd else -1
-            elif enemy.moved == 60:
-                enemy.dx = 0
-                enemy.dy = -1 if enemy.odd else 1
-            enemy.moved += 1
-            enemy.moved %= 80
-            enemy.x -= 2
-            if enemy.x + enemy.w < 0:
-                enemy.valid = False
-        self.enemies = [x for x in self.enemies if x.is_valid()]
-
-    def move_frontback(self):
-        for enemy in self.enemies:
-            enemy.x += enemy.speedx * enemy.dx
-            enemy.y += enemy.speedy * enemy.dy
-            if enemy.moved == 0 or enemy.moved == 30:
-                enemy.dy = -enemy.dy
-            elif enemy.moved == 15 or enemy.moved == 45:
-                enemy.dx = -enemy.dx
-            enemy.moved += 1
-            enemy.moved %= 60
-            enemy.x -= 2
-            if enemy.x + enemy.w < 0:
-                enemy.valid = False
-        self.enemies = [x for x in self.enemies if x.is_valid()]
-
-    def move_updown(self):
-        for enemy in self.enemies:
-            enemy.y += enemy.speedy
-            enemy.x += enemy.speedx
-            if enemy.y < int(ARENA_HEIGHT * 0.1):
-                enemy.speedy = -enemy.speedy
-            elif enemy.y > int(ARENA_HEIGHT * 0.7):
-                enemy.speedy = -enemy.speedy
-            if enemy.x + enemy.w < 0:
-                enemy.valid = False
-        self.enemies = [x for x in self.enemies if x.is_valid()]
-
-    def move_sine(self):
-        for enemy in self.enemies:
-            radians = math.pi * enemy.x / 180.0
-            if enemy.odd:
-                enemy.dy = int(100 * math.sin(radians))
-                enemy.y = enemy.spot_y - enemy.dy
-            else:
-                enemy.dy = int(100 * math.cos(radians))
-                enemy.y = enemy.spot_y + enemy.dy
-            enemy.x += enemy.speedx
-            if enemy.x + enemy.w < 0:
-                enemy.valid = False
-        self.enemies = [x for x in self.enemies if x.is_valid()]
-
-    def move_wave(self):
-        for enemy in self.enemies:
-            enemy.x += enemy.speedx
-            sektor = enemy.x // 150
-            if sektor % 2 == 0:
-                if enemy.odd:
-                    enemy.y += enemy.speedy
-                else:
-                    enemy.y -= enemy.speedy
-            else:
-                if enemy.odd:
-                    enemy.y -= enemy.speedy
-                else:
-                    enemy.y += enemy.speedy
-            if enemy.x + enemy.w < 0:
-                enemy.valid = False
-        self.enemies = [x for x in self.enemies if x.is_valid()]
-
-    def populate(self, event):
-        """
-        Populate enemies list according to next EnemyEvent in queue
-        :param event: EnemyEvent from the event queue
-        """
-        self.etype = event
-        if self.etype is not EnemyEvent.NONE:
-            creator = self.creates[event]
-            creator()
-
-    def move(self):
-        """
-        Move available enemies according to current scenario
-        """
-        if self.boss:
-            self.boss.move()
-        elif self.etype is not EnemyEvent.NONE:
-            mover = self.moves[self.etype]
-            mover()
-
-    def run(self):
-        if len(self.enemies) == 0 and self.level < MAX_LEVEL:
-            if len(self.eventq) > 0:
-                # There is still something to pick
-                event = self.pop()
-                self.populate(event)
-            else:
-                return False
-        elif len(self.enemies) == 0 and self.level == MAX_LEVEL:
-            if len(self.eventq) > 0:
-                # There is still something to pick
-                event = self.pop()
-                self.populate(event)
-            else:
-                if not self.boss:
-                    self.parent.missiles = []
-                    self.parent.lightballs = []
-                    self.parent.tnts = []
-                    self.parent.shield_timer = 0
-                    self.parent.lighball_timer = 0
-                    self.parent.frozen_timer = 0
-                    self.create_boss()
-                else:
-                    if self.boss.is_alive():
-                        self.create_boss_missiles()
-                    else:
-                        return False
-        return True
-
-    def paint(self, painter):
-        for enemy in self.enemies:
-            enemy.paint(painter)
-        if self.boss:
-            self.boss.paint(painter)
+from managers import (
+    EventManager,
+    EnemyManager)
 
 
 class Game:
@@ -1066,7 +165,7 @@ class Game:
         # Board-related
         self.menu_pos = 0
         # Options related
-        self.options_pos = 1
+        self.options_pos = self.config['lastmode']
         # Game settings:
         self.nick = ""
         # Game objects:
@@ -1128,8 +227,6 @@ class Game:
         self.newscore_counter = 0
         # Player related
         self.player = None
-        self.player_xmove_counter = 0
-        self.player_ymove_counter = 0
         # Bombs related
         self.bomb_lock = False
         # Missiles related
@@ -1355,13 +452,10 @@ class Game:
         self.player = None
         self.update_menu_rectangles()
         self.__stop_timers()
-        self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
         self.shooter.timers['setup-enter-event'].stop()
-        self.shooter.timers['player-move-event'].stop()
 
     def init_congrats(self):
         self.__stop_timers()
-        self.shooter.timers['player-move-event'].stop()
 
     def init_game(self):
         self.change_mode(Mode.INIT)
@@ -1433,7 +527,7 @@ class Game:
         self.iceboxes = []
         self.movable_factory = MovableType.get_from_factory(self.level)
         movs = []
-        for i in range(0, 16):
+        for _ in range(0, 16):
             movs.append(next(self.movable_factory))
         self.movables = Movable.from_factory(movs,
                                              ARENA_WIDTH,
@@ -1441,7 +535,6 @@ class Game:
         if not self.player:
             self.player = Player(200, 400,
                                  self.shooter.images['players'][self.player_index])
-        self.shooter.timers['player-move-event'].start(TIMEOUT_PLAYER_MOVE)
         self.shooter.timers['get-ready-event'].start(TIMEOUT_GET_READY)
 
     def init_play(self):
@@ -1496,7 +589,6 @@ class Game:
         :return: None
         """
         self.__stop_timers()
-        self.shooter.timers['player-move-event'].stop()
 
     def keyrelease_player(self, key, _):
         if key == Key.KEY_Q or key == Key.KEY_ESCAPE:
@@ -1518,6 +610,7 @@ class Game:
                 self.change_board(Board.HISCORES)
 
     def keyrelease_welcome(self, _k, _t):
+        self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
         self.change_board(Board.MENU)
 
     def keyrelease_menu(self, key, _):
@@ -1652,22 +745,21 @@ class Game:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ESCAPE:
             self.shooter.timers['movable-update-event'].stop()
-            self.shooter.timers['stars-update-event'].stop()
             self.change_mode(Mode.PAUSED)
         elif key in self.useractions:
             action = self.useractions[key]
             if action == UserInput.TOP:
                 if self.player.y > 20:
-                    self.player_ymove_counter = PLAYER_YMOVE_REPEAT
+                    self.player.y -= 20
             elif action == UserInput.BOTTOM:
                 if self.player.y < ARENA_HEIGHT - BOTTOM_BAR - self.player.height - 20:
-                    self.player_ymove_counter = -PLAYER_YMOVE_REPEAT
+                    self.player.y += 20
             elif action == UserInput.RIGHT:
                 if self.player.x < ARENA_WIDTH - self.player.width - 20:
-                    self.player_xmove_counter = -PLAYER_XMOVE_REPEAT
+                    self.player.x += 20
             elif action == UserInput.LEFT:
                 if self.player.x > 20:
-                    self.player_xmove_counter = PLAYER_XMOVE_REPEAT
+                    self.player.x -= 20
             elif action == UserInput.FIRE:
                 if self.lightball_timer > 0:
                     self.create_firemissile(
@@ -1690,7 +782,6 @@ class Game:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
-            self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
             self.change_mode(Mode.PLAY)
 
     def keyrelease_killed(self, key, _):
@@ -1699,7 +790,6 @@ class Game:
         elif key == Key.KEY_ENTER:
             self.process_killed()
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
-            self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
             self.change_mode(Mode.PLAY)
 
     def keyrelease_help(self, key, _):
@@ -1793,6 +883,7 @@ class Game:
             self.counter['welcome'] -= 1
         else:
             self.shooter.timers['welcome-event'].stop()
+            self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
             self.change_board(Board.MENU)
 
     def game_counter_event(self):
@@ -1841,8 +932,7 @@ class Game:
             self.missile_lock = True
             self.shooter.timers['missile-timer'].start(TIMEOUT_MISSILE_LOCK)
             image = self.shooter.images['missiles'][etype]
-            m = Missile(x, y, etype, image)
-            self.missiles.append(m)
+            self.missiles.append(Missile(x, y, etype, image))
 
     def game_update_event(self):
         # Missiles
@@ -2040,6 +1130,7 @@ class Game:
                     movable.valid = False
                     self.explode(movable.x + movable.w // 2,
                                  movable.y + movable.h // 2)
+                    self.add_movable()
                     self.movables = [x for x in self.movables if x.is_valid()]
                     self.decrease_hp()
 
@@ -2103,10 +1194,10 @@ class Game:
         Check collision with lightball -- enter LightBall mode
         (3 missiles in a single shot)
         """
-        for lb in self.lightballs:
-            if lb.collides(self.player):
+        for light_ball in self.lightballs:
+            if light_ball.collides(self.player):
                 self.lightball_timer = 10
-                lb.valid = False
+                light_ball.valid = False
                 self.lightballs = []
                 self.shooter.timers['game-light-event'].start(TIMEOUT_LIGHT)
 
@@ -2207,26 +1298,6 @@ class Game:
         :return: None
         """
         self.newscore_counter = 0 if self.newscore_counter == 1 else 1
-
-    def player_move_event(self):
-        """
-        Handle player event
-        (smooth moving in every direction
-        :return: None
-        """
-        if self.player:
-            if self.player_ymove_counter > 0:
-                self.player.go_up()
-                self.player_ymove_counter -= 1
-            elif self.player_ymove_counter < 0:
-                self.player.go_down()
-                self.player_ymove_counter += 1
-            if self.player_xmove_counter > 0:
-                self.player.go_left()
-                self.player_xmove_counter -= 1
-            elif self.player_xmove_counter < 0:
-                self.player.go_right()
-                self.player_xmove_counter += 1
 
     def bomb_timer(self):
         """

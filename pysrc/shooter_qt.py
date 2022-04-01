@@ -5,6 +5,7 @@ Qt implementation of SpaceShooter arena
 """
 
 # Standard library imports
+import random
 import sys
 
 # Local imports
@@ -64,7 +65,6 @@ except ImportError:
 DEFAULT_FONT = "Commodore 64 Rounded"
 
 APPLICATION_TITLE = "SpaceShooter"
-
 
 
 class Controller(QMainWindow):
@@ -1686,7 +1686,6 @@ class SpaceShooter(QApplication):
             'game-freeze-event': QTimer(),
             'game-light-event': QTimer(),
             'newscore-event': QTimer(),
-            'player-move-event': QTimer(),
             'bomb-timer': QTimer(),
             'missile-timer': QTimer(),
             'smoke-timer': QTimer()
@@ -1706,7 +1705,6 @@ class SpaceShooter(QApplication):
             'game-freeze-event': self.game_freeze_event,
             'game-light-event': self.game_light_event,
             'newscore-event': self.newscore_event,
-            'player-move-event': self.player_move_event,
             'bomb-timer': self.bomb_timer,
             'missile-timer': self.missile_timer,
             'smoke-timer': self.smoke_timer
@@ -1812,13 +1810,6 @@ class SpaceShooter(QApplication):
         :return: None
         """
         self.game.setup_enter_event()
-
-    def player_move_event(self):
-        """
-        Player move timer delegator
-        :return: None
-        """
-        self.game.player_move_event()
 
     def bomb_timer(self):
         """

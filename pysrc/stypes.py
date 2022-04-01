@@ -138,16 +138,28 @@ class MouseButton(enum.IntEnum):
 
 class MouseEvent:
     """
-    Mouse event abstraction enum
+    Mouse event abstraction class
     """
     x = -1
     y = -1
     button = MouseButton.NONE
 
     def __init__(self, x: int, y: int, button: MouseButton):
+        """
+        Create MouseEvent instance
+        :param x: X coordinate of mouse event
+        :param y: Y coordinate of mouse event
+        :param button: Button used in the event
+        """
         self.x = x
         self.y = y
         self.button = button
+
+    def get_x(self):
+        return self.x
+
+    def get_y(self):
+        return self.y
 
 
 @enum.unique
