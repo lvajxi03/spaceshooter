@@ -81,14 +81,14 @@ class ShooterConfig:
         """
         if not self.filename:
             self.filename = filename
-        s = "{}"
+        content = "{}"
         try:
-            fh = open(filename)
-            s = fh.read()
+            fh = open(filename, encoding="UTF-8")
+            content = fh.read()
             fh.close()
         except IOError:
             pass  # Read error -- let's go with defaults
-        j = json.loads(s)
+        j = json.loads(content)
         for i in ['hiscores', 'lastnick', 'lastmode', 'lang']:
             try:
                 self.db[i] = j[i]
@@ -127,7 +127,7 @@ class ShooterConfig:
         :return: True if score can be added to hiscore list, False otherwise
         """
         try:
-            return True if score > self.db['hiscores'][9][1] else False
+            return score > self.db['hiscores'][9][1]
         except IndexError:
             return True  # yes, no scores added so far
 

@@ -67,7 +67,7 @@ class Key(enum.IntEnum):
         Check if key can be configured in setup
         :return: True if key can be configured in setup, false otherwise
         """
-        return True if self.value >= Key.KEY_LEFT else False
+        return self.value >= Key.KEY_LEFT
 
     def __str__(self):
         cname = {

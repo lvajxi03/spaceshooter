@@ -80,7 +80,6 @@ class Rect:
         Abstract method
         :return: None
         """
-        pass
 
     def collides(self, r):
         """
@@ -364,8 +363,8 @@ class Boss(FlyingObject):
             self.valid = False
 
     def move(self):
-        MAGIC_NUMBER = 50  # TODO
-        if self.y >= STAGE_HEIGHT - MAGIC_NUMBER:
+        magic_number = 50
+        if self.y >= STAGE_HEIGHT - magic_number:
             self.dy = -1
         if self.y <= 0:
             self.dy = 1

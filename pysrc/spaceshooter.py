@@ -771,13 +771,14 @@ class EnemyManager:
                          self.shooter.images['boss'])
 
     def create_boss_missiles(self):
-        FIXED_HEIGHT = 32  # TODO
+        fixed_height = 32
         for t in [MissileType.TO, MissileType.TO_SWW, MissileType.TO_NWW]:
-            i = self.shooter.images['missiles'][t]
-            m = Missile(self.boss.x - i.width(), self.boss.y + FIXED_HEIGHT - i.height() // 2,
-                        t,
-                        i)
-            self.parent.missiles.append(m)
+            self.parent.missiles.append(
+                Missile(
+                    self.boss.x - i.width(),
+                    self.boss.y + fixed_height - i.height() // 2,
+                    t,
+                    self.shooter.images['missiles'][t]))
 
     def move_circle(self):
         for enemy in self.enemies:
@@ -2043,8 +2044,15 @@ class Game:
                     self.decrease_hp()
 
     def explode(self, x, y):
-        e = Explosion(x, y, self.shooter.images['explosions'])
-        self.explosions.append(e)
+        """
+        Create new explosion and append to all explosions list
+        :param x: X coordinate of explosion
+        :param y: Y coordinate of explosion
+        :return: None
+        """
+        self.explosions.append(
+            Explosion(
+                x, y, self.shooter.images['explosions']))
 
     def explode_tnt(self):
         if self.tnt > 0 and len(self.enemymanager.enemies) > 0:
@@ -2139,8 +2147,8 @@ class Game:
         """
         if not self.bomb_lock:
             self.bomb_lock = True
-            b = Bomb(x, y, self.shooter.images['indicators']['bomb'])
-            self.bombs.append(b)
+            self.bombs.append(
+                Bomb(x, y, self.shooter.images['indicators']['bomb']))
             self.shooter.timers['bomb-timer'].start(TIMEOUT_BOMB_LOCK)
 
     def shield_event(self):
