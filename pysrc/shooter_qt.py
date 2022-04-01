@@ -1,24 +1,15 @@
 #!/usr/bin/env python
 
-# Dealing with fonts:
-# 1. Download and install your favourite font
-# 2. Use its name below in DEFAULT_FONT variable
-# Remark: if font is not found, default one is used
-# (and it's pretty awful)
-
-# Sample fonts:
-# DEFAULT_FONT = "Good Times Rg"
-# DEFAULT_FONT = "Commodore 64"
-# DEFAULT_FONT = "C64 Pro"
-DEFAULT_FONT = "Commodore 64 Rounded"
-
-APPLICATION_TITLE = "SpaceShooter"
-
+# Standard library imports
 import sys
-import random
 
-# This is us:
+# PyQ/PySide imports
+
+# Local imports
 from spaceshooter import *
+from stypes import (
+    MouseButton,
+    MouseEvent)
 
 try:
     from PySide6.QtWidgets import QApplication
@@ -55,6 +46,22 @@ except ImportError:
     from PyQt6.QtCore import QTimer
     from PyQt6.QtCore import QRect
     from PyQt6.QtCore import Qt
+
+
+# Dealing with fonts:
+# 1. Download and install your favourite font
+# 2. Use its name below in DEFAULT_FONT variable
+# Remark: if font is not found, default one is used
+# (and it's pretty awful)
+
+# Sample fonts:
+# DEFAULT_FONT = "Good Times Rg"
+# DEFAULT_FONT = "Commodore 64"
+# DEFAULT_FONT = "C64 Pro"
+DEFAULT_FONT = "Commodore 64 Rounded"
+
+APPLICATION_TITLE = "SpaceShooter"
+
 
 
 class Controller(QMainWindow):
@@ -268,14 +275,12 @@ class Arena(QLabel):
                 STAGE_HEIGHT + 50,
                 text)
 
-    @log_usage
     def paint(self):
         try:
             self.paint_procs[self.game.board]()
         except KeyError:
             pass  # Some special boards without paint method
 
-    @log_usage
     def paint_menu(self):
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
@@ -472,7 +477,7 @@ class Arena(QLabel):
         self.painter.begin(self.canvas)
         # Rysować odtąd...
         for star in self.game.stars:
-            star.paint(painter)
+            star.paint(self.painter)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
         l = self.shooter.labels['setup']['title'][self.game.config['lang']]
@@ -639,7 +644,7 @@ class Arena(QLabel):
         self.painter.begin(self.canvas)
         # Rysować odtąd...
         for star in self.game.stars:
-            star.paint(painter)
+            star.paint(self.painter)
         e = self.shooter.labels['help']['title'][self.game.config['lang']]
         e_w = self.metrics['logo'].horizontalAdvance(e)
         e_x = (ARENA_WIDTH - e_w) // 2
@@ -990,7 +995,6 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    @log_usage
     def update_pixmap_play(self, painter):
         """
         Prepare common bitmap for Play board
@@ -1066,7 +1070,6 @@ class Arena(QLabel):
         self.paint_bottom_bar(painter)
         # ... dotąd
 
-    @log_usage
     def paint_missiles(self, painter):
         """
         Paint all the missiles.
@@ -1078,7 +1081,6 @@ class Arena(QLabel):
         for missile in self.game.missiles:
             missile.paint(painter)
 
-    @log_usage
     def paint_game_play(self):
         """
         Paint Play board
@@ -1153,7 +1155,6 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    @log_usage
     def paint_game_congrats(self):
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
