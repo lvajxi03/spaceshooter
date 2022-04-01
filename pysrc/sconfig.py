@@ -115,7 +115,7 @@ class ShooterConfig:
         """
         if not self.filename:
             self.filename = filename
-        with open(filename, "w") as fh:
+        with open(filename, "w", encoding="UTF-8") as fh:
             json.dump(self.db, fh)
 
     def is_hiscore(self, score: int):

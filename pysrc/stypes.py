@@ -5,6 +5,7 @@ Common types and definitions
 """
 
 import enum
+import copy
 from sutils import cycle
 
 
@@ -301,7 +302,7 @@ class MovableType(enum.IntEnum):
                     MovableType.FABRYKA3,
                     MovableType.WIEZOWIEC3,
                     MovableType.DZIALO]
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         generator = cycle(sc_copy)
         return generator
 
@@ -323,7 +324,7 @@ class MovableType(enum.IntEnum):
                     MovableType.WIEZOWIEC3,
                     MovableType.FABRYKA3,
                     MovableType.DZIALO]
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         generator = cycle(sc_copy)
         return generator
 
@@ -348,7 +349,7 @@ class MovableType(enum.IntEnum):
                     MovableType.WIEZOWIEC3,
                     MovableType.DZIALO,
                     MovableType.DZIALO]
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         generator = cycle(sc_copy)
         return generator
 
@@ -373,7 +374,7 @@ class MovableType(enum.IntEnum):
                     MovableType.WIEZOWIEC3,
                     MovableType.DOM2,
                     MovableType.DZIALO]
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         generator = cycle(sc_copy)
         return generator
 
@@ -403,7 +404,7 @@ class MovableType(enum.IntEnum):
                     MovableType.DOM2,
                     MovableType.DZIALO,
                     MovableType.DZIALO]
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         generator = cycle(sc_copy)
         return generator
 

@@ -87,11 +87,11 @@ class EventManager:
         """
         Create a single, random drop
         """
-        d = Drop(random.randint(
-            ARENA_WIDTH // 3, ARENA_WIDTH),
-            0,
-            self.shooter.images['indicators']['drop'])
-        self.parent.drops.append(d)
+        self.parent.drops.append(
+            Drop(
+                random.randint(ARENA_WIDTH // 3, ARENA_WIDTH),
+                0,
+                self.shooter.images['indicators']['drop']))
 
     def create_drops(self):
         """
@@ -117,13 +117,17 @@ class EventManager:
             for movable in self.parent.movables:
                 if movable.is_valid() and movable.etype == MovableType.DZIALO:
                     image = self.shooter.images['missiles'][MissileType.TO_NW]
-                    m = Missile(movable.x - image.width(),
+                    self.parent.missiles.append(
+                        Missile(movable.x - image.width(),
                                 movable.y - image.height(),
                                 MissileType.TO_NW,
-                                image)
-                    self.parent.missiles.append(m)
+                                image))
 
     def create_missiles(self):
+        """
+        Create missiles for all enemies
+        :return: None
+        """
         if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
             image = self.shooter.images['missiles'][MissileType.TO]
             w = image.width()
@@ -161,13 +165,13 @@ class EventManager:
             image = self.shooter.images['missiles'][MissileType.TO]
             w = image.width()
             h = image.height()
-            for e in self.parent.enemymanager.enemies:
-                if e.odd:
-                    m = Missile(e.x - w,
-                                e.y - h // 2,
+            for enemy in self.parent.enemymanager.enemies:
+                if enemy.odd:
+                    self.parent.missiles.append(
+                        Missile(enemy.x - w,
+                                enemy.y - h // 2,
                                 MissileType.TO,
-                                image)
-                    self.parent.missiles.append(m)
+                                image))
 
     def create_medkit(self):
         """
@@ -236,7 +240,7 @@ class EnemyManager:
         self.parent = parent
         self.shooter = shooter
         self.boss = None
-        self.images = [x for x in self.shooter.images['enemies']]
+        self.images = self.shooter.images['enemies']
         self.imagen = cycle(self.images)
         self.etype = EnemyEvent.NONE
         self.level = 0
@@ -259,27 +263,41 @@ class EnemyManager:
         }
 
     def set_level(self, level: int):
+        """
+        Set level and recalculate queue
+        :param level: Level number
+        :return: None
+        """
         self.level = level
         iterations = 12 + self.level + self.parent.options_pos
         self.eventq = EnemyEvent.from_factory(level, iterations)
 
-    def push(self, event: EnemyEvent):
-        self.eventq.append(event)
-
     def pop(self) -> EnemyEvent:
+        """
+        Pop an event to process
+        :return: EnemyEvent
+        """
         return self.eventq.pop(0)
 
     def clear(self):
+        """
+        Clear all enemies and the boss
+        :return: None
+        """
         self.enemies = []
         self.boss = None
 
     def create_frontback(self):
+        """
+        Create enemies set with a front-back scheme
+        :return: None
+        """
         image = next(self.imagen)
         for i in range(8):
             odd = (i % 2) == 0
-            ax = 400 if odd else 0
+            a_x = 400 if odd else 0
             enemy = Enemy(
-                ARENA_WIDTH - 650 + ax,
+                ARENA_WIDTH - 650 + a_x,
                 150 + i * 80 - (0 if odd else 60),
                 odd,
                 image,
@@ -288,6 +306,10 @@ class EnemyManager:
             self.enemies.append(enemy)
 
     def create_circle(self):
+        """
+        Create enemies set with a circle scheme
+        :return: None
+        """
         image = next(self.imagen)
         radius = (ARENA_HEIGHT * 2 / 3 - 100) / 2
         spotx = int(ARENA_WIDTH / 2 + radius)
@@ -306,12 +328,16 @@ class EnemyManager:
         self.move()
 
     def create_square(self):
+        """
+        Create enemies set with a square scheme
+        :return: None
+        """
         image = next(self.imagen)
         for i in range(8):
             odd = (i % 2) == 0
-            ax = 250 if odd else 0
+            a_x = 250 if odd else 0
             enemy = Enemy(
-                ARENA_WIDTH - 550 + ax,
+                ARENA_WIDTH - 550 + a_x,
                 150 + i * 80,
                 odd,
                 image,
@@ -320,6 +346,10 @@ class EnemyManager:
             self.enemies.append(enemy)
 
     def create_updown(self):
+        """
+        Create enemies set with an up-down scheme
+        :return: None
+        """
         image = next(self.imagen)
         for i in range(8):
             odd = (i % 2) == 0
@@ -333,6 +363,10 @@ class EnemyManager:
             self.enemies.append(enemy)
 
     def create_sine(self):
+        """
+        Create enemies set with a sine scheme
+        :return: None
+        """
         image = next(self.imagen)
         for i in range(8):
             odd = (i % 2) == 0
@@ -347,6 +381,10 @@ class EnemyManager:
             self.enemies.append(enemy)
 
     def create_wave(self):
+        """
+
+        :return:
+        """
         image = next(self.imagen)
         for i in range(8):
             odd = (i % 2) == 0
@@ -416,9 +454,9 @@ class EnemyManager:
         for enemy in self.enemies:
             enemy.x += enemy.speedx * enemy.dx
             enemy.y += enemy.speedy * enemy.dy
-            if enemy.moved == 0 or enemy.moved == 30:
+            if enemy.moved in (0, 30):
                 enemy.dy = -enemy.dy
-            elif enemy.moved == 15 or enemy.moved == 45:
+            elif enemy.moved in (15, 45):
                 enemy.dx = -enemy.dx
             enemy.moved += 1
             enemy.moved %= 60
@@ -492,6 +530,10 @@ class EnemyManager:
             mover()
 
     def run(self):
+        """
+        Process enemy queue
+        :return: None
+        """
         if len(self.enemies) == 0 and self.level < MAX_LEVEL:
             if len(self.eventq) > 0:
                 # There is still something to pick

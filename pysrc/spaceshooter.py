@@ -516,6 +516,7 @@ class Game:
         self.drops = []
         self.iceboxes = []
         self.movable_factory = MovableType.get_from_factory(self.level)
+        self.bombs = []
         movs = []
         for _ in range(0, 16):
             movs.append(next(self.movable_factory))
@@ -565,6 +566,7 @@ class Game:
         self.lightball_timer = 0
         self.shield_timer = 0
         self.frozen_timer = 0
+        self.bombs = []
 
     def init_help(self):
         """
@@ -1006,23 +1008,20 @@ class Game:
         for missile in self.missiles:
             if missile.etype == MissileType.FROM and missile.is_valid():
                 for enemy in self.enemymanager.enemies:
-                    if missile.collides(enemy):
+                    if missile.collides(enemy) and enemy.is_valid():
                         enemy.valid = False
                         missile.valid = False
                         self.explode(enemy.x + enemy.w // 2,
                                      enemy.y + enemy.h // 2)
                         self.points += 1
-                        self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
-                        self.missiles = [x for x in self.missiles if x.is_valid()]
                 for movable in self.movables:
-                    if movable.is_valid() and movable.etype == MovableType.DZIALO and movable.collides(missile):
+                    if movable.is_valid() and movable.etype == MovableType.DZIALO and \
+                            movable.collides(missile):
                         movable.valid = False
                         self.points += 1
                         self.explode(movable.x + movable.w // 2,
                                      movable.y + movable.h // 2)
-                        self.movables = [x for x in self.movables if x.is_valid()]
                         self.add_movable()
-                        self.missiles = [x for x in self.missiles if x.is_valid()]
             elif missile.etype in [MissileType.TO,
                                    MissileType.TO_NWW,
                                    MissileType.TO_SWW,
@@ -1032,32 +1031,33 @@ class Game:
                         missile.valid = False
                         self.explode(self.player.x + self.player.w // 2,
                                      self.player.y + self.player.h // 2)
-                        self.missiles = [x for x in self.missiles if x.is_valid()]
                         self.decrease_hp()
         for fireball in self.firemissiles:
             for enemy in self.enemymanager.enemies:
-                if enemy.is_valid() and fireball.collides(enemy):
+                if enemy.is_valid() and fireball.collides(enemy) and fireball.is_valid():
                     enemy.valid = False
                     fireball.valid = False
                     self.points += 1
                     self.explode(enemy.x + enemy.w // 2,
                                  enemy.y + enemy.h // 2)
-                    self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
-                    self.firemissiles = [x for x in self.firemissiles if x.is_valid()]
             for movable in self.movables:
-                if movable.is_valid() and movable.etype == MovableType.DZIALO and fireball.collides(movable):
+                if movable.is_valid() and movable.etype == MovableType.DZIALO and \
+                        fireball.collides(movable) and fireball.is_valid():
                     movable.valid = False
                     self.points += 1
                     self.explode(movable.x + movable.w // 2,
                                  movable.y + movable.h // 2)
-                    self.movables = [x for x in self.movables if x.is_valid()]
                     self.add_movable()
-                    self.firemissiles = [x for x in self.firemissiles if x.is_valid()]
         if self.enemymanager.boss:
             for missile in self.missiles:
                 if missile.etype == MissileType.FROM and missile.is_valid():
                     if self.enemymanager.boss.collides(missile):
                         self.enemymanager.boss.decrease_hp()
+
+        self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
+        self.missiles = [x for x in self.missiles if x.is_valid()]
+        self.movables = [x for x in self.movables if x.is_valid()]
+        self.firemissiles = [x for x in self.firemissiles if x.is_valid()]
 
     def decrease_hp(self):
         """
