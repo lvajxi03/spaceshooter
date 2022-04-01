@@ -83,9 +83,8 @@ class ShooterConfig:
             self.filename = filename
         content = "{}"
         try:
-            fh = open(filename, encoding="UTF-8")
-            content = fh.read()
-            fh.close()
+            with open(filename, encoding="UTF-8") as fh:
+                content = fh.read()
         except IOError:
             pass  # Read error -- let's go with defaults
         j = json.loads(content)
@@ -116,9 +115,8 @@ class ShooterConfig:
         """
         if not self.filename:
             self.filename = filename
-        fh = open(filename, "w")
-        json.dump(self.db, fh)
-        fh.close()
+        with open(filename, "w") as fh:
+            json.dump(self.db, fh)
 
     def is_hiscore(self, score: int):
         """

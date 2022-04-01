@@ -25,6 +25,7 @@ from primi import (
     Star
 )
 from sconfig import ShooterConfig
+from slocales import locales
 from sdefs import *
 from managers import (
     EventManager,
@@ -32,7 +33,14 @@ from managers import (
 
 
 class Game:
+    """
+    Main Game class, with all logic here
+    """
     def __init__(self, shooter):
+        """
+        Create game instance
+        :param shooter: Shooter handle
+        """
         self.config = ShooterConfig(
             filename=os.path.expanduser("~/.spaceshooterrc"))
         self.config.read()
@@ -96,19 +104,6 @@ class Game:
             Board.ABOUT: self.mousepress_about,
             Board.QUIT: self.mousepress_quit,
             Board.NEWSCORE: self.mousepress_newscore
-        }
-        self.keypress_events = {
-            Board.WELCOME: self.keypress_welcome,
-            Board.PLAYER: self.keypress_player,
-            Board.MENU: self.keypress_menu,
-            Board.GAME: self.keypress_game,
-            Board.OPTIONS: self.keypress_options,
-            Board.HISCORES: self.keypress_hiscores,
-            Board.SETUP: self.keypress_setup,
-            Board.HELP: self.keypress_help,
-            Board.ABOUT: self.keypress_about,
-            Board.QUIT: self.keypress_quit,
-            Board.NEWSCORE: self.keypress_newscore,
         }
         self.keyrelease_events = {
             Board.WELCOME: self.keyrelease_welcome,
@@ -235,17 +230,12 @@ class Game:
         self.smoke_counter = 0
 
     def has_key_setup(self, key):
+        """
+        Check if key is already set
+        :param key: Key to be checked
+        :return: True if set, False otherwise
+        """
         return True if key in self.temp_setup else False
-
-    def hiscores_append(self, name, points):
-        self.config.add_hiscore(name, points)
-
-    def is_hiscore(self, points):
-        if len(self.config['hiscores']) < 10:
-            return True
-        if self.config['hiscores'][9][1] < points:
-            return True
-        return False
 
     def mousepress_welcome(self, event):
         pass
@@ -390,7 +380,7 @@ class Game:
         self.menu_rectangles = []
         fm = self.arena.metrics['menu']
         c = 3
-        for label in self.shooter.labels['menu'][self.config['lang']]:
+        for label in locales['menu'][self.config['lang']]:
             r = Rect(400, c * 100 - fm.height(), fm.horizontalAdvance(label), fm.height())
             self.menu_rectangles.append(r)
             c += 1
@@ -399,7 +389,7 @@ class Game:
         self.options_rectangles = []
         fm = self.arena.metrics['options']
         c = 3
-        for label in self.shooter.labels['options'][self.config['lang']]:
+        for label in locales['options'][self.config['lang']]:
             r = Rect(400, c * 100 - fm.height(), fm.horizontalAdvance(label), fm.height())
             self.options_rectangles.append(r)
             c += 1
@@ -581,7 +571,6 @@ class Game:
         Initial actions done when help (no actions)
         :return: None
         """
-        pass
 
     def init_gameover(self):
         """
@@ -591,7 +580,7 @@ class Game:
         self.__stop_timers()
 
     def keyrelease_player(self, key, _):
-        if key == Key.KEY_Q or key == Key.KEY_ESCAPE:
+        if key in (Key.KEY_Q, Key.KEY_ESCAPE):
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
             self.change_board(Board.GAME)
@@ -599,12 +588,12 @@ class Game:
             if self.player_index > 0:
                 self.player_index -= 1
         elif key == Key.KEY_RIGHT:
-            if self.player_index < 3:  # TODO: const
+            if self.player_index < 3:
                 self.player_index += 1
 
     def keyrelease_congrats(self, key, _):
-        if key in [Key.KEY_ESCAPE, Key.KEY_Q]:
-            if self.is_hiscore(self.points):
+        if key in (Key.KEY_ESCAPE, Key.KEY_Q):
+            if self.config.is_hiscore(self.points):
                 self.change_board(Board.NEWSCORE)
             else:
                 self.change_board(Board.HISCORES)
@@ -620,7 +609,7 @@ class Game:
             if self.menu_pos > 0:
                 self.menu_pos -= 1
         elif key == Key.KEY_BOTTOM:
-            if self.menu_pos < len(self.shooter.labels['menu']['en']) - 1:
+            if self.menu_pos < len(locales['menu']['en']) - 1:
                 self.menu_pos += 1
         elif key == Key.KEY_ENTER:
             self.change_board(self.menupos2board[self.menu_pos])
@@ -636,7 +625,7 @@ class Game:
             if self.options_pos > 0:
                 self.options_pos -= 1
         elif key == Key.KEY_BOTTOM:
-            if self.options_pos < len(self.shooter.labels['options']['en']) - 1:
+            if self.options_pos < len(locales['options']['en']) - 1:
                 self.options_pos += 1
         elif key == Key.KEY_ENTER:
             self.config['lastmode'] = self.optionspos2option[self.options_pos]
@@ -682,8 +671,8 @@ class Game:
                     self.config.save()
                     self.useractions = {}
                     keys = self.config.db['keys']
-                    for key in keys:
-                        self.useractions[keys[key]] = key
+                    for kez in keys:
+                        self.useractions[keys[kez]] = kez
                     self.change_setup(SetupMode.DISPLAY)
                 elif key == Key.KEY_ESCAPE:
                     # Nie przepisywać klawszy
@@ -693,8 +682,7 @@ class Game:
                         if self.temp_position <= 6:
                             self.temp_setup[self.temp_position] = key
                             self.temp_position += 1
-                            if self.temp_position > 6:
-                                self.temp_position = 6
+                            self.temp_position = min(self.temp_position, 6)
 
     def keyrelease_about(self, key, _):
         """
@@ -717,6 +705,12 @@ class Game:
         self.arena.parent.close()
 
     def keyrelease_newscore(self, key, _t):
+        """
+        Key handler for NewScore board
+        :param key: Key to handle
+        :param _t: unused
+        :return: None
+        """
         if key:
             if key == Key.KEY_ESCAPE:
                 self.change_board(Board.HISCORES)
@@ -736,10 +730,22 @@ class Game:
                 self.change_board(Board.HISCORES)
 
     def keyrelease_init(self, key, _):
+        """
+        Key handler for Init board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
     def keyrelease_play(self, key, _):
+        """
+        Key handler for Play board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.__stop_timers()
             self.change_board(Board.MENU)
@@ -750,16 +756,16 @@ class Game:
             action = self.useractions[key]
             if action == UserInput.TOP:
                 if self.player.y > 20:
-                    self.player.y -= 20
+                    self.player.go_up()
             elif action == UserInput.BOTTOM:
                 if self.player.y < ARENA_HEIGHT - BOTTOM_BAR - self.player.height - 20:
-                    self.player.y += 20
+                    self.player.go_down()
             elif action == UserInput.RIGHT:
                 if self.player.x < ARENA_WIDTH - self.player.width - 20:
-                    self.player.x += 20
+                    self.player.go_right()
             elif action == UserInput.LEFT:
                 if self.player.x > 20:
-                    self.player.x -= 20
+                    self.player.go_left()
             elif action == UserInput.FIRE:
                 if self.lightball_timer > 0:
                     self.create_firemissile(
@@ -778,6 +784,12 @@ class Game:
                 self.explode_tnt()
 
     def keyrelease_paused(self, key, _):
+        """
+        Key handler for Paused board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
@@ -785,6 +797,12 @@ class Game:
             self.change_mode(Mode.PLAY)
 
     def keyrelease_killed(self, key, _):
+        """
+        Key handler for Killed board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
@@ -793,6 +811,12 @@ class Game:
             self.change_mode(Mode.PLAY)
 
     def keyrelease_help(self, key, _):
+        """
+        Key handler for Help board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
@@ -810,6 +834,10 @@ class Game:
                     self.points) else Board.HISCORES)
 
     def process_killed(self):
+        """
+        Process killed player
+        :return: None
+        """
         if self.lives > 0:
             self.indicators = 10
         self.__stop_timers()
@@ -824,55 +852,11 @@ class Game:
         self.explosions = []
 
     def game_paint_event(self):
+        """
+        Generic paint event
+        :return: None
+        """
         self.arena.paint()
-
-    def keypress_player(self, key, _):
-        pass
-
-    def keypress_welcome(self, key, _):
-        pass
-
-    def keypress_menu(self, key, _):
-        pass
-
-    def keypress_game(self, key, _):
-        pass
-
-    def keypress_options(self, key, _):
-        pass
-
-    def keypress_hiscores(self, key, _):
-        pass
-
-    def keypress_setup(self, key, _):
-        pass
-
-    def keypress_about(self, key, _):
-        pass
-
-    def keypress_quit(self, key, _):
-        pass
-
-    def keypress_newscore(self, key, _):
-        pass
-
-    def keypress_init(self, key, _):
-        pass
-
-    def keypress_play(self, key, _):
-        pass
-
-    def keypress_paused(self, key, _):
-        pass
-
-    def keypress_killed(self, key, _):
-        pass
-
-    def keypress_help(self, key, _):
-        pass
-
-    def keypress_gameover(self, key, _):
-        pass
 
     def stars_update_event(self):
         for star in self.stars:
@@ -920,11 +904,13 @@ class Game:
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
             self.change_mode(Mode.PLAY)
 
-    def keypressed(self, key, _):
-        handler = self.keypress_events[self.board]
-        handler(key, None)
-
     def keyreleased(self, key, _):
+        """
+        Generic key handler
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         self.keyrelease_events[self.board](key, None)
 
     def create_missile(self, x, y, etype):

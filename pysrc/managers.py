@@ -6,8 +6,11 @@ Game managers
 
 
 import math
+import random
+from stypes import (
+    MovableType,
+    MissileType)
 from primi import (
-    Rect,
     Tnt,
     Drop,
     Missile,
@@ -16,17 +19,8 @@ from primi import (
     Enemy,
     LightBall,
     Boss,
-    Player,
-    Movable,
-    Explosion,
-    Bomb,
-    FireMissile,
-    Shield,
-    Star
-)
-
+    Shield)
 from sdefs import *
-
 from sevents import (
     GameEvent,
     EnemyEvent)
@@ -82,11 +76,12 @@ class EventManager:
         """
         Create a single, random TNT box
         """
-        t = Tnt(
-            ARENA_WIDTH,
-            random.randint(150, 3 * ARENA_HEIGHT // 4),
-            self.shooter.images['indicators']['tnt'])
-        self.parent.tnts.append(t)
+
+        self.parent.tnts.append(
+            Tnt(
+                ARENA_WIDTH,
+                random.randint(150, 3 * ARENA_HEIGHT // 4),
+                self.shooter.images['indicators']['tnt']))
 
     def create_drop(self):
         """
@@ -102,16 +97,16 @@ class EventManager:
         """
         Create two random drops
         """
-        d = Drop(random.randint(
-            ARENA_WIDTH // 3, 2 * ARENA_WIDTH // 3),
-            0,
-            self.shooter.images['indicators']['drop'])
-        self.parent.drops.append(d)
-        d = Drop(random.randint(
-            2 * ARENA_WIDTH // 3, ARENA_WIDTH),
-            0,
-            self.shooter.images['indicators']['drop'])
-        self.parent.drops.append(d)
+        self.parent.drops.append(
+            Drop(
+                random.randint(ARENA_WIDTH // 3, 2 * ARENA_WIDTH // 3),
+                0,
+                self.shooter.images['indicators']['drop']))
+        self.parent.drops.append(
+            Drop(
+                random.randint(2 * ARENA_WIDTH // 3, ARENA_WIDTH),
+                0,
+                self.shooter.images['indicators']['drop']))
 
     def create_gun_missiles(self):
         """
@@ -133,27 +128,35 @@ class EventManager:
             image = self.shooter.images['missiles'][MissileType.TO]
             w = image.width()
             h = image.height()
-            for e in self.parent.enemymanager.enemies:
-                m = Missile(e.x - w,
-                            e.y - h // 2,
+            for enemy in self.parent.enemymanager.enemies:
+                self.parent.missiles.append(
+                    Missile(enemy.x - w,
+                            enemy.y - h // 2,
                             MissileType.TO,
-                            image)
-                self.parent.missiles.append(m)
+                            image))
 
     def create_missiles_even(self):
+        """
+        Create missiles for even enemies
+        :return: None
+        """
         if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
             image = self.shooter.images['missiles'][MissileType.TO]
             w = image.width()
             h = image.height()
-            for e in self.parent.enemymanager.enemies:
-                if not e.odd:
-                    m = Missile(e.x - w,
-                                e.y - h // 2,
+            for enemy in self.parent.enemymanager.enemies:
+                if not enemy.odd:
+                    self.parent.missiles.append(
+                        Missile(enemy.x - w,
+                                enemy.y - h // 2,
                                 MissileType.TO,
-                                image)
-                    self.parent.missiles.append(m)
+                                image))
 
     def create_missiles_odd(self):
+        """
+        Create missiles for odd enemies
+        :return: None
+        """
         if len(self.parent.enemymanager.enemies) > 0 and self.parent.frozen_timer == 0:
             image = self.shooter.images['missiles'][MissileType.TO]
             w = image.width()
@@ -167,36 +170,50 @@ class EventManager:
                     self.parent.missiles.append(m)
 
     def create_medkit(self):
-        m = Medkit(ARENA_WIDTH,
+        """
+        Create new medkit and append to list of all medkits
+        :return: None
+        """
+        self.parent.medkits.append(
+            Medkit(ARENA_WIDTH,
                    random.randint(250, 3 * ARENA_HEIGHT // 4),
-                   self.shooter.images['indicators']['medkit'])
-        self.parent.medkits.append(m)
+                   self.shooter.images['indicators']['medkit']))
 
     def create_freeze(self):
-        f = IceBox(ARENA_WIDTH,
+        """
+        Create new icebox and append to list of all iceboxes
+        :return: None
+        """
+        self.parent.iceboxes.append(
+            IceBox(ARENA_WIDTH,
                    random.randint(150, 3 * ARENA_HEIGHT // 4),
-                   self.shooter.images['indicators']['frozen-box'])
-        self.parent.iceboxes.append(f)
+                   self.shooter.images['indicators']['frozen-box']))
 
     def create_lightball(self):
         """
         Create random LightBall object
+        :return: None
         """
-        lb = LightBall(ARENA_WIDTH,
-                       random.randint(150, 3 * ARENA_HEIGHT // 4),
-                       self.shooter.images['indicators']['light-ball'])
-        self.parent.lightballs.append(lb)
+        self.parent.lightballs.append(
+            LightBall(ARENA_WIDTH,
+                      random.randint(150, 3 * ARENA_HEIGHT // 4),
+                      self.shooter.images['indicators']['light-ball']))
 
     def create_shield(self):
         """
         Create random Shield object
+        :return: None
         """
-        s = Shield(ARENA_WIDTH,
+        self.parent.shields.append(
+            Shield(ARENA_WIDTH,
                    random.randint(150, 3 * ARENA_HEIGHT // 4),
-                   self.shooter.images['indicators']['shield'])
-        self.parent.shields.append(s)
+                   self.shooter.images['indicators']['shield']))
 
     def run(self):
+        """
+        Process event queue
+        :return: None
+        """
         if len(self.eventq) > 0:
             event = self.pop()
             if event is not GameEvent.NONE:
@@ -210,6 +227,11 @@ class EnemyManager:
     """
 
     def __init__(self, parent, shooter):
+        """
+        Create manager instance
+        :param parent: Manager parent handle (game)
+        :param shooter: Shooter handle
+        """
         self.enemies = []
         self.parent = parent
         self.shooter = shooter
@@ -499,6 +521,11 @@ class EnemyManager:
         return True
 
     def paint(self, painter):
+        """
+        Common painter aggregator
+        :param painter: Painter to draw by
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.paint(painter)
         if self.boss:

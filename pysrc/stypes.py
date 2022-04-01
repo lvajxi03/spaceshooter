@@ -156,9 +156,17 @@ class MouseEvent:
         self.button = button
 
     def get_x(self):
+        """
+        Get X coordinate
+        :return: X coordinate
+        """
         return self.x
 
     def get_y(self):
+        """
+        Get Y coordinate
+        :return: Y coordinate
+        """
         return self.y
 
 

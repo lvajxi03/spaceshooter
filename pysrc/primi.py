@@ -219,9 +219,15 @@ class Player(FlyingObject):
     """
     Player object
     """
-    OFFSET = 20  # TODO: const?
+    offset = 20  # Shield offset in every direction
 
     def __init__(self, x, y, image):
+        """
+        Create Player instance
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: Player image
+        """
         super().__init__(x, y, image)
         if image:
             self.width = image.width()
@@ -236,7 +242,7 @@ class Player(FlyingObject):
         Move left
         :return:
         """
-        self.x -= PLAYER_XMOVE_OFFSET
+        self.x -= 20
         self.__update_shieldrect()
 
     def go_right(self):
@@ -244,7 +250,7 @@ class Player(FlyingObject):
         Move right
         :return:
         """
-        self.x += PLAYER_XMOVE_OFFSET
+        self.x += 20
         self.__update_shieldrect()
 
     def go_up(self):
@@ -252,7 +258,7 @@ class Player(FlyingObject):
         Move up
         :return:
         """
-        self.y -= PLAYER_YMOVE_OFFSET
+        self.y -= 20
         self.__update_shieldrect()
 
     def go_down(self):
@@ -260,16 +266,20 @@ class Player(FlyingObject):
         Move down
         :return:
         """
-        self.y += PLAYER_YMOVE_OFFSET
+        self.y += 20
         self.__update_shieldrect()
 
     def __update_shieldrect(self):
-        self.shieldx = self.x - Player.OFFSET
-        self.shieldy = self.y - Player.OFFSET
-        self.shieldw = self.width + 2 * Player.OFFSET
-        self.shieldh = self.height + 2 * Player.OFFSET
+        self.shieldx = self.x - Player.offset
+        self.shieldy = self.y - Player.offset
+        self.shieldw = self.width + 2 * Player.offset
+        self.shieldh = self.height + 2 * Player.offset
 
     def move(self):
+        """
+        Move object according to its policy
+        :return:
+        """
         super().move()
         self.__update_shieldrect()
 
