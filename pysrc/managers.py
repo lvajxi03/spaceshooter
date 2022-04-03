@@ -7,23 +7,12 @@ Game managers
 
 import math
 import random
-from stypes import (
-    MovableType,
-    MissileType)
-from primi import (
-    Tnt,
-    Drop,
-    Missile,
-    Medkit,
-    IceBox,
-    Enemy,
-    LightBall,
-    Boss,
-    Shield)
-from sdefs import *
-from sevents import (
-    GameEvent,
-    EnemyEvent)
+from stypes import MovableType, MissileType
+from primi import Tnt, Drop, Missile, Medkit,\
+    IceBox, Enemy, LightBall, Boss, Shield
+from sdefs import MAX_EVENTS_FACTOR, ARENA_WIDTH,\
+    ARENA_HEIGHT, STAGE_HEIGHT, MAX_LEVEL
+from sevents import GameEvent, EnemyEvent
 from sutils import cycle
 
 
@@ -246,20 +235,20 @@ class EnemyManager:
         self.level = 0
         self.eventq = []
         self.creates = {
-            EnemyEvent.CIRCLE: self.create_circle,
-            EnemyEvent.SQUARE: self.create_square,
-            EnemyEvent.FRONTBACK: self.create_frontback,
-            EnemyEvent.UPDOWN: self.create_updown,
-            EnemyEvent.SINE: self.create_sine,
-            EnemyEvent.WAVE: self.create_wave
+            EnemyEvent.CIRCLE: self.__create_circle,
+            EnemyEvent.SQUARE: self.__create_square,
+            EnemyEvent.FRONTBACK: self.__create_frontback,
+            EnemyEvent.UPDOWN: self.__create_updown,
+            EnemyEvent.SINE: self.__create_sine,
+            EnemyEvent.WAVE: self.__create_wave
         }
         self.moves = {
-            EnemyEvent.CIRCLE: self.move_circle,
-            EnemyEvent.SQUARE: self.move_square,
-            EnemyEvent.FRONTBACK: self.move_frontback,
-            EnemyEvent.UPDOWN: self.move_updown,
-            EnemyEvent.SINE: self.move_sine,
-            EnemyEvent.WAVE: self.move_wave
+            EnemyEvent.CIRCLE: self.__move_circle,
+            EnemyEvent.SQUARE: self.__move_square,
+            EnemyEvent.FRONTBACK: self.__move_frontback,
+            EnemyEvent.UPDOWN: self.__move_updown,
+            EnemyEvent.SINE: self.__move_sine,
+            EnemyEvent.WAVE: self.__move_wave
         }
 
     def set_level(self, level: int):
@@ -287,7 +276,7 @@ class EnemyManager:
         self.enemies = []
         self.boss = None
 
-    def create_frontback(self):
+    def __create_frontback(self):
         """
         Create enemies set with a front-back scheme
         :return: None
@@ -305,7 +294,7 @@ class EnemyManager:
                 speedy=2)
             self.enemies.append(enemy)
 
-    def create_circle(self):
+    def __create_circle(self):
         """
         Create enemies set with a circle scheme
         :return: None
@@ -327,7 +316,7 @@ class EnemyManager:
             self.enemies.append(enemy)
         self.move()
 
-    def create_square(self):
+    def __create_square(self):
         """
         Create enemies set with a square scheme
         :return: None
@@ -345,7 +334,7 @@ class EnemyManager:
                 speedy=8)
             self.enemies.append(enemy)
 
-    def create_updown(self):
+    def __create_updown(self):
         """
         Create enemies set with an up-down scheme
         :return: None
@@ -362,7 +351,7 @@ class EnemyManager:
                 speedy=13 if odd else -13)
             self.enemies.append(enemy)
 
-    def create_sine(self):
+    def __create_sine(self):
         """
         Create enemies set with a sine scheme
         :return: None
@@ -380,7 +369,7 @@ class EnemyManager:
                 speedy=10)
             self.enemies.append(enemy)
 
-    def create_wave(self):
+    def __create_wave(self):
         """
         Create enemies set with a wave scheme
         :return: None
@@ -397,7 +386,7 @@ class EnemyManager:
                 speedy=15)
             self.enemies.append(enemy)
 
-    def create_boss(self):
+    def __create_boss(self):
         """
         Create the boss
         :return: None
@@ -421,7 +410,7 @@ class EnemyManager:
                     etype,
                     image))
 
-    def move_circle(self):
+    def __move_circle(self):
         """
         Move enemies according to circle scheme
         :return: None
@@ -439,7 +428,7 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_square(self):
+    def __move_square(self):
         """
         Move enemies according to square scheme
         :return: None
@@ -466,7 +455,7 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_frontback(self):
+    def __move_frontback(self):
         """
         Move enemies according to front-back scheme
         :return: None
@@ -485,7 +474,7 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_updown(self):
+    def __move_updown(self):
         """
         Move enemies according to up-down scheme
         :return: None
@@ -501,7 +490,7 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_sine(self):
+    def __move_sine(self):
         """
         Move enemies according to sine scheme
         :return: None
@@ -519,7 +508,7 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_wave(self):
+    def __move_wave(self):
         """
         Move enemies according to wave scheme
         :return: None
@@ -586,7 +575,7 @@ class EnemyManager:
                     self.parent.shield_timer = 0
                     self.parent.lighball_timer = 0
                     self.parent.frozen_timer = 0
-                    self.create_boss()
+                    self.__create_boss()
                 else:
                     if self.boss.is_alive():
                         self.create_boss_missiles()

@@ -11,7 +11,8 @@ import random
 from game import Game, Board
 from sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
 from slocales import locales
-from stypes import MouseButton, MouseEvent, Mode, UserInput, SetupMode, Key, MovableType, MissileType
+from stypes import MouseButton, MouseEvent, Mode, UserInput, \
+    SetupMode, Key, MovableType, MissileType
 
 # PyQ/PySide imports
 try:
