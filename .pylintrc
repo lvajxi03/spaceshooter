@@ -1,3 +1,9 @@
 [BASIC]
 good-names = x, y, dx, dy, fh, db, i, j, w, h, sizeHint, resizeEvent, mousePressEvent, keyReleaseEvent
 
+[MESSAGES-CONTROL]
+disable =
+    too-many-lines,
+    too-many-instance-attributes,
+
+
