@@ -9,7 +9,7 @@ import random
 import sys
 
 # Local imports
-from spaceshooter import *
+from game import *
 from slocales import locales
 from stypes import (
     MouseButton,
@@ -946,9 +946,7 @@ class Arena(QLabel):
         w_y = (MAX_NICK_LEN + 1) * (w_x + 30)
         x_0 = (ARENA_WIDTH - w_y) // 2
         self.painter.setPen(self.shooter.pens['textback'])
-
         cur = len(self.game.nick)
-
         for i in range(MAX_NICK_LEN + 1):
             try:
                 letter = self.game.nick[i]
@@ -1029,23 +1027,23 @@ class Arena(QLabel):
         level_text = locales[
                          'game']['level-x'][self.game.config['lang']] % {
                          'l': self.game.level + 1}
-        x2 = (ARENA_WIDTH - self.metrics[
+        x_2 = (ARENA_WIDTH - self.metrics[
             'get-ready'].horizontalAdvance(level_text)) // 2
         self.painter.setFont(self.fonts['get-ready'])
         self.painter.setPen(self.shooter.pens['textback'])
-        self.painter.drawText(x2 + 5, 405, level_text)
-        x3 = 0
+        self.painter.drawText(x_2 + 5, 405, level_text)
+        x_3 = 0
         if self.game.get_ready > 0:
             self.painter.setFont(self.fonts['logo'])
-            x3 = (ARENA_WIDTH - self.metrics['logo'].horizontalAdvance(
+            x_3 = (ARENA_WIDTH - self.metrics['logo'].horizontalAdvance(
                 f'{self.game.get_ready}')) // 2
-            self.painter.drawText(x3 + 5, 605, f'{self.game.get_ready}')
+            self.painter.drawText(x_3 + 5, 605, f'{self.game.get_ready}')
         self.painter.setPen(self.shooter.pens['textfront'])
         self.painter.setFont(self.fonts['get-ready'])
-        self.painter.drawText(x2, 400, level_text)
+        self.painter.drawText(x_2, 400, level_text)
         if self.game.get_ready > 0:
             self.painter.setFont(self.fonts['logo'])
-            self.painter.drawText(x3, 600, f'{self.game.get_ready}')
+            self.painter.drawText(x_3, 600, f'{self.game.get_ready}')
         self.__paint_bottom_bar(self.painter)
         # ... dotąd
         self.painter.end()
@@ -1162,13 +1160,13 @@ class Arena(QLabel):
         self.painter.begin(self.canvas)
         self.__update_pixmap_play(self.painter)
         self.painter.setFont(self.fonts['logo'])
-        t = locales['awaiting']['paused'][self.game.config['lang']]
-        t_w = self.metrics['logo'].horizontalAdvance(t)
+        t_e = locales['awaiting']['paused'][self.game.config['lang']]
+        t_w = self.metrics['logo'].horizontalAdvance(t_e)
         t_x = (ARENA_WIDTH - t_w) // 2
         self.painter.setPen(self.shooter.pens['textback'])
-        self.painter.drawText(t_x + 5, 505, t)
+        self.painter.drawText(t_x + 5, 505, t_e)
         self.painter.setPen(self.shooter.pens['logofront2'])
-        self.painter.drawText(t_x, 500, t)
+        self.painter.drawText(t_x, 500, t_e)
         self.painter.setFont(self.fonts['menu'])
         e_t = locales['awaiting']['enter'][self.game.config['lang']]
         e_w = self.metrics['menu'].horizontalAdvance(e_t)
@@ -1220,14 +1218,14 @@ class Arena(QLabel):
         for star in self.game.stars:
             star.paint(self.painter)
         x = locales['gameover']['win'][self.game.config['lang']]
-        wx = self.metrics['logo'].horizontalAdvance(x)
+        w_x = self.metrics['logo'].horizontalAdvance(x)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(QPen(self.shooter.colors['textback'], 2, Qt.SolidLine))
-        self.painter.drawText((ARENA_WIDTH - wx) // 2 + 5,
+        self.painter.drawText((ARENA_WIDTH - w_x) // 2 + 5,
                               305,
                               x)
         self.painter.setPen(QPen(self.shooter.colors['logofront'], 2, Qt.SolidLine))
-        self.painter.drawText((ARENA_WIDTH - wx) // 2,
+        self.painter.drawText((ARENA_WIDTH - w_x) // 2,
                               300,
                               x)
         self.painter.drawPixmap(
@@ -1541,8 +1539,8 @@ class SpaceShooter(QApplication):
             'missile-timer': self.missile_timer,
             'smoke-timer': self.smoke_timer
         }
-        for name in self.timers:
-            self.timers[name].timeout.connect(self.timer_handlers[name])
+        for name, timer in self.timers.items():
+            timer.timeout.connect(self.timer_handlers[name])
         self.game = Game(self)
 
     def newscore_event(self):
@@ -1666,11 +1664,10 @@ class SpaceShooter(QApplication):
 
 
 if __name__ == "__main__":
-    fixed_size = False
     try:
         fixed_size = (sys.argv[1] == "-f")
     except IndexError:
-        pass
+        fixed_size = False
     random.seed()
     shooter = SpaceShooter(sys.argv)
     shooter.game = Game(shooter)
