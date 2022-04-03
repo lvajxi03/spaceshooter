@@ -146,6 +146,10 @@ class Movable(ImageRect):
             self.y = STAGE_HEIGHT - self.h
 
     def move(self):
+        """
+        Move object according to its policy
+        :return: None
+        """
         self.x -= self.speed
         if self.x + self.w < 0:
             self.valid = False
@@ -188,9 +192,19 @@ class FlyingObject(ImageRect):
         self.valid = True
 
     def is_valid(self):
+        """
+        Check if object is valid
+        :return:
+        """
         return self.valid
 
     def move_to(self, x, y):
+        """
+        Move object to specific location
+        :param x: X coordinate of the new location
+        :param y: Y coordinate of the new location
+        :return: None
+        """
         self.x = x
         self.y = y
         if self.x + self.w < 0:
@@ -203,6 +217,12 @@ class FlyingObject(ImageRect):
             self.valid = False
 
     def move_by(self, dx, dy):
+        """
+        Move object by a specific distance
+        :param dx: Distance width
+        :param dy: Distance height
+        :return: None
+        """
         self.x += dx
         self.y += dy
         if self.x + self.w < 0:
@@ -270,6 +290,10 @@ class Player(FlyingObject):
         self.__update_shieldrect()
 
     def __update_shieldrect(self):
+        """
+        Update shield rectangle with every move
+        :return: None
+        """
         self.shieldx = self.x - Player.offset
         self.shieldy = self.y - Player.offset
         self.shieldw = self.width + 2 * Player.offset
