@@ -356,11 +356,21 @@ class Medkit(FlyingObject):
     Medical kit flying object
     """
     def __init__(self, x, y, image):
+        """
+        Create MedKit object
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param image: MedKit display image
+        """
         super().__init__(x, y, image)
         self.basey = y
         self.speedx = -8
 
     def move(self):
+        """
+        Move MedKit object according to sine policy
+        :return:
+        """
         dy = int(100 * math.sin(self.x / 100))
         self.x += self.speedx
         self.y = self.basey + dy
@@ -373,6 +383,12 @@ class Boss(FlyingObject):
     Boss object
     """
     def __init__(self, x, y, image):
+        """
+        Game Boss
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param image: Boss image to display
+        """
         super().__init__(x, y, image)
         self.dy = 1
         self.yspeed = 20
@@ -397,6 +413,10 @@ class Boss(FlyingObject):
             self.valid = False
 
     def move(self):
+        """
+        Move boss up and down
+        :return:
+        """
         magic_number = 50
         if self.y >= STAGE_HEIGHT - magic_number:
             self.dy = -1
@@ -410,11 +430,21 @@ class Shield(FlyingObject):
     Flying shield to pick and become immortal for 10s
     """
     def __init__(self, x, y, image):
+        """
+        Create flying shield object
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param image: Shield image to display
+        """
         super().__init__(x, y, image)
         self.basey = y
         self.speedx = SHIELD_SPEEDX
 
     def move(self):
+        """
+        Move flying shield according to sine policy
+        :return: None
+        """
         dy = int(100 * math.sin(self.x / 100))
         self.x -= 8
         self.y = self.basey + dy
@@ -423,7 +453,17 @@ class Shield(FlyingObject):
 
 
 class Missile(FlyingObject):
+    """
+    Generic missile object
+    """
     def __init__(self, x, y, etype, image):
+        """
+        Create missile object
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param etype: Missile type
+        :param image: Missile image to display
+        """
         super().__init__(x, y, image)
         self.etype = etype
         self.speedx = 12
@@ -431,6 +471,10 @@ class Missile(FlyingObject):
         self.speedhy = 6
 
     def move(self):
+        """
+        Move missile according to its type
+        :return: None
+        """
         if self.etype == MissileType.FROM:
             self.x += self.speedx
         elif self.etype == MissileType.TO:
@@ -560,9 +604,9 @@ class Explosion(FlyingObject):
     def paint(self, painter):
         if self.valid:
             image = self.images[self.frame]
-            ax = self.x - image.width() // 2
-            ay = self.y - image.height() // 2
-            painter.drawPixmap(ax, ay, image)
+            a_x = self.x - image.width() // 2
+            a_y = self.y - image.height() // 2
+            painter.drawPixmap(a_x, a_y, image)
 
     def move(self):
         if self.frame < self.frames - 1:

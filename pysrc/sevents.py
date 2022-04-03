@@ -5,6 +5,7 @@ Events used in SpaceShooter
 """
 
 import enum
+import copy
 from sutils import cycle
 
 
@@ -59,7 +60,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.NONE]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -113,7 +114,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.LIGHTBALL]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -166,7 +167,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.DROPS]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -223,7 +224,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.LIGHTBALL]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -286,7 +287,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.MEDKIT]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -332,9 +333,8 @@ class EnemyEvent(enum.IntEnum):
                   EnemyEvent.UPDOWN,
                   EnemyEvent.SINE,
                   EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
-        # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
         counter = 0
         while counter < num:
@@ -352,7 +352,7 @@ class EnemyEvent(enum.IntEnum):
                   EnemyEvent.UPDOWN,
                   EnemyEvent.SINE,
                   EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
@@ -372,7 +372,7 @@ class EnemyEvent(enum.IntEnum):
                   EnemyEvent.UPDOWN,
                   EnemyEvent.SINE,
                   EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
@@ -395,7 +395,7 @@ class EnemyEvent(enum.IntEnum):
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
         counter = 0
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         while counter < num:
             enemy = next(gen)
@@ -415,7 +415,7 @@ class EnemyEvent(enum.IntEnum):
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
         counter = 0
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         while counter < num:
             enemy = next(gen)

@@ -43,17 +43,17 @@ class EventManager:
         self.shooter = shooter
         self.level = 0
         self.creates = {
-            GameEvent.DROP: self.create_drop,
-            GameEvent.DROPS: self.create_drops,
-            GameEvent.MISSILES: self.create_missiles,
-            GameEvent.MISSILES_ODD: self.create_missiles_odd,
-            GameEvent.MISSILES_EVEN: self.create_missiles_even,
-            GameEvent.MEDKIT: self.create_medkit,
-            GameEvent.FREEZE: self.create_freeze,
-            GameEvent.LIGHTBALL: self.create_lightball,
-            GameEvent.SHIELD: self.create_shield,
-            GameEvent.TNT: self.create_tnt,
-            GameEvent.GUN_MISSILE: self.create_gun_missiles
+            GameEvent.DROP: self.__create_drop,
+            GameEvent.DROPS: self.__create_drops,
+            GameEvent.MISSILES: self.__create_missiles,
+            GameEvent.MISSILES_ODD: self.__create_missiles_odd,
+            GameEvent.MISSILES_EVEN: self.__create_missiles_even,
+            GameEvent.MEDKIT: self.__create_medkit,
+            GameEvent.FREEZE: self.__create_freeze,
+            GameEvent.LIGHTBALL: self.__create_lightball,
+            GameEvent.SHIELD: self.__create_shield,
+            GameEvent.TNT: self.__create_tnt,
+            GameEvent.GUN_MISSILE: self.__create_gun_missiles
         }
 
     def set_level(self, level: int):
@@ -72,7 +72,7 @@ class EventManager:
         """
         return self.eventq.pop(0)
 
-    def create_tnt(self):
+    def __create_tnt(self):
         """
         Create a single, random TNT box
         """
@@ -83,7 +83,7 @@ class EventManager:
                 random.randint(150, 3 * ARENA_HEIGHT // 4),
                 self.shooter.images['indicators']['tnt']))
 
-    def create_drop(self):
+    def __create_drop(self):
         """
         Create a single, random drop
         """
@@ -93,7 +93,7 @@ class EventManager:
                 0,
                 self.shooter.images['indicators']['drop']))
 
-    def create_drops(self):
+    def __create_drops(self):
         """
         Create two random drops
         """
@@ -108,7 +108,7 @@ class EventManager:
                 0,
                 self.shooter.images['indicators']['drop']))
 
-    def create_gun_missiles(self):
+    def __create_gun_missiles(self):
         """
         Create gun missiles for every visible gun, (if not in frozen mode)
         :return: None
@@ -123,7 +123,7 @@ class EventManager:
                                 MissileType.TO_NW,
                                 image))
 
-    def create_missiles(self):
+    def __create_missiles(self):
         """
         Create missiles for all enemies
         :return: None
@@ -139,7 +139,7 @@ class EventManager:
                             MissileType.TO,
                             image))
 
-    def create_missiles_even(self):
+    def __create_missiles_even(self):
         """
         Create missiles for even enemies
         :return: None
@@ -156,7 +156,7 @@ class EventManager:
                                 MissileType.TO,
                                 image))
 
-    def create_missiles_odd(self):
+    def __create_missiles_odd(self):
         """
         Create missiles for odd enemies
         :return: None
@@ -173,7 +173,7 @@ class EventManager:
                                 MissileType.TO,
                                 image))
 
-    def create_medkit(self):
+    def __create_medkit(self):
         """
         Create new medkit and append to list of all medkits
         :return: None
@@ -183,7 +183,7 @@ class EventManager:
                    random.randint(250, 3 * ARENA_HEIGHT // 4),
                    self.shooter.images['indicators']['medkit']))
 
-    def create_freeze(self):
+    def __create_freeze(self):
         """
         Create new icebox and append to list of all iceboxes
         :return: None
@@ -193,7 +193,7 @@ class EventManager:
                    random.randint(150, 3 * ARENA_HEIGHT // 4),
                    self.shooter.images['indicators']['frozen-box']))
 
-    def create_lightball(self):
+    def __create_lightball(self):
         """
         Create random LightBall object
         :return: None
@@ -203,7 +203,7 @@ class EventManager:
                       random.randint(150, 3 * ARENA_HEIGHT // 4),
                       self.shooter.images['indicators']['light-ball']))
 
-    def create_shield(self):
+    def __create_shield(self):
         """
         Create random Shield object
         :return: None
@@ -382,8 +382,8 @@ class EnemyManager:
 
     def create_wave(self):
         """
-
-        :return:
+        Create enemies set with a wave scheme
+        :return: None
         """
         image = next(self.imagen)
         for i in range(8):
@@ -398,11 +398,19 @@ class EnemyManager:
             self.enemies.append(enemy)
 
     def create_boss(self):
+        """
+        Create the boss
+        :return: None
+        """
         self.boss = Boss((2 * ARENA_WIDTH) // 3,
                          random.randint(5, STAGE_HEIGHT - 100),
                          self.shooter.images['boss'])
 
     def create_boss_missiles(self):
+        """
+        Create boss missiles (3: TO, SWW, NWW)
+        :return: None
+        """
         fixed_height = 32
         for etype in [MissileType.TO, MissileType.TO_SWW, MissileType.TO_NWW]:
             image = self.shooter.images['missiles'][etype]
@@ -414,6 +422,10 @@ class EnemyManager:
                     image))
 
     def move_circle(self):
+        """
+        Move enemies according to circle scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.angle += 2
             enemy.angle %= 360
@@ -428,6 +440,10 @@ class EnemyManager:
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
     def move_square(self):
+        """
+        Move enemies according to square scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.x += enemy.speedx * enemy.dx
             enemy.y += enemy.speedy * enemy.dy
@@ -451,6 +467,10 @@ class EnemyManager:
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
     def move_frontback(self):
+        """
+        Move enemies according to front-back scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.x += enemy.speedx * enemy.dx
             enemy.y += enemy.speedy * enemy.dy
@@ -466,6 +486,10 @@ class EnemyManager:
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
     def move_updown(self):
+        """
+        Move enemies according to up-down scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.y += enemy.speedy
             enemy.x += enemy.speedx
@@ -478,6 +502,10 @@ class EnemyManager:
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
     def move_sine(self):
+        """
+        Move enemies according to sine scheme
+        :return: None
+        """
         for enemy in self.enemies:
             radians = math.pi * enemy.x / 180.0
             if enemy.odd:
@@ -492,6 +520,10 @@ class EnemyManager:
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
     def move_wave(self):
+        """
+        Move enemies according to wave scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.x += enemy.speedx
             sektor = enemy.x // 150

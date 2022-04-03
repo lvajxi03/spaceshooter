@@ -79,7 +79,7 @@ class Controller(QMainWindow):
         self.game = None
         self.setWindowTitle(APPLICATION_TITLE)
 
-    def pos2arena(self, event):
+    def __pos2arena(self, event):
         """
         Translate screen position to arena-oriented coordinates
         :param event: QMouseEvent to translate
@@ -97,7 +97,7 @@ class Controller(QMainWindow):
         :param event: Event description
         :return: None
         """
-        k = self.pos2arena(event)
+        k = self.__pos2arena(event)
         self.game.mouse_pressed(k)
 
     def keyReleaseEvent(self, event):
@@ -130,25 +130,25 @@ class Arena(QLabel):
         self.setMouseTracking(True)
         self.game = parent.game
         self.paint_procs = {
-            Board.WELCOME: self.paint_welcome,
-            Board.MENU: self.paint_menu,
-            Board.GAME: self.paint_game,
-            Board.OPTIONS: self.paint_options,
-            Board.HISCORES: self.paint_hiscores,
-            Board.SETUP: self.paint_setup,
-            Board.HELP: self.paint_help,
-            Board.ABOUT: self.paint_about,
-            Board.NEWSCORE: self.paint_newscore,
-            Board.PLAYER: self.paint_player
+            Board.WELCOME: self.__paint_welcome,
+            Board.MENU: self.__paint_menu,
+            Board.GAME: self.__paint_game,
+            Board.OPTIONS: self.__paint_options,
+            Board.HISCORES: self.__paint_hiscores,
+            Board.SETUP: self.__paint_setup,
+            Board.HELP: self.__paint_help,
+            Board.ABOUT: self.__paint_about,
+            Board.NEWSCORE: self.__paint_newscore,
+            Board.PLAYER: self.__paint_player
         }
         self.paint_subprocs = {
-            Mode.INIT: self.paint_game_init,
-            Mode.PREPARE: self.paint_game_prepare,
-            Mode.PLAY: self.paint_game_play,
-            Mode.PAUSED: self.paint_game_paused,
-            Mode.KILLED: self.paint_game_killed,
-            Mode.GAMEOVER: self.paint_game_over,
-            Mode.CONGRATS: self.paint_game_congrats
+            Mode.INIT: self.__paint_game_init,
+            Mode.PREPARE: self.__paint_game_prepare,
+            Mode.PLAY: self.__paint_game_play,
+            Mode.PAUSED: self.__paint_game_paused,
+            Mode.KILLED: self.__paint_game_killed,
+            Mode.GAMEOVER: self.__paint_game_over,
+            Mode.CONGRATS: self.__paint_game_congrats
         }
 
         self.fonts = {
@@ -195,7 +195,7 @@ class Arena(QLabel):
         self.spot_x = int((self.full_w - ARENA_WIDTH) // 2)
         self.spot_y = int((self.full_h - ARENA_HEIGHT) // 2)
 
-    def paint_bottom_bar(self, painter):
+    def __paint_bottom_bar(self, painter):
         """
         Common painter for stage/bottom area
         :param painter: Painter to paint by
@@ -302,7 +302,7 @@ class Arena(QLabel):
         except KeyError:
             pass  # Some special boards without paint method
 
-    def paint_menu(self):
+    def __paint_menu(self):
         """
         Paint Menu board
         :return: None
@@ -349,7 +349,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_game(self):
+    def __paint_game(self):
         """
         Meta-painter for Game-related boards
         :return: None
@@ -357,7 +357,7 @@ class Arena(QLabel):
         painter = self.paint_subprocs[self.game.mode]
         painter()
 
-    def paint_welcome(self):
+    def __paint_welcome(self):
         """
         Paint Welcome board
         :return: None
@@ -378,7 +378,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_options(self):
+    def __paint_options(self):
         """
         Painter for Options board
         :return: None
@@ -444,7 +444,7 @@ class Arena(QLabel):
                                           Qt.IgnoreAspectRatio,
                                           Qt.FastTransformation))
 
-    def paint_hiscores(self):
+    def __paint_hiscores(self):
         """
         Paint routine for HiScores board
         :return: None
@@ -521,7 +521,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_setup(self):
+    def __paint_setup(self):
         """
         Paint routine for Setup board
         :return: None
@@ -691,7 +691,7 @@ class Arena(QLabel):
                                           Qt.IgnoreAspectRatio,
                                           Qt.FastTransformation))
 
-    def paint_help(self):
+    def __paint_help(self):
         """
         Paint routine for Help board
         :return: None
@@ -791,7 +791,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_player(self):
+    def __paint_player(self):
         """
         Paint routine for Player board
         :return: None
@@ -854,7 +854,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_about(self):
+    def __paint_about(self):
         """
         Paint `About` board
         :return: None
@@ -917,7 +917,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_newscore(self):
+    def __paint_newscore(self):
         """
         Paint routine for NewScore board
         :return: None
@@ -941,10 +941,10 @@ class Arena(QLabel):
             e_x,
             200,
             e_t)
-        wx = self.metrics['logo'].horizontalAdvance("W")
-        wh = self.metrics['logo'].height()
-        wy = (MAX_NICK_LEN + 1) * (wx + 30)
-        x0 = (ARENA_WIDTH - wy) // 2
+        w_x = self.metrics['logo'].horizontalAdvance("W")
+        w_h = self.metrics['logo'].height()
+        w_y = (MAX_NICK_LEN + 1) * (w_x + 30)
+        x_0 = (ARENA_WIDTH - w_y) // 2
         self.painter.setPen(self.shooter.pens['textback'])
 
         cur = len(self.game.nick)
@@ -952,31 +952,31 @@ class Arena(QLabel):
         for i in range(MAX_NICK_LEN + 1):
             try:
                 letter = self.game.nick[i]
-                self.painter.drawText(x0 + i * (wx + 30) + 20,
+                self.painter.drawText(x_0 + i * (w_x + 30) + 20,
                                       685,
                                       letter)
             except IndexError:
                 pass
             if i == cur and self.game.newscore_counter == 0:
-                r = QRect(x0 + cur * (wx + 30) + 5 + 15,
-                          700 - wh + 5,
-                          wx,
-                          wh)
+                r = QRect(x_0 + cur * (w_x + 30) + 5 + 15,
+                          700 - w_h + 5,
+                          w_x,
+                          w_h)
                 self.painter.fillRect(r, QBrush(self.shooter.colors['textback']))
         self.painter.setPen(self.shooter.pens['logofront'])
         for i in range(MAX_NICK_LEN + 1):
             try:
                 letter = self.game.nick[i]
-                self.painter.drawText(x0 + i * (wx + 30) + 15,
+                self.painter.drawText(x_0 + i * (w_x + 30) + 15,
                                       680,
                                       letter)
             except IndexError:
                 pass
             if i == cur and self.game.newscore_counter == 0:
-                r = QRect(x0 + cur * (wx + 30) + 15,
-                          700 - wh,
-                          wx,
-                          wh)
+                r = QRect(x_0 + cur * (w_x + 30) + 15,
+                          700 - w_h,
+                          w_x,
+                          w_h)
                 self.painter.fillRect(r, self.shooter.brushes['logofront'])
         # Status lines:
         l_t = locales['newscore']['line1'][self.game.config['lang']]
@@ -1009,13 +1009,13 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_game_init(self):
+    def __paint_game_init(self):
         """
         Null painter
         :return: None
         """
 
-    def paint_game_prepare(self):
+    def __paint_game_prepare(self):
         """
         Painter for Prepare board
         :return: None
@@ -1025,7 +1025,7 @@ class Arena(QLabel):
         # Rysować odtąd...
         for star in self.game.stars:
             star.paint(self.painter)
-        self.update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter)
         level_text = locales[
                          'game']['level-x'][self.game.config['lang']] % {
                          'l': self.game.level + 1}
@@ -1046,14 +1046,14 @@ class Arena(QLabel):
         if self.game.get_ready > 0:
             self.painter.setFont(self.fonts['logo'])
             self.painter.drawText(x3, 600, f'{self.game.get_ready}')
-        self.paint_bottom_bar(self.painter)
+        self.__paint_bottom_bar(self.painter)
         # ... dotąd
         self.painter.end()
         self.setPixmap(self.canvas.scaled(self.full_w,
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def update_pixmap_play(self, painter):
+    def __update_pixmap_play(self, painter):
         """
         Prepare common bitmap for Play board
         (pause and killed events will reuse this)
@@ -1125,7 +1125,7 @@ class Arena(QLabel):
         # Explosions
         for explosion in self.game.explosions:
             explosion.paint(painter)
-        self.paint_bottom_bar(painter)
+        self.__paint_bottom_bar(painter)
         # ... dotąd
 
     def paint_missiles(self, painter):
@@ -1139,28 +1139,28 @@ class Arena(QLabel):
         for missile in self.game.missiles:
             missile.paint(painter)
 
-    def paint_game_play(self):
+    def __paint_game_play(self):
         """
         Paint Play board
         :return: None
         """
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
-        self.update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter)
         self.painter.end()
         self.setPixmap(self.canvas.scaled(self.full_w,
                                           self.full_h,
                                           Qt.IgnoreAspectRatio,
                                           Qt.FastTransformation))
 
-    def paint_game_paused(self):
+    def __paint_game_paused(self):
         """
         Paint Paused board
         :return: None
         """
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
-        self.update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter)
         self.painter.setFont(self.fonts['logo'])
         t = locales['awaiting']['paused'][self.game.config['lang']]
         t_w = self.metrics['logo'].horizontalAdvance(t)
@@ -1182,7 +1182,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_game_killed(self):
+    def __paint_game_killed(self):
         """
         Paint Killed board
         :return: None
@@ -1190,7 +1190,7 @@ class Arena(QLabel):
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
         # Rysować odtąd...
-        self.update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
         t_t = locales['awaiting']['killed'][self.game.config['lang']]
@@ -1213,7 +1213,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_game_congrats(self):
+    def __paint_game_congrats(self):
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
         # Rysować odtąd...
@@ -1231,7 +1231,7 @@ class Arena(QLabel):
                               300,
                               x)
         self.painter.drawPixmap(
-            (ARENA_WIDTH - self.shooter.images['indicators']['cup'].horizontalAdvance()) // 2,
+            (ARENA_WIDTH - self.shooter.images['indicators']['cup'].width()) // 2,
             400,
             self.shooter.images['indicators']['cup'])
         # Status line
@@ -1257,7 +1257,7 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def paint_game_over(self):
+    def __paint_game_over(self):
         """
         Paint Game Over board
         :return: None
@@ -1500,7 +1500,7 @@ class SpaceShooter(QApplication):
                 'medkit': QPixmap('images/apteczka.png'),
                 'drop': QPixmap('images/drop.png'),
                 'bomb': QPixmap('images/bomba.png'),
-                'cup': QPixmap('images/cup')
+                'cup': QPixmap('images/cup.png')
             }
         }
         self.timers = {
