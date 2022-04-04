@@ -31,7 +31,6 @@ class ShooterConfig:
                 UserInput.TNT: Key.KEY_T},
             'lang': 'en',
             'hiscores': [],
-            'lastnick': "Player One",
             'lastmode': Options.NORMAL}
 
     def __getitem__(self, item):
@@ -88,7 +87,7 @@ class ShooterConfig:
         except IOError:
             pass  # Read error -- let's go with defaults
         j = json.loads(content)
-        for i in ['hiscores', 'lastnick', 'lastmode', 'lang']:
+        for i in ['hiscores', 'lastmode', 'lang']:
             try:
                 self.db[i] = j[i]
             except KeyError:

@@ -5,6 +5,7 @@ Events used in SpaceShooter
 """
 
 import enum
+import copy
 from sutils import cycle
 
 
@@ -27,7 +28,12 @@ class GameEvent(enum.IntEnum):
     GUN_MISSILE = 11
 
     @staticmethod
-    def from_factory_level_1(num=0):
+    def __from_factory_level_1(num=0):
+        """
+        Create events for Level1
+        :param num: Number of iterations
+        :return: List of events
+        """
         num = 3 if num < 1 else num
         scenario = [GameEvent.NONE,
                     GameEvent.DROP,
@@ -59,7 +65,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.NONE]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -70,7 +76,12 @@ class GameEvent(enum.IntEnum):
         return events
 
     @staticmethod
-    def from_factory_level_2(num=0):
+    def __from_factory_level_2(num=0):
+        """
+        Create events for Level2
+        :param num: Number of iterations
+        :return: List of events
+        """
         num = 3 if num < 1 else num
         scenario = [GameEvent.DROP,
                     GameEvent.NONE,
@@ -113,7 +124,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.LIGHTBALL]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -124,7 +135,12 @@ class GameEvent(enum.IntEnum):
         return events
 
     @staticmethod
-    def from_factory_level_3(num=0):
+    def __from_factory_level_3(num=0):
+        """
+        Create events for Level 3
+        :param num: Number of iterations
+        :return: List of events
+        """
         num = 3 if num < 1 else num
         scenario = [GameEvent.MISSILES_ODD,
                     GameEvent.DROPS,
@@ -166,7 +182,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.DROPS]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -177,7 +193,12 @@ class GameEvent(enum.IntEnum):
         return events
 
     @staticmethod
-    def from_factory_level_4(num=0):
+    def __from_factory_level_4(num=0):
+        """
+        Create events list for Level 4
+        :param num: Number of iterations
+        :return: List of events
+        """
         num = 3 if num < 1 else num
         scenario = [GameEvent.MISSILES_EVEN,
                     GameEvent.DROP,
@@ -223,7 +244,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.LIGHTBALL]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -234,7 +255,12 @@ class GameEvent(enum.IntEnum):
         return events
 
     @staticmethod
-    def from_factory_level_5(num=0):
+    def __from_factory_level_5(num=0):
+        """
+        Create events for Level 5
+        :param num: Number of iterations
+        :return: List of events
+        """
         num = 3 if num < 1 else num
         scenario = [GameEvent.MISSILES,
                     GameEvent.DROPS,
@@ -286,7 +312,7 @@ class GameEvent(enum.IntEnum):
                     GameEvent.MEDKIT]
         # Deep copy of scenario due to later cycling
         # (need to serve the same state for all games)
-        sc_copy = [x for x in scenario]
+        sc_copy = copy.deepcopy(scenario)
         counter = 0
         gen = cycle(sc_copy)
         events = []
@@ -298,12 +324,18 @@ class GameEvent(enum.IntEnum):
 
     @staticmethod
     def from_factory(level: int, num=0):
+        """
+        Create events list
+        :param level: Level number
+        :param num: Number of iterations
+        :return: List of events
+        """
         factories = [
-            GameEvent.from_factory_level_1,
-            GameEvent.from_factory_level_2,
-            GameEvent.from_factory_level_3,
-            GameEvent.from_factory_level_4,
-            GameEvent.from_factory_level_5]
+            GameEvent.__from_factory_level_1,
+            GameEvent.__from_factory_level_2,
+            GameEvent.__from_factory_level_3,
+            GameEvent.__from_factory_level_4,
+            GameEvent.__from_factory_level_5]
         level = 0 if level < 0 else level
         level = 4 if level > 4 else level
         return factories[level](num)
@@ -324,7 +356,12 @@ class EnemyEvent(enum.IntEnum):
     BOSS = 7
 
     @staticmethod
-    def from_factory_level_1(num=0):
+    def __from_factory_level_1(num=0):
+        """
+        Crete enemies list for Level 1
+        :param num: Number of iterations
+        :return: List of enemies
+        """
         enemies = []
         addons = [EnemyEvent.CIRCLE,
                   EnemyEvent.SQUARE,
@@ -332,7 +369,31 @@ class EnemyEvent(enum.IntEnum):
                   EnemyEvent.UPDOWN,
                   EnemyEvent.SINE,
                   EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
+        gen = cycle(ad_copy)
+        num = 3 if num < 1 else num
+        counter = 0
+        while counter < num:
+            enemy = next(gen)
+            enemies.append(enemy)
+            counter += 1
+        return enemies
+
+    @staticmethod
+    def __from_factory_level_2(num=0):
+        """
+        Create enemies list for Level 2
+        :param num: Number of iterations
+        :return: List of enemies
+        """
+        enemies = []
+        addons = [EnemyEvent.CIRCLE,
+                  EnemyEvent.SQUARE,
+                  EnemyEvent.FRONTBACK,
+                  EnemyEvent.UPDOWN,
+                  EnemyEvent.SINE,
+                  EnemyEvent.WAVE]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
@@ -344,7 +405,12 @@ class EnemyEvent(enum.IntEnum):
         return enemies
 
     @staticmethod
-    def from_factory_level_2(num=0):
+    def __from_factory_level_3(num=0):
+        """
+        Create enemies list for Level 3
+        :param num: Number of iterations
+        :return: List of enemies
+        """
         enemies = []
         addons = [EnemyEvent.CIRCLE,
                   EnemyEvent.SQUARE,
@@ -352,7 +418,7 @@ class EnemyEvent(enum.IntEnum):
                   EnemyEvent.UPDOWN,
                   EnemyEvent.SINE,
                   EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
@@ -364,27 +430,12 @@ class EnemyEvent(enum.IntEnum):
         return enemies
 
     @staticmethod
-    def from_factory_level_3(num=0):
-        enemies = []
-        addons = [EnemyEvent.CIRCLE,
-                  EnemyEvent.SQUARE,
-                  EnemyEvent.FRONTBACK,
-                  EnemyEvent.UPDOWN,
-                  EnemyEvent.SINE,
-                  EnemyEvent.WAVE]
-        ad_copy = [x for x in addons]
-        gen = cycle(ad_copy)
-        # num = 30 if num < 1 else num
-        num = 3 if num < 1 else num
-        counter = 0
-        while counter < num:
-            enemy = next(gen)
-            enemies.append(enemy)
-            counter += 1
-        return enemies
-
-    @staticmethod
-    def from_factory_level_4(num=0):
+    def __from_factory_level_4(num=0):
+        """
+        Create enemies list for Level 4
+        :param num: Number of iterations
+        :return: List of enemies
+        """
         enemies = []
         addons = [EnemyEvent.CIRCLE,
                   EnemyEvent.SQUARE,
@@ -395,7 +446,7 @@ class EnemyEvent(enum.IntEnum):
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
         counter = 0
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         while counter < num:
             enemy = next(gen)
@@ -404,7 +455,12 @@ class EnemyEvent(enum.IntEnum):
         return enemies
 
     @staticmethod
-    def from_factory_level_5(num=0):
+    def __from_factory_level_5(num=0):
+        """
+        Create enemies list for Level 5
+        :param num: Number of iterations
+        :return: List of enemies
+        """
         enemies = []
         addons = [EnemyEvent.CIRCLE,
                   EnemyEvent.SQUARE,
@@ -415,7 +471,7 @@ class EnemyEvent(enum.IntEnum):
         # num = 30 if num < 1 else num
         num = 3 if num < 1 else num
         counter = 0
-        ad_copy = [x for x in addons]
+        ad_copy = copy.deepcopy(addons)
         gen = cycle(ad_copy)
         while counter < num:
             enemy = next(gen)
@@ -425,12 +481,18 @@ class EnemyEvent(enum.IntEnum):
 
     @staticmethod
     def from_factory(level: int, num=0):
+        """
+        Create enemies list
+        :param level: Level number
+        :param num: Number of iterations
+        :return: List of enemies
+        """
         factories = [
-            EnemyEvent.from_factory_level_1,
-            EnemyEvent.from_factory_level_2,
-            EnemyEvent.from_factory_level_3,
-            EnemyEvent.from_factory_level_4,
-            EnemyEvent.from_factory_level_5]
+            EnemyEvent.__from_factory_level_1,
+            EnemyEvent.__from_factory_level_2,
+            EnemyEvent.__from_factory_level_3,
+            EnemyEvent.__from_factory_level_4,
+            EnemyEvent.__from_factory_level_5]
         level = 0 if level < 0 else level
         level = 4 if level > 4 else level
         return factories[level](num)

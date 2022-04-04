@@ -6,7 +6,8 @@ Primitive definitions
 
 import math
 import random
-from sdefs import *
+from sdefs import MOVABLE_SPEED, STAGE_HEIGHT, ARENA_WIDTH, ARENA_HEIGHT,\
+    SHIELD_SPEEDX, STAR_SPEED, STAGE_WIDTH, SPEEDX_BOMB
 from stypes import (
     MovableType,
     MissileType,
@@ -81,16 +82,16 @@ class Rect:
         :return: None
         """
 
-    def collides(self, r):
+    def collides(self, rect):
         """
         Check if collides with another rectangle
-        :param r: Rectangle to check
+        :param rect: Rectangle to check
         :return: True if collides, false otherwise
         """
-        if r is not None:
-            if self.x >= r.x + r.w or self.x + self.w <= r.x:
+        if rect is not None:
+            if self.x >= rect.x + rect.w or self.x + self.w <= rect.x:
                 return False
-            if self.y >= r.y + r.h or self.y + self.h <= r.y:
+            if self.y >= rect.y + rect.h or self.y + self.h <= rect.y:
                 return False
             return True
         return False
@@ -146,6 +147,10 @@ class Movable(ImageRect):
             self.y = STAGE_HEIGHT - self.h
 
     def move(self):
+        """
+        Move object according to its policy
+        :return: None
+        """
         self.x -= self.speed
         if self.x + self.w < 0:
             self.valid = False
@@ -170,12 +175,12 @@ class Movable(ImageRect):
         if len(movs) > 0:
             x, i = 0, 0
             while x < 2 * width:
-                m = Movable(x, imagelist[movs[i]], movs[i], MOVABLE_SPEED)
-                x += m.image.width()  # One next to each other, as requested, no space left
+                movable = Movable(x, imagelist[movs[i]], movs[i], MOVABLE_SPEED)
+                x += movable.image.width()  # One next to each other, as requested, no space left
                 i += 1
                 if i > len(movs) - 1:
                     i = 0
-                movables.append(m)
+                movables.append(movable)
         return movables
 
 
@@ -188,9 +193,19 @@ class FlyingObject(ImageRect):
         self.valid = True
 
     def is_valid(self):
+        """
+        Check if object is valid
+        :return:
+        """
         return self.valid
 
     def move_to(self, x, y):
+        """
+        Move object to specific location
+        :param x: X coordinate of the new location
+        :param y: Y coordinate of the new location
+        :return: None
+        """
         self.x = x
         self.y = y
         if self.x + self.w < 0:
@@ -203,6 +218,12 @@ class FlyingObject(ImageRect):
             self.valid = False
 
     def move_by(self, dx, dy):
+        """
+        Move object by a specific distance
+        :param dx: Distance width
+        :param dy: Distance height
+        :return: None
+        """
         self.x += dx
         self.y += dy
         if self.x + self.w < 0:
@@ -270,6 +291,10 @@ class Player(FlyingObject):
         self.__update_shieldrect()
 
     def __update_shieldrect(self):
+        """
+        Update shield rectangle with every move
+        :return: None
+        """
         self.shieldx = self.x - Player.offset
         self.shieldy = self.y - Player.offset
         self.shieldw = self.width + 2 * Player.offset
@@ -332,11 +357,21 @@ class Medkit(FlyingObject):
     Medical kit flying object
     """
     def __init__(self, x, y, image):
+        """
+        Create MedKit object
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param image: MedKit display image
+        """
         super().__init__(x, y, image)
         self.basey = y
         self.speedx = -8
 
     def move(self):
+        """
+        Move MedKit object according to sine policy
+        :return:
+        """
         dy = int(100 * math.sin(self.x / 100))
         self.x += self.speedx
         self.y = self.basey + dy
@@ -349,6 +384,12 @@ class Boss(FlyingObject):
     Boss object
     """
     def __init__(self, x, y, image):
+        """
+        Game Boss
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param image: Boss image to display
+        """
         super().__init__(x, y, image)
         self.dy = 1
         self.yspeed = 20
@@ -373,6 +414,10 @@ class Boss(FlyingObject):
             self.valid = False
 
     def move(self):
+        """
+        Move boss up and down
+        :return:
+        """
         magic_number = 50
         if self.y >= STAGE_HEIGHT - magic_number:
             self.dy = -1
@@ -386,11 +431,21 @@ class Shield(FlyingObject):
     Flying shield to pick and become immortal for 10s
     """
     def __init__(self, x, y, image):
+        """
+        Create flying shield object
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param image: Shield image to display
+        """
         super().__init__(x, y, image)
         self.basey = y
         self.speedx = SHIELD_SPEEDX
 
     def move(self):
+        """
+        Move flying shield according to sine policy
+        :return: None
+        """
         dy = int(100 * math.sin(self.x / 100))
         self.x -= 8
         self.y = self.basey + dy
@@ -399,7 +454,17 @@ class Shield(FlyingObject):
 
 
 class Missile(FlyingObject):
+    """
+    Generic missile object
+    """
     def __init__(self, x, y, etype, image):
+        """
+        Create missile object
+        :param x: X coordinate of top left corner
+        :param y: Y coordinate of top left corner
+        :param etype: Missile type
+        :param image: Missile image to display
+        """
         super().__init__(x, y, image)
         self.etype = etype
         self.speedx = 12
@@ -407,6 +472,10 @@ class Missile(FlyingObject):
         self.speedhy = 6
 
     def move(self):
+        """
+        Move missile according to its type
+        :return: None
+        """
         if self.etype == MissileType.FROM:
             self.x += self.speedx
         elif self.etype == MissileType.TO:
@@ -440,12 +509,25 @@ class Missile(FlyingObject):
 
 
 class Drop(FlyingObject):
+    """
+    Drop object
+    """
     def __init__(self, x, y, image):
+        """
+        Create drop object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: Drop image
+        """
         super().__init__(x, y, image)
         self.speedx = -8
         self.speedy = 8
 
     def move(self):
+        """
+        Move drop object according to its diagonal policy
+        :return: None
+        """
         self.x += self.speedx
         self.y += self.speedy
         if self.x + self.w <= 0:
@@ -455,11 +537,24 @@ class Drop(FlyingObject):
 
 
 class Tnt(FlyingObject):
+    """
+    TNT object
+    """
     def __init__(self, x, y, image):
+        """
+        Create TNT object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: TNT image
+        """
         super().__init__(x, y, image)
         self.basey = y
 
     def move(self):
+        """
+        Move TNT object according to its sine policy
+        :return: None
+        """
         dy = int(100 * math.sin(self.x / 100))
         self.x += -8
         self.y = self.basey + dy
@@ -468,12 +563,25 @@ class Tnt(FlyingObject):
 
 
 class Meteorite(FlyingObject):
+    """
+    Meteorite object
+    """
     def __init__(self, x, y, image):
+        """
+        Create meteorite object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: Meteorite image
+        """
         super().__init__(x, y, image)
-        self.speedx = -2
+        self.speedx = 1
         self.speedy = 2
 
     def move(self):
+        """
+        Move meteorite object according to its diagonal policy
+        :return: None
+        """
         self.x += self.speedx
         self.y += self.speedy
         if self.x + self.w <= 0:
@@ -483,11 +591,24 @@ class Meteorite(FlyingObject):
 
 
 class LightBall(FlyingObject):
+    """
+    Flying ligthball object
+    """
     def __init__(self, x, y, image):
+        """
+        Create lightball object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: lightball image
+        """
         super().__init__(x, y, image)
         self.basey = y
 
     def move(self):
+        """
+        Move lighball object according to its sine policy
+        :return: None
+        """
         dx = -8
         dy = int(100 * math.sin(self.x / 100))
         self.x += dx
@@ -501,8 +622,14 @@ class FireMissile(FlyingObject):
     Whenever a LightBall is caught, player can shoot with
     FireMissile
     """
-
     def __init__(self, x, y, direction: FireballDirection, image):
+        """
+        Create FireMissile object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param direction: fireball direction (FireballDirection)
+        :param image: Fire missile image
+        """
         super().__init__(x, y, image)
         self.direction = direction
         if self.direction == FireballDirection.UP:
@@ -516,6 +643,10 @@ class FireMissile(FlyingObject):
             self.speedy = 15
 
     def move(self):
+        """
+        Move firemissile according to its straight/diagonal policy
+        :return: None
+        """
         self.x += self.speedx
         self.y += self.speedy
         if self.x > ARENA_WIDTH:
@@ -527,20 +658,38 @@ class FireMissile(FlyingObject):
 
 
 class Explosion(FlyingObject):
+    """
+    Explosion object
+    """
     def __init__(self, x, y, images: list):
+        """
+        Create explosion object
+        :param x: X coordinate of the middle
+        :param y: Y coordinage of the middle
+        :param images: Explosion images
+        """
         super().__init__(x, y, None)
         self.images = images
         self.frame = 0
         self.frames = len(self.images)
 
     def paint(self, painter):
+        """
+        Paint explosion (draw current frame)
+        :param painter: Painter to paint by
+        :return: None
+        """
         if self.valid:
             image = self.images[self.frame]
-            ax = self.x - image.width() // 2
-            ay = self.y - image.height() // 2
-            painter.drawPixmap(ax, ay, image)
+            a_x = self.x - image.width() // 2
+            a_y = self.y - image.height() // 2
+            painter.drawPixmap(a_x, a_y, image)
 
     def move(self):
+        """
+        Process next frame
+        :return: None
+        """
         if self.frame < self.frames - 1:
             self.frame += 1
         else:
@@ -553,12 +702,21 @@ class IceBox(FlyingObject):
     All the enemies stop and do not shoot and all the missiles disappear.
     After 20 seconds everything goes back to normal.
     """
-
     def __init__(self, x, y, image):
+        """
+        Create IceBox object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: IceBox image
+        """
         super().__init__(x, y, image)
         self.basey = y
 
     def move(self):
+        """
+        Move IceBox according to its sine policy
+        :return: None
+        """
         dx = -8
         dy = int(100 * math.sin(self.x / 100))
         self.x += dx
@@ -568,12 +726,26 @@ class IceBox(FlyingObject):
 
 
 class Bomb(FlyingObject):
+    """
+    Bomb object
+    """
     def __init__(self, x, y, image, speedy=3):
+        """
+        Create bomb object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: Bomb image
+        :param speedy: Custom Y-speed
+        """
         super().__init__(x, y, image)
-        self.speedx = -2  # TODO: const, taki sam jak Movables
+        self.speedx = SPEEDX_BOMB
         self.speedy = speedy
 
     def move(self):
+        """
+        Move object (vertical policy)
+        :return:None
+        """
         self.x += self.speedx
         self.y += self.speedy
         if self.y >= ARENA_HEIGHT:
@@ -583,18 +755,38 @@ class Bomb(FlyingObject):
 
 
 class Star(ImageRect):
+    """
+    Star object
+    """
     def __init__(self, x, y, image, speed=2):
+        """
+        Create star object
+        :param x: X coordinate of top-left corner
+        :param y: Y coordinate of top-left corner
+        :param image: Star image
+        :param speed: Custom X-speed
+        """
         super().__init__(x, y, image)
         self.y = y
         self.speed = speed
 
     def move(self):
+        """
+        Move star (horizontal policy)
+        :return: None
+        """
         self.x -= self.speed
         if self.x + self.w < 0:
             self.x = STAGE_WIDTH
 
     @staticmethod
     def from_factory(matrix: list, image):
+        """
+        Create stars in advance
+        :param matrix: Stars matrix (list of lists)
+        :param image: Star image
+        :return: None
+        """
         stars = []
         rows = len(matrix)
         columns = len(matrix[0])

@@ -7,23 +7,12 @@ Game managers
 
 import math
 import random
-from stypes import (
-    MovableType,
-    MissileType)
-from primi import (
-    Tnt,
-    Drop,
-    Missile,
-    Medkit,
-    IceBox,
-    Enemy,
-    LightBall,
-    Boss,
-    Shield)
-from sdefs import *
-from sevents import (
-    GameEvent,
-    EnemyEvent)
+from stypes import MovableType, MissileType
+from primi import Tnt, Drop, Missile, Medkit,\
+    IceBox, Enemy, LightBall, Boss, Shield
+from sdefs import MAX_EVENTS_FACTOR, ARENA_WIDTH,\
+    ARENA_HEIGHT, STAGE_HEIGHT, MAX_LEVEL
+from sevents import GameEvent, EnemyEvent
 from sutils import cycle
 
 
@@ -43,17 +32,17 @@ class EventManager:
         self.shooter = shooter
         self.level = 0
         self.creates = {
-            GameEvent.DROP: self.create_drop,
-            GameEvent.DROPS: self.create_drops,
-            GameEvent.MISSILES: self.create_missiles,
-            GameEvent.MISSILES_ODD: self.create_missiles_odd,
-            GameEvent.MISSILES_EVEN: self.create_missiles_even,
-            GameEvent.MEDKIT: self.create_medkit,
-            GameEvent.FREEZE: self.create_freeze,
-            GameEvent.LIGHTBALL: self.create_lightball,
-            GameEvent.SHIELD: self.create_shield,
-            GameEvent.TNT: self.create_tnt,
-            GameEvent.GUN_MISSILE: self.create_gun_missiles
+            GameEvent.DROP: self.__create_drop,
+            GameEvent.DROPS: self.__create_drops,
+            GameEvent.MISSILES: self.__create_missiles,
+            GameEvent.MISSILES_ODD: self.__create_missiles_odd,
+            GameEvent.MISSILES_EVEN: self.__create_missiles_even,
+            GameEvent.MEDKIT: self.__create_medkit,
+            GameEvent.FREEZE: self.__create_freeze,
+            GameEvent.LIGHTBALL: self.__create_lightball,
+            GameEvent.SHIELD: self.__create_shield,
+            GameEvent.TNT: self.__create_tnt,
+            GameEvent.GUN_MISSILE: self.__create_gun_missiles
         }
 
     def set_level(self, level: int):
@@ -72,7 +61,7 @@ class EventManager:
         """
         return self.eventq.pop(0)
 
-    def create_tnt(self):
+    def __create_tnt(self):
         """
         Create a single, random TNT box
         """
@@ -83,7 +72,7 @@ class EventManager:
                 random.randint(150, 3 * ARENA_HEIGHT // 4),
                 self.shooter.images['indicators']['tnt']))
 
-    def create_drop(self):
+    def __create_drop(self):
         """
         Create a single, random drop
         """
@@ -93,7 +82,7 @@ class EventManager:
                 0,
                 self.shooter.images['indicators']['drop']))
 
-    def create_drops(self):
+    def __create_drops(self):
         """
         Create two random drops
         """
@@ -108,7 +97,7 @@ class EventManager:
                 0,
                 self.shooter.images['indicators']['drop']))
 
-    def create_gun_missiles(self):
+    def __create_gun_missiles(self):
         """
         Create gun missiles for every visible gun, (if not in frozen mode)
         :return: None
@@ -123,7 +112,7 @@ class EventManager:
                                 MissileType.TO_NW,
                                 image))
 
-    def create_missiles(self):
+    def __create_missiles(self):
         """
         Create missiles for all enemies
         :return: None
@@ -139,7 +128,7 @@ class EventManager:
                             MissileType.TO,
                             image))
 
-    def create_missiles_even(self):
+    def __create_missiles_even(self):
         """
         Create missiles for even enemies
         :return: None
@@ -156,7 +145,7 @@ class EventManager:
                                 MissileType.TO,
                                 image))
 
-    def create_missiles_odd(self):
+    def __create_missiles_odd(self):
         """
         Create missiles for odd enemies
         :return: None
@@ -173,7 +162,7 @@ class EventManager:
                                 MissileType.TO,
                                 image))
 
-    def create_medkit(self):
+    def __create_medkit(self):
         """
         Create new medkit and append to list of all medkits
         :return: None
@@ -183,7 +172,7 @@ class EventManager:
                    random.randint(250, 3 * ARENA_HEIGHT // 4),
                    self.shooter.images['indicators']['medkit']))
 
-    def create_freeze(self):
+    def __create_freeze(self):
         """
         Create new icebox and append to list of all iceboxes
         :return: None
@@ -193,7 +182,7 @@ class EventManager:
                    random.randint(150, 3 * ARENA_HEIGHT // 4),
                    self.shooter.images['indicators']['frozen-box']))
 
-    def create_lightball(self):
+    def __create_lightball(self):
         """
         Create random LightBall object
         :return: None
@@ -203,7 +192,7 @@ class EventManager:
                       random.randint(150, 3 * ARENA_HEIGHT // 4),
                       self.shooter.images['indicators']['light-ball']))
 
-    def create_shield(self):
+    def __create_shield(self):
         """
         Create random Shield object
         :return: None
@@ -246,20 +235,20 @@ class EnemyManager:
         self.level = 0
         self.eventq = []
         self.creates = {
-            EnemyEvent.CIRCLE: self.create_circle,
-            EnemyEvent.SQUARE: self.create_square,
-            EnemyEvent.FRONTBACK: self.create_frontback,
-            EnemyEvent.UPDOWN: self.create_updown,
-            EnemyEvent.SINE: self.create_sine,
-            EnemyEvent.WAVE: self.create_wave
+            EnemyEvent.CIRCLE: self.__create_circle,
+            EnemyEvent.SQUARE: self.__create_square,
+            EnemyEvent.FRONTBACK: self.__create_frontback,
+            EnemyEvent.UPDOWN: self.__create_updown,
+            EnemyEvent.SINE: self.__create_sine,
+            EnemyEvent.WAVE: self.__create_wave
         }
         self.moves = {
-            EnemyEvent.CIRCLE: self.move_circle,
-            EnemyEvent.SQUARE: self.move_square,
-            EnemyEvent.FRONTBACK: self.move_frontback,
-            EnemyEvent.UPDOWN: self.move_updown,
-            EnemyEvent.SINE: self.move_sine,
-            EnemyEvent.WAVE: self.move_wave
+            EnemyEvent.CIRCLE: self.__move_circle,
+            EnemyEvent.SQUARE: self.__move_square,
+            EnemyEvent.FRONTBACK: self.__move_frontback,
+            EnemyEvent.UPDOWN: self.__move_updown,
+            EnemyEvent.SINE: self.__move_sine,
+            EnemyEvent.WAVE: self.__move_wave
         }
 
     def set_level(self, level: int):
@@ -287,7 +276,7 @@ class EnemyManager:
         self.enemies = []
         self.boss = None
 
-    def create_frontback(self):
+    def __create_frontback(self):
         """
         Create enemies set with a front-back scheme
         :return: None
@@ -305,7 +294,7 @@ class EnemyManager:
                 speedy=2)
             self.enemies.append(enemy)
 
-    def create_circle(self):
+    def __create_circle(self):
         """
         Create enemies set with a circle scheme
         :return: None
@@ -327,7 +316,7 @@ class EnemyManager:
             self.enemies.append(enemy)
         self.move()
 
-    def create_square(self):
+    def __create_square(self):
         """
         Create enemies set with a square scheme
         :return: None
@@ -345,7 +334,7 @@ class EnemyManager:
                 speedy=8)
             self.enemies.append(enemy)
 
-    def create_updown(self):
+    def __create_updown(self):
         """
         Create enemies set with an up-down scheme
         :return: None
@@ -362,7 +351,7 @@ class EnemyManager:
                 speedy=13 if odd else -13)
             self.enemies.append(enemy)
 
-    def create_sine(self):
+    def __create_sine(self):
         """
         Create enemies set with a sine scheme
         :return: None
@@ -380,10 +369,10 @@ class EnemyManager:
                 speedy=10)
             self.enemies.append(enemy)
 
-    def create_wave(self):
+    def __create_wave(self):
         """
-
-        :return:
+        Create enemies set with a wave scheme
+        :return: None
         """
         image = next(self.imagen)
         for i in range(8):
@@ -397,12 +386,20 @@ class EnemyManager:
                 speedy=15)
             self.enemies.append(enemy)
 
-    def create_boss(self):
+    def __create_boss(self):
+        """
+        Create the boss
+        :return: None
+        """
         self.boss = Boss((2 * ARENA_WIDTH) // 3,
                          random.randint(5, STAGE_HEIGHT - 100),
                          self.shooter.images['boss'])
 
     def create_boss_missiles(self):
+        """
+        Create boss missiles (3: TO, SWW, NWW)
+        :return: None
+        """
         fixed_height = 32
         for etype in [MissileType.TO, MissileType.TO_SWW, MissileType.TO_NWW]:
             image = self.shooter.images['missiles'][etype]
@@ -413,7 +410,11 @@ class EnemyManager:
                     etype,
                     image))
 
-    def move_circle(self):
+    def __move_circle(self):
+        """
+        Move enemies according to circle scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.angle += 2
             enemy.angle %= 360
@@ -427,7 +428,11 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_square(self):
+    def __move_square(self):
+        """
+        Move enemies according to square scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.x += enemy.speedx * enemy.dx
             enemy.y += enemy.speedy * enemy.dy
@@ -450,7 +455,11 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_frontback(self):
+    def __move_frontback(self):
+        """
+        Move enemies according to front-back scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.x += enemy.speedx * enemy.dx
             enemy.y += enemy.speedy * enemy.dy
@@ -465,7 +474,11 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_updown(self):
+    def __move_updown(self):
+        """
+        Move enemies according to up-down scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.y += enemy.speedy
             enemy.x += enemy.speedx
@@ -477,7 +490,11 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_sine(self):
+    def __move_sine(self):
+        """
+        Move enemies according to sine scheme
+        :return: None
+        """
         for enemy in self.enemies:
             radians = math.pi * enemy.x / 180.0
             if enemy.odd:
@@ -491,7 +508,11 @@ class EnemyManager:
                 enemy.valid = False
         self.enemies = [x for x in self.enemies if x.is_valid()]
 
-    def move_wave(self):
+    def __move_wave(self):
+        """
+        Move enemies according to wave scheme
+        :return: None
+        """
         for enemy in self.enemies:
             enemy.x += enemy.speedx
             sektor = enemy.x // 150
@@ -554,7 +575,7 @@ class EnemyManager:
                     self.parent.shield_timer = 0
                     self.parent.lighball_timer = 0
                     self.parent.frozen_timer = 0
-                    self.create_boss()
+                    self.__create_boss()
                 else:
                     if self.boss.is_alive():
                         self.create_boss_missiles()

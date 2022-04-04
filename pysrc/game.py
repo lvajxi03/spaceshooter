@@ -1,41 +1,31 @@
 #!/usr/bin/env python
 
+"""
+Main Game class
+"""
+
 import os
 
-
-from stypes import (
-    UserInput,
-    Key,
-    Options,
-    MissileType,
-    MovableType,
-    FireballDirection,
-    Board,
-    Mode,
-    SetupMode
-)
-from primi import (
-    Rect,
-    Missile,
-    Player,
-    Movable,
-    Explosion,
-    Bomb,
-    FireMissile,
-    Star
-)
+from stypes import UserInput, Key, Options, MissileType, MovableType,\
+    FireballDirection, Board, Mode, SetupMode
+from primi import Rect, Missile, Player, Movable, Explosion, Bomb,\
+    FireMissile, Star
 from sconfig import ShooterConfig
 from slocales import locales
-from sdefs import *
-from managers import (
-    EventManager,
-    EnemyManager)
+from sdefs import star_ids, ARENA_HEIGHT, ARENA_WIDTH, TIMEOUT_PAINT, TIMEOUT_WELCOME,\
+    TIMEOUT_SMOKE, TIMEOUT_GET_READY, TIMEOUT_NEWSCORE, TIMEOUT_GAME_EVENTS, MAX_LEVEL,\
+    TIMEOUT_SETUP_ENTER, TIMEOUT_ENEMIES_EVENTS, TIMEOUT_GAME_UPDATE, TIMEOUT_GAME_COUNTER,\
+    MAX_NICK_LEN, BOTTOM_BAR, TIMEOUT_MISSILE_LOCK, TIMEOUT_SHIELD, TIMEOUT_LIGHT,\
+    TIMEOUT_BOMB_LOCK, SHIELD_TIMER, TIMEOUT_FREEZE, MAX_PLAYER_INDEX, LIGHTBALL_TIMER,\
+    FROZEN_TIMER
+from managers import EventManager, EnemyManager
 
 
 class Game:
     """
     Main Game class, with all logic here
     """
+
     def __init__(self, shooter):
         """
         Create game instance
@@ -93,70 +83,70 @@ class Game:
             Options.UNLIMITED
         ]
         self.mousepress_events = {
-            Board.WELCOME: self.mousepress_welcome,
-            Board.MENU: self.mousepress_menu,
-            Board.PLAYER: self.mousepress_player,
-            Board.GAME: self.mousepress_game,
-            Board.OPTIONS: self.mousepress_options,
-            Board.HISCORES: self.mousepress_hiscores,
-            Board.SETUP: self.mousepress_setup,
-            Board.HELP: self.mousepress_help,
-            Board.ABOUT: self.mousepress_about,
-            Board.QUIT: self.mousepress_quit,
-            Board.NEWSCORE: self.mousepress_newscore
+            Board.WELCOME: self.__mousepress_welcome,
+            Board.MENU: self.__mousepress_menu,
+            Board.PLAYER: self.__mousepress_player,
+            Board.GAME: self.__mousepress_game,
+            Board.OPTIONS: self.__mousepress_options,
+            Board.HISCORES: self.__mousepress_hiscores,
+            Board.SETUP: self.__mousepress_setup,
+            Board.HELP: self.__mousepress_help,
+            Board.ABOUT: self.__mousepress_about,
+            Board.QUIT: self.__mousepress_quit,
+            Board.NEWSCORE: self.__mousepress_newscore
         }
         self.keyrelease_events = {
-            Board.WELCOME: self.keyrelease_welcome,
-            Board.PLAYER: self.keyrelease_player,
-            Board.MENU: self.keyrelease_menu,
-            Board.GAME: self.keyrelease_game,
-            Board.OPTIONS: self.keyrelease_options,
-            Board.HISCORES: self.keyrelease_hiscores,
-            Board.SETUP: self.keyrelease_setup,
-            Board.HELP: self.keyrelease_help,
-            Board.ABOUT: self.keyrelease_about,
-            Board.QUIT: self.keyrelease_quit,
-            Board.NEWSCORE: self.keyrelease_newscore
+            Board.WELCOME: self.__keyrelease_welcome,
+            Board.PLAYER: self.__keyrelease_player,
+            Board.MENU: self.__keyrelease_menu,
+            Board.GAME: self.__keyrelease_game,
+            Board.OPTIONS: self.__keyrelease_options,
+            Board.HISCORES: self.__keyrelease_hiscores,
+            Board.SETUP: self.__keyrelease_setup,
+            Board.HELP: self.__keyrelease_help,
+            Board.ABOUT: self.__keyrelease_about,
+            Board.QUIT: self.__keyrelease_quit,
+            Board.NEWSCORE: self.__keyrelease_newscore
         }
         self.keyreleasegame_events = {
-            Mode.INIT: self.keyrelease_init,
-            Mode.PLAY: self.keyrelease_play,
-            Mode.PAUSED: self.keyrelease_paused,
-            Mode.KILLED: self.keyrelease_killed,
-            Mode.PREPARE: self.keyrelease_prepare,
-            Mode.GAMEOVER: self.keyrelease_gameover,
-            Mode.CONGRATS: self.keyrelease_congrats
+            Mode.INIT: self.__keyrelease_init,
+            Mode.PLAY: self.__keyrelease_play,
+            Mode.PAUSED: self.__keyrelease_paused,
+            Mode.KILLED: self.__keyrelease_killed,
+            Mode.PREPARE: self.__keyrelease_prepare,
+            Mode.GAMEOVER: self.__keyrelease_gameover,
+            Mode.CONGRATS: self.__keyrelease_congrats
         }
         self.board_initializers = {
-            Board.WELCOME: self.init_welcome,
-            Board.PLAYER: self.init_player,
-            Board.MENU: self.init_menu,
-            Board.GAME: self.init_game,
-            Board.OPTIONS: self.init_options,
-            Board.HISCORES: self.init_hiscores,
-            Board.SETUP: self.init_setup,
-            Board.HELP: self.init_help,
-            Board.ABOUT: self.init_about,
-            Board.QUIT: self.init_quit,
-            Board.NEWSCORE: self.init_newscore
+            Board.WELCOME: self.__init_welcome,
+            Board.PLAYER: self.__init_player,
+            Board.MENU: self.__init_menu,
+            Board.GAME: self.__init_game,
+            Board.OPTIONS: self.__init_options,
+            Board.HISCORES: self.__init_hiscores,
+            Board.SETUP: self.__init_setup,
+            Board.HELP: self.__init_help,
+            Board.ABOUT: self.__init_about,
+            Board.QUIT: self.__init_quit,
+            Board.NEWSCORE: self.__init_newscore
         }
         self.mode_initializers = {
-            Mode.INIT: self.init_init,  # Yes.
-            Mode.PREPARE: self.init_prepare,
-            Mode.PLAY: self.init_play,
-            Mode.PAUSED: self.init_paused,
-            Mode.KILLED: self.init_killed,
-            Mode.GAMEOVER: self.init_gameover,
-            Mode.CONGRATS: self.init_congrats
+            Mode.INIT: self.__init_init,  # Yes.
+            Mode.PREPARE: self.__init_prepare,
+            Mode.PLAY: self.__init_play,
+            Mode.PAUSED: self.__init_paused,
+            Mode.KILLED: self.__init_killed,
+            Mode.GAMEOVER: self.__init_gameover,
+            Mode.CONGRATS: self.__init_congrats
         }
         self.setupmode_initializers = {
-            SetupMode.DISPLAY: self.init_display,
-            SetupMode.ENTER: self.init_enter
+            SetupMode.DISPLAY: self.__init_display,
+            SetupMode.ENTER: self.__init_enter
         }
         self.useractions = {}
         keys = self.config.db['keys']
-        for key in keys:
-            self.useractions[keys[key]] = key
+        for key, mapping in keys.items():
+            self.useractions[mapping] = key
         # Board-related
         self.menu_pos = 0
         # Options related
@@ -196,26 +186,27 @@ class Game:
         self.menu_rectangles = []
         self.options_rectangles = []
         self.lang_rectangles = []
-        r = Rect(ARENA_WIDTH - 160, ARENA_HEIGHT - 60, 80, 60)
-        self.lang_rectangles.append(r)
-        r = Rect(ARENA_WIDTH - 80, ARENA_HEIGHT - 60, 80, 60)
-        self.lang_rectangles.append(r)
+        r_x = Rect(ARENA_WIDTH - 160, ARENA_HEIGHT - 60, 80, 60)
+        self.lang_rectangles.append(r_x)
+        r_x = Rect(ARENA_WIDTH - 80, ARENA_HEIGHT - 60, 80, 60)
+        self.lang_rectangles.append(r_x)
         self.player_rectangles = []
-        r = Rect(ARENA_WIDTH / 4 - self.shooter.images['icons']['prev'].width() / 2,
-                 600 - self.shooter.images['icons']['prev'].height() / 2,
-                 self.shooter.images['icons']['prev'].width(),
-                 self.shooter.images['icons']['prev'].height())
-        self.player_rectangles.append(r)
-        r = Rect(ARENA_WIDTH / 2 - self.shooter.images['big_players'][self.player_index].width() / 2,
-                 600 - self.shooter.images['big_players'][self.player_index].height() / 2,
-                 self.shooter.images['big_players'][self.player_index].width(),
-                 self.shooter.images['big_players'][self.player_index].height())
-        self.player_rectangles.append(r)
-        r = Rect(3 * ARENA_WIDTH / 4 - self.shooter.images['icons']['next'].width() / 2,
-                 600 - self.shooter.images['icons']['next'].height() / 2,
-                 self.shooter.images['icons']['next'].width(),
-                 self.shooter.images['icons']['next'].height())
-        self.player_rectangles.append(r)
+        r_x = Rect(ARENA_WIDTH / 4 - self.shooter.images['icons']['prev'].width() / 2,
+                   600 - self.shooter.images['icons']['prev'].height() / 2,
+                   self.shooter.images['icons']['prev'].width(),
+                   self.shooter.images['icons']['prev'].height())
+        self.player_rectangles.append(r_x)
+        r_x = Rect(ARENA_WIDTH / 2 - self.shooter.images[
+            'big_players'][self.player_index].width() / 2,
+                   600 - self.shooter.images['big_players'][self.player_index].height() / 2,
+                   self.shooter.images['big_players'][self.player_index].width(),
+                   self.shooter.images['big_players'][self.player_index].height())
+        self.player_rectangles.append(r_x)
+        r_x = Rect(3 * ARENA_WIDTH / 4 - self.shooter.images['icons']['next'].width() / 2,
+                   600 - self.shooter.images['icons']['next'].height() / 2,
+                   self.shooter.images['icons']['next'].width(),
+                   self.shooter.images['icons']['next'].height())
+        self.player_rectangles.append(r_x)
         self.eventmanager = EventManager(self, self.shooter)
         self.enemymanager = EnemyManager(self, self.shooter)
         # Newscore
@@ -229,194 +220,287 @@ class Game:
         # Smoke related
         self.smoke_counter = 0
 
-    def has_key_setup(self, key):
+    def __has_key_setup(self, key):
         """
         Check if key is already set
         :param key: Key to be checked
         :return: True if set, False otherwise
         """
-        return True if key in self.temp_setup else False
+        return key in self.temp_setup
 
-    def mousepress_welcome(self, event):
-        pass
+    def __mousepress_welcome(self, _):
+        """
+        Mouse button handler for Welcome board
+        :param _: unused
+        :return: None
+        """
+        self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
+        self.change_board(Board.MENU)
 
-    def mousepress_player(self, event):
+    def __mousepress_player(self, event):
+        """
+        Mouse button handler for Player board
+        :param event: Event to process
+        :return: None
+        """
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.player_rectangles[0].contains(event.x, event.y):
             if self.player_index > 0:
                 self.player_index -= 1
             return
         if self.player_rectangles[2].contains(event.x, event.y):
-            if self.player_index < 3:  # TODO: const
+            if self.player_index < MAX_PLAYER_INDEX:
                 self.player_index += 1
             return
         if self.player_rectangles[1].contains(event.x, event.y):
             self.change_board(Board.GAME)
 
-    def mousepress_menu(self, event):
+    def __mousepress_menu(self, event):
+        """
+        Mouse button handler for Menu board
+        :param event: Event to process
+        :return: None
+        """
         pos = 0
-        for r in self.menu_rectangles:
-            if r.contains(event.x, event.y):
+        for r_e in self.menu_rectangles:
+            if r_e.contains(event.x, event.y):
                 self.change_board(self.menupos2board[pos])
                 return
             pos += 1
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
 
-    def mousepress_game(self, event):
+    def __mousepress_game(self, event):
+        """
+        Mouse button meta-handler for Game board
+        :param event: Event to process
+        :return: None
+        """
         if self.mode in [Mode.GAMEOVER, Mode.CONGRATS]:
             if self.lang_rectangles[0].contains(event.x, event.y):
                 self.config['lang'] = 'pl'
-                self.update_menu_rectangles()
-                self.update_options_rectangles()
+                self.__update_menu_rectangles()
+                self.__update_options_rectangles()
                 return
             if self.lang_rectangles[1].contains(event.x, event.y):
                 self.config['lang'] = 'en'
-                self.update_menu_rectangles()
-                self.update_options_rectangles()
+                self.__update_menu_rectangles()
+                self.__update_options_rectangles()
 
-    def mousepress_options(self, event):
+    def __mousepress_options(self, event):
+        """
+        Mouse button handler for Options board
+        :param event: Event to process
+        :return: None
+        """
         pos = 0
-        for r in self.options_rectangles:
-            if r.contains(event.x, event.y):
+        for r_e in self.options_rectangles:
+            if r_e.contains(event.x, event.y):
                 self.config['lastmode'] = self.optionspos2option[pos]
                 self.change_board(Board.MENU)
                 return
             pos += 1
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
 
-    def mousepress_hiscores(self, event):
+    def __mousepress_hiscores(self, event):
+        """
+        Mouse button handler for HiScores board
+        :param event: Event to process
+        :return: None
+        """
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
         else:
             self.change_board(Board.MENU)
 
-    def mousepress_setup(self, event):
+    def __mousepress_setup(self, event):
+        """
+        Mouse button handler for Setup board
+        :param event: Event to process
+        :return: None
+        """
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
 
-    def mousepress_help(self, event):
+    def __mousepress_help(self, event):
+        """
+        Mouse button handler for Help board
+        :param event: Event to process
+        :return: None
+        """
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
         else:
             self.change_board(Board.MENU)
 
-    def mousepress_about(self, event):
+    def __mousepress_about(self, event):
+        """
+        Mouse button handler for About board
+        :param event: Event to process
+        :return: None
+        """
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
         else:
             self.change_board(Board.MENU)
 
-    def mousepress_quit(self, event):
-        pass
+    def __mousepress_quit(self, event):
+        """
+        Unused handler
+        :param event: unused
+        :return: None
+        """
 
-    def mousepress_newscore(self, event):
+    def __mousepress_newscore(self, event):
+        """
+        Mouse button handler for NewScore board
+        :param event: Event to process
+        :return: None
+        """
         if self.lang_rectangles[0].contains(event.x, event.y):
             self.config['lang'] = 'pl'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
             return
         if self.lang_rectangles[1].contains(event.x, event.y):
             self.config['lang'] = 'en'
-            self.update_menu_rectangles()
-            self.update_options_rectangles()
+            self.__update_menu_rectangles()
+            self.__update_options_rectangles()
 
     def mouse_pressed(self, event):
+        """
+        Generic mouse button event aggregator
+        :param event: Event to handle
+        :return: None
+        """
         self.mousepress_events[self.board](event)
 
-    def update_menu_rectangles(self):
+    def __update_menu_rectangles(self):
+        """
+        Update menu rectangles according to language
+        :return: None
+        """
         self.menu_rectangles = []
-        fm = self.arena.metrics['menu']
-        c = 3
+        f_m = self.arena.metrics['menu']
+        counter = 3
         for label in locales['menu'][self.config['lang']]:
-            r = Rect(400, c * 100 - fm.height(), fm.horizontalAdvance(label), fm.height())
-            self.menu_rectangles.append(r)
-            c += 1
+            r_x = Rect(400, counter * 100 - f_m.height(),
+                       f_m.horizontalAdvance(label), f_m.height())
+            self.menu_rectangles.append(r_x)
+            counter += 1
 
-    def update_options_rectangles(self):
+    def __update_options_rectangles(self):
+        """
+        Update options rectanges according to language
+        :return: None
+        """
         self.options_rectangles = []
-        fm = self.arena.metrics['options']
-        c = 3
+        f_m = self.arena.metrics['options']
+        counter = 3
         for label in locales['options'][self.config['lang']]:
-            r = Rect(400, c * 100 - fm.height(), fm.horizontalAdvance(label), fm.height())
-            self.options_rectangles.append(r)
-            c += 1
+            r_x = Rect(400, counter * 100 - f_m.height(),
+                       f_m.horizontalAdvance(label), f_m.height())
+            self.options_rectangles.append(r_x)
+            counter += 1
 
     def change_board(self, board, nextb=Board.NONE):
+        """
+        Change board, then execute its initial action
+        :param board: Board to change to
+        :param nextb: Next board, if needed
+        :return: None
+        """
         self.next_board = nextb
         if board != self.board:
             self.board = board
             initializer = self.board_initializers[board]
             initializer()
 
-    def change_mode(self, mode):
+    def __change_mode(self, mode):
+        """
+        Change game mode, then execute its initial action
+        :param mode: Mode to change to
+        :return: None
+        """
         if mode != self.mode:
             self.mode = mode
             initializer = self.mode_initializers[mode]
             initializer()
 
-    def change_setup(self, setup):
+    def __change_setup(self, setup):
+        """
+        Change setup mode, then execute its initial action
+        :param setup: Setup mode to change to
+        :return: None
+        """
         if self.setupmode != setup:
             self.setupmode = setup
             initializer = self.setupmode_initializers[setup]
             initializer()
 
-    def init_player(self):
-        pass
+    def __init_player(self):
+        """
+        Unused handler
+        :return: None
+        """
 
-    def init_welcome(self):
+    def __init_welcome(self):
+        """
+        Initialize Welcome board
+        :return: None
+        """
         self.shooter.timers['welcome-event'].start(TIMEOUT_WELCOME)
         self.shooter.timers['paint-event'].start(TIMEOUT_PAINT)
 
@@ -438,42 +522,84 @@ class Game:
                       ]:
             self.shooter.timers[event].stop()
 
-    def init_menu(self):
+    def __init_menu(self):
+        """
+        Initialize menu board
+        :return: None
+        """
         self.player = None
-        self.update_menu_rectangles()
+        self.__update_menu_rectangles()
         self.__stop_timers()
         self.shooter.timers['setup-enter-event'].stop()
 
-    def init_congrats(self):
+    def __init_congrats(self):
+        """
+        Initialize Congratulations board
+        :return: None
+        """
         self.__stop_timers()
 
-    def init_game(self):
-        self.change_mode(Mode.INIT)
+    def __init_game(self):
+        """
+        Initialize Game board
+        :return: None
+        """
+        self.__change_mode(Mode.INIT)
 
-    def init_options(self):
+    def __init_options(self):
+        """
+        Initialize options board
+        :return: None
+        """
         self.options_pos = int(self.config['lastmode'])
-        self.update_options_rectangles()
+        self.__update_options_rectangles()
 
-    def init_hiscores(self):
+    def __init_hiscores(self):
+        """
+        Initialize HiScores board
+        :return: None
+        """
         self.shooter.timers['newscore-event'].stop()
 
-    def init_setup(self):
-        self.init_display()
+    def __init_setup(self):
+        """
+        Initialize Setup board
+        :return: None
+        """
+        self.__init_display()
 
-    def init_about(self):
-        pass
+    def __init_about(self):
+        """
+        Unused handler
+        :return: None
+        """
 
-    def init_quit(self):
+    def __init_quit(self):
+        """
+        Close game window
+        :return: None
+        """
         self.config.save()
         self.arena.parent.close()
 
-    def init_newscore(self):
+    def __init_newscore(self):
+        """
+        Initialize NewScore board
+        :return: None
+        """
         self.shooter.timers['newscore-event'].start(TIMEOUT_NEWSCORE)
 
-    def init_display(self):
-        pass
+    def __init_display(self):
+        """
+        Unused handler
+        :return: None
+        """
 
-    def init_enter(self):
+    def __init_enter(self):
+        """
+        Initialize Enter Setup mode
+        :return: None
+        """
         self.temp_setup = [
             self.config.get_key(UserInput.LEFT),
             self.config.get_key(UserInput.RIGHT),
@@ -487,7 +613,11 @@ class Game:
         self.shooter.timers['setup-enter-event'].start(TIMEOUT_SETUP_ENTER)
         self.setup_counter = 0
 
-    def init_init(self):
+    def __init_init(self):
+        """
+        Very first game initializer
+        :return: None
+        """
         self.points = 0
         self.level = -1
         self.lives = 3
@@ -495,10 +625,14 @@ class Game:
         self.tnt = 3
         self.eventmanager = EventManager(self, self.shooter)
         self.enemymanager = EnemyManager(self, self.shooter)
-        self.change_mode(Mode.PREPARE)
+        self.__change_mode(Mode.PREPARE)
         self.shooter.timers['smoke-timer'].start(TIMEOUT_SMOKE)
 
-    def init_prepare(self):
+    def __init_prepare(self):
+        """
+        Game prepare initializer
+        :return: None
+        """
         if self.level < MAX_LEVEL:
             self.level += 1
         self.enemymanager.clear()
@@ -528,7 +662,11 @@ class Game:
                                  self.shooter.images['players'][self.player_index])
         self.shooter.timers['get-ready-event'].start(TIMEOUT_GET_READY)
 
-    def init_play(self):
+    def __init_play(self):
+        """
+        Perform all the actions necessary to start the game
+        :return: None
+        """
         self.game_counter = 0
         option = self.options_pos % 3
         timeout_ge = TIMEOUT_GAME_EVENTS - 100 * (option + self.level)
@@ -539,14 +677,18 @@ class Game:
         self.shooter.timers['enemies-event'].start(timeout_ee)
         self.shooter.timers['smoke-timer'].start(TIMEOUT_SMOKE)
 
-    def init_paused(self):
+    def __init_paused(self):
+        """
+        Perform all the actions needed when paused
+        :return: None
+        """
         self.shooter.timers['game-update-event'].stop()
         self.shooter.timers['game-counter-event'].stop()
         self.shooter.timers['game-events'].stop()
         self.shooter.timers['enemies-event'].stop()
         self.shooter.timers['smoke-timer'].stop()
 
-    def init_killed(self):
+    def __init_killed(self):
         """
         Perform all the actions needed when killed
         :return: None
@@ -568,20 +710,26 @@ class Game:
         self.frozen_timer = 0
         self.bombs = []
 
-    def init_help(self):
+    def __init_help(self):
         """
         Initial actions done when help (no actions)
         :return: None
         """
 
-    def init_gameover(self):
+    def __init_gameover(self):
         """
         Initial actions done when game over
         :return: None
         """
         self.__stop_timers()
 
-    def keyrelease_player(self, key, _):
+    def __keyrelease_player(self, key, _):
+        """
+        Key handler for Player board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key in (Key.KEY_Q, Key.KEY_ESCAPE):
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
@@ -593,18 +741,36 @@ class Game:
             if self.player_index < 3:
                 self.player_index += 1
 
-    def keyrelease_congrats(self, key, _):
+    def __keyrelease_congrats(self, key, _):
+        """
+        Key handler for Congratulations board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key in (Key.KEY_ESCAPE, Key.KEY_Q):
             if self.config.is_hiscore(self.points):
                 self.change_board(Board.NEWSCORE)
             else:
                 self.change_board(Board.HISCORES)
 
-    def keyrelease_welcome(self, _k, _t):
+    def __keyrelease_welcome(self, _k, _t):
+        """
+        Key handler for Welcome board
+        :param _k: unused
+        :param _t: unused
+        :return: None
+        """
         self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
         self.change_board(Board.MENU)
 
-    def keyrelease_menu(self, key, _):
+    def __keyrelease_menu(self, key, _):
+        """
+        Key handler for Menu board
+        :param key: Key to be handled
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.change_board(Board.QUIT)
         elif key == Key.KEY_TOP:
@@ -616,11 +782,23 @@ class Game:
         elif key == Key.KEY_ENTER:
             self.change_board(self.menupos2board[self.menu_pos])
 
-    def keyrelease_game(self, key, _):
+    def __keyrelease_game(self, key, _):
+        """
+        General key meta-handler for Game
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         handler = self.keyreleasegame_events[self.mode]
         handler(key, None)
 
-    def keyrelease_options(self, key, _):
+    def __keyrelease_options(self, key, _):
+        """
+        Key handler for Options board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
         elif key == Key.KEY_TOP:
@@ -633,7 +811,7 @@ class Game:
             self.config['lastmode'] = self.optionspos2option[self.options_pos]
             self.change_board(Board.MENU)
 
-    def keyrelease_hiscores(self, key, _):
+    def __keyrelease_hiscores(self, key, _):
         """
         Handle heyrelease when in HiScores board
         :param key: Key to handle
@@ -644,7 +822,7 @@ class Game:
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
-    def keyrelease_prepare(self, key, _):
+    def __keyrelease_prepare(self, key, _):
         """
         Handle keyrelease when in Prepare board
         :param key: Key to handle
@@ -654,13 +832,19 @@ class Game:
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
-    def keyrelease_setup(self, key, _):
+    def __keyrelease_setup(self, key, _):
+        """
+        Key handler for Setup board
+        :param key: Key to handle
+        :param _: unused
+        :return: None
+        """
         if key:
             if self.setupmode == SetupMode.DISPLAY:
                 if key in [Key.KEY_Q, Key.KEY_ESCAPE]:
                     self.change_board(Board.MENU)
                 elif key == Key.KEY_F1:
-                    self.change_setup(SetupMode.ENTER)
+                    self.__change_setup(SetupMode.ENTER)
             elif self.setupmode == SetupMode.ENTER:
                 if key == Key.KEY_ENTER:
                     self.config.set_key(UserInput.LEFT, self.temp_setup[0])
@@ -673,20 +857,20 @@ class Game:
                     self.config.save()
                     self.useractions = {}
                     keys = self.config.db['keys']
-                    for kez in keys:
-                        self.useractions[keys[kez]] = kez
-                    self.change_setup(SetupMode.DISPLAY)
+                    for kez, mapping in keys.items():
+                        self.useractions[mapping] = kez
+                    self.__change_setup(SetupMode.DISPLAY)
                 elif key == Key.KEY_ESCAPE:
                     # Nie przepisywać klawszy
-                    self.change_setup(SetupMode.DISPLAY)
+                    self.__change_setup(SetupMode.DISPLAY)
                 elif key.is_move():
-                    if not self.has_key_setup(key):
+                    if not self.__has_key_setup(key):
                         if self.temp_position <= 6:
                             self.temp_setup[self.temp_position] = key
                             self.temp_position += 1
                             self.temp_position = min(self.temp_position, 6)
 
-    def keyrelease_about(self, key, _):
+    def __keyrelease_about(self, key, _):
         """
         Key handler for ABOUT board.
         :param key: key to handle
@@ -697,7 +881,7 @@ class Game:
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
-    def keyrelease_quit(self, _k, _t):
+    def __keyrelease_quit(self, _k, _t):
         """
         Key handler for QUIT board
         :param _k: unused
@@ -706,7 +890,7 @@ class Game:
         """
         self.arena.parent.close()
 
-    def keyrelease_newscore(self, key, _t):
+    def __keyrelease_newscore(self, key, _t):
         """
         Key handler for NewScore board
         :param key: Key to handle
@@ -723,15 +907,15 @@ class Game:
                 if len(self.nick) < MAX_NICK_LEN:
                     self.nick += str(key)
                 else:
-                    n = list(self.nick)
-                    n[MAX_NICK_LEN - 1] = str(key)
-                    self.nick = "".join(n)
+                    n_list = list(self.nick)
+                    n_list[MAX_NICK_LEN - 1] = str(key)
+                    self.nick = "".join(n_list)
             elif key == Key.KEY_ENTER:
                 if len(self.nick) > 0:
                     self.config.add_hiscore(self.nick, self.points)
                 self.change_board(Board.HISCORES)
 
-    def keyrelease_init(self, key, _):
+    def __keyrelease_init(self, key, _):
         """
         Key handler for Init board
         :param key: Key to handle
@@ -741,7 +925,7 @@ class Game:
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
-    def keyrelease_play(self, key, _):
+    def __keyrelease_play(self, key, _):
         """
         Key handler for Play board
         :param key: Key to handle
@@ -753,7 +937,7 @@ class Game:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ESCAPE:
             self.shooter.timers['movable-update-event'].stop()
-            self.change_mode(Mode.PAUSED)
+            self.__change_mode(Mode.PAUSED)
         elif key in self.useractions:
             action = self.useractions[key]
             if action == UserInput.TOP:
@@ -770,22 +954,22 @@ class Game:
                     self.player.go_left()
             elif action == UserInput.FIRE:
                 if self.lightball_timer > 0:
-                    self.create_firemissile(
+                    self.__create_firemissile(
                         self.player.x + self.player.w,
                         self.player.y + self.player.h // 2)
                 else:
-                    self.create_missile(
+                    self.__create_missile(
                         self.player.x + self.player.w,
                         self.player.y + self.player.h // 2,
                         MissileType.FROM)
             elif action == UserInput.BOMB:
-                self.create_bomb(
+                self.__create_bomb(
                     self.player.x + self.player.w // 4,
                     self.player.y + self.player.h)
             elif action == UserInput.TNT:
-                self.explode_tnt()
+                self.__explode_tnt()
 
-    def keyrelease_paused(self, key, _):
+    def __keyrelease_paused(self, key, _):
         """
         Key handler for Paused board
         :param key: Key to handle
@@ -796,9 +980,9 @@ class Game:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
-            self.change_mode(Mode.PLAY)
+            self.__change_mode(Mode.PLAY)
 
-    def keyrelease_killed(self, key, _):
+    def __keyrelease_killed(self, key, _):
         """
         Key handler for Killed board
         :param key: Key to handle
@@ -808,11 +992,11 @@ class Game:
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
         elif key == Key.KEY_ENTER:
-            self.process_killed()
+            self.__process_killed()
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
-            self.change_mode(Mode.PLAY)
+            self.__change_mode(Mode.PLAY)
 
-    def keyrelease_help(self, key, _):
+    def __keyrelease_help(self, key, _):
         """
         Key handler for Help board
         :param key: Key to handle
@@ -823,7 +1007,7 @@ class Game:
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
-    def keyrelease_gameover(self, key, _text):
+    def __keyrelease_gameover(self, key, _text):
         """
         Key release handler for Mode.GAMEOVER
         :param key: Released key
@@ -835,7 +1019,7 @@ class Game:
                 Board.NEWSCORE if self.config.is_hiscore(
                     self.points) else Board.HISCORES)
 
-    def process_killed(self):
+    def __process_killed(self):
         """
         Process killed player
         :return: None
@@ -861,10 +1045,18 @@ class Game:
         self.arena.paint()
 
     def stars_update_event(self):
+        """
+        Move all stars according to their policy
+        :return: None
+        """
         for star in self.stars:
             star.move()
 
     def welcome_event(self):
+        """
+        Welcome event handler
+        :return: None
+        """
         if self.counter['welcome'] > 0:
             self.counter['welcome'] -= 1
         else:
@@ -873,12 +1065,13 @@ class Game:
             self.change_board(Board.MENU)
 
     def game_counter_event(self):
+        """
+        Game counter event handler
+        :return: None
+        """
         self.game_counter += 1
 
-    def game_freeze_event(self):
-        pass
-
-    def add_movable(self):
+    def __add_movable(self):
         """
         Append new movable from generator
         :return: None
@@ -892,19 +1085,27 @@ class Game:
         self.movables.append(new_movable)
 
     def movable_update_event(self):
+        """
+        Move all movables according to their policy
+        :return: None
+        """
         for movable in self.movables:
             movable.move()
         if not self.movables[0].is_valid():
             self.movables.pop(0)
-            self.add_movable()
+            self.__add_movable()
 
     def get_ready_event(self):
+        """
+        Get-ready event handler
+        :return: None
+        """
         if self.get_ready > 0:
             self.get_ready -= 1
         else:
             self.shooter.timers['get-ready-event'].stop()
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
-            self.change_mode(Mode.PLAY)
+            self.__change_mode(Mode.PLAY)
 
     def keyreleased(self, key, _):
         """
@@ -915,7 +1116,14 @@ class Game:
         """
         self.keyrelease_events[self.board](key, None)
 
-    def create_missile(self, x, y, etype):
+    def __create_missile(self, x, y, etype):
+        """
+        Create new missile
+        :param x: Missile X coordinate
+        :param y: Missile Y coordinate
+        :param etype: Missile type
+        :return: None
+        """
         if not self.missile_lock:
             self.missile_lock = True
             self.shooter.timers['missile-timer'].start(TIMEOUT_MISSILE_LOCK)
@@ -923,6 +1131,10 @@ class Game:
             self.missiles.append(Missile(x, y, etype, image))
 
     def game_update_event(self):
+        """
+        Move all objects according to their policies
+        :return: None
+        """
         # Missiles
         for missile in self.missiles:
             missile.move()
@@ -958,36 +1170,50 @@ class Game:
         for explosion in self.explosions:
             explosion.move()
         self.explosions = [x for x in self.explosions if x.is_valid()]
-        self.check_collision_shield()
-        self.check_collision_medkit()
-        self.check_collision_tnt()
-        self.check_collision_missiles()
-        self.check_collision_drops()
-        self.check_collision_enemies()
-        self.check_collision_lightball()
-        self.check_collision_icebox()
-        self.check_collision_bomb()
-        self.check_collision_movables()
+        self.__check_collision_shield()
+        self.__check_collision_medkit()
+        self.__check_collision_tnt()
+        self.__check_collision_missiles()
+        self.__check_collision_drops()
+        self.__check_collision_enemies()
+        self.__check_collision_lightball()
+        self.__check_collision_icebox()
+        self.__check_collision_bomb()
+        self.__check_collision_movables()
 
     def enemies_event(self):
+        """
+        Process enemy manager run
+        :return:
+        """
         if not self.enemymanager.run():
             if self.level == MAX_LEVEL:
-                # TODO
-                # Boss is killed, do some animation here?
                 if self.lives == 0:
-                    self.change_mode(Mode.GAMEOVER)
+                    self.__change_mode(Mode.GAMEOVER)
                 else:
-                    self.change_mode(Mode.CONGRATS)
+                    self.explosions.append(
+                        Explosion(self.boss.x + self.boss.image.width() // 2,
+                                  self.boss.y + self.boss.image.height() // 2,
+                                  self.shooter.images['explosions']))
+                    self.__change_mode(Mode.CONGRATS)
             else:
-                self.change_mode(Mode.PREPARE)
+                self.__change_mode(Mode.PREPARE)
 
     def events_event(self):
+        """
+        Handle game events counter event
+        :return: None
+        """
         self.eventmanager.run()
 
     def setup_enter_event(self):
+        """
+        Handle Setup Enter counter event
+        :return: None
+        """
         self.setup_counter += 1
 
-    def check_collision_drops(self):
+    def __check_collision_drops(self):
         """
         Check if any of the drop collided a player - only in normal and hard mode
         and perform an action:
@@ -998,30 +1224,34 @@ class Game:
             for drop in self.drops:
                 if drop.collides(self.player):
                     drop.valid = False
-                    self.explode(
+                    self.__explode(
                         self.player.x + self.player.w // 2,
                         self.player.y + self.player.h // 2)
                     self.drops = [x for x in self.drops if x.is_valid()]
-                    self.decrease_hp()
+                    self.__decrease_hp()
 
-    def check_collision_missiles(self):
+    def __check_collision_missiles(self):
+        """
+        Check all collisions with missiles
+        :return: None
+        """
         for missile in self.missiles:
             if missile.etype == MissileType.FROM and missile.is_valid():
                 for enemy in self.enemymanager.enemies:
                     if missile.collides(enemy) and enemy.is_valid():
                         enemy.valid = False
                         missile.valid = False
-                        self.explode(enemy.x + enemy.w // 2,
-                                     enemy.y + enemy.h // 2)
+                        self.__explode(enemy.x + enemy.w // 2,
+                                       enemy.y + enemy.h // 2)
                         self.points += 1
                 for movable in self.movables:
                     if movable.is_valid() and movable.etype == MovableType.DZIALO and \
                             movable.collides(missile):
                         movable.valid = False
                         self.points += 1
-                        self.explode(movable.x + movable.w // 2,
-                                     movable.y + movable.h // 2)
-                        self.add_movable()
+                        self.__explode(movable.x + movable.w // 2,
+                                       movable.y + movable.h // 2)
+                        self.__add_movable()
             elif missile.etype in [MissileType.TO,
                                    MissileType.TO_NWW,
                                    MissileType.TO_SWW,
@@ -1029,25 +1259,25 @@ class Game:
                 if self.shield_timer == 0 and self.options_pos != Options.UNLIMITED:
                     if missile.collides(self.player):
                         missile.valid = False
-                        self.explode(self.player.x + self.player.w // 2,
-                                     self.player.y + self.player.h // 2)
-                        self.decrease_hp()
+                        self.__explode(self.player.x + self.player.w // 2,
+                                       self.player.y + self.player.h // 2)
+                        self.__decrease_hp()
         for fireball in self.firemissiles:
             for enemy in self.enemymanager.enemies:
                 if enemy.is_valid() and fireball.collides(enemy) and fireball.is_valid():
                     enemy.valid = False
                     fireball.valid = False
                     self.points += 1
-                    self.explode(enemy.x + enemy.w // 2,
-                                 enemy.y + enemy.h // 2)
+                    self.__explode(enemy.x + enemy.w // 2,
+                                   enemy.y + enemy.h // 2)
             for movable in self.movables:
                 if movable.is_valid() and movable.etype == MovableType.DZIALO and \
                         fireball.collides(movable) and fireball.is_valid():
                     movable.valid = False
                     self.points += 1
-                    self.explode(movable.x + movable.w // 2,
-                                 movable.y + movable.h // 2)
-                    self.add_movable()
+                    self.__explode(movable.x + movable.w // 2,
+                                   movable.y + movable.h // 2)
+                    self.__add_movable()
         if self.enemymanager.boss:
             for missile in self.missiles:
                 if missile.etype == MissileType.FROM and missile.is_valid():
@@ -1059,7 +1289,7 @@ class Game:
         self.movables = [x for x in self.movables if x.is_valid()]
         self.firemissiles = [x for x in self.firemissiles if x.is_valid()]
 
-    def decrease_hp(self):
+    def __decrease_hp(self):
         """
         Decrease indicator points when collided by an object
         :return: None
@@ -1069,12 +1299,12 @@ class Game:
         if self.indicators == 0:
             self.lives -= 1
             if self.lives <= 0:  # In case of two timers did the lives < 0
-                self.change_mode(Mode.GAMEOVER)
+                self.__change_mode(Mode.GAMEOVER)
             else:
-                self.process_killed()
-                self.change_mode(Mode.KILLED)
+                self.__process_killed()
+                self.__change_mode(Mode.KILLED)
 
-    def increase_hp(self):
+    def __increase_hp(self):
         """
         Increase indicator points (when medkit caught)
         :return: None
@@ -1082,7 +1312,7 @@ class Game:
         if self.indicators < 10:
             self.indicators += 1
 
-    def check_collision_enemies(self):
+    def __check_collision_enemies(self):
         """
         Check if player collides with any enemy, then do the action:
         * explode enemy,
@@ -1094,13 +1324,14 @@ class Game:
             if enemy.collides(self.player):
                 self.points += 1
                 enemy.valid = False
-                self.explode(enemy.x + enemy.w // 2,
-                             enemy.y + enemy.h // 2)
+                self.__explode(enemy.x + enemy.w // 2,
+                               enemy.y + enemy.h // 2)
                 self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
-                if self.shield_timer == 0 and self.frozen_timer == 0 and self.options_pos != Options.UNLIMITED:
-                    self.decrease_hp()
+                if self.shield_timer == 0 and self.frozen_timer == 0 and \
+                        self.options_pos != Options.UNLIMITED:
+                    self.__decrease_hp()
 
-    def check_collision_movables(self):
+    def __check_collision_movables(self):
         """
         Check if player collided with a movable: only hardcore mode.
         Action:
@@ -1114,13 +1345,13 @@ class Game:
                 if movable.collides(self.player):
                     self.points += 1
                     movable.valid = False
-                    self.explode(movable.x + movable.w // 2,
-                                 movable.y + movable.h // 2)
-                    self.add_movable()
+                    self.__explode(movable.x + movable.w // 2,
+                                   movable.y + movable.h // 2)
+                    self.__add_movable()
                     self.movables = [x for x in self.movables if x.is_valid()]
-                    self.decrease_hp()
+                    self.__decrease_hp()
 
-    def explode(self, x, y):
+    def __explode(self, x, y):
         """
         Create new explosion and append to all explosions list
         :param x: X coordinate of explosion
@@ -1131,30 +1362,34 @@ class Game:
             Explosion(
                 x, y, self.shooter.images['explosions']))
 
-    def explode_tnt(self):
+    def __explode_tnt(self):
+        """
+        Create 3 explosions when TNT used
+        :return: None
+        """
         if self.tnt > 0 and len(self.enemymanager.enemies) > 0:
             for i in range(0, 3):
                 try:
                     enemy = self.enemymanager.enemies[i]
-                    self.explode(enemy.x + enemy.w // 2,
-                                 enemy.y + enemy.h // 2)
+                    self.__explode(enemy.x + enemy.w // 2,
+                                   enemy.y + enemy.h // 2)
                     enemy.valid = False
                 except IndexError:
                     pass
             self.enemymanager.enemies = [x for x in self.enemymanager.enemies if x.is_valid()]
             self.tnt -= 1
 
-    def check_collision_medkit(self):
+    def __check_collision_medkit(self):
         """
         Check collision with medkits -- collect health points
         """
         for medkit in self.medkits:
             if medkit.collides(self.player):
                 medkit.valid = False
-                self.increase_hp()
+                self.__increase_hp()
         self.medkits = [x for x in self.medkits if x.is_valid()]
 
-    def check_collision_shield(self):
+    def __check_collision_shield(self):
         """
         Check collision with shields -- collect a shield
         (remove all remaining shields if any)
@@ -1165,7 +1400,7 @@ class Game:
                 self.shields = []
                 self.shooter.timers['game-shield-event'].start(TIMEOUT_SHIELD)
 
-    def check_collision_tnt(self):
+    def __check_collision_tnt(self):
         """
         Check collision with TNT -- collect a TNT
         """
@@ -1175,46 +1410,54 @@ class Game:
                 tnt.valid = False
         self.tnts = [x for x in self.tnts if x.is_valid()]
 
-    def check_collision_lightball(self):
+    def __check_collision_lightball(self):
         """
         Check collision with lightball -- enter LightBall mode
         (3 missiles in a single shot)
         """
         for light_ball in self.lightballs:
             if light_ball.collides(self.player):
-                self.lightball_timer = 10
+                self.lightball_timer = LIGHTBALL_TIMER
                 light_ball.valid = False
                 self.lightballs = []
                 self.shooter.timers['game-light-event'].start(TIMEOUT_LIGHT)
 
-    def check_collision_icebox(self):
+    def __check_collision_icebox(self):
+        """
+        Check if player caught icebox
+        :return: None
+        """
         for icebox in self.iceboxes:
             if icebox.collides(self.player):
                 icebox.valid = False
-                self.frozen_timer = 10
+                self.frozen_timer = FROZEN_TIMER
                 self.iceboxes = []
                 self.missiles = []  # If frozen mode, no missiles shall be present.
                 self.shooter.timers['game-freeze-event'].start(TIMEOUT_FREEZE)
 
-    def check_collision_bomb(self):
+    def __check_collision_bomb(self):
+        """
+        Check if movable or enemy collided with a bomb
+        :return: None
+        """
         for bomb in self.bombs:
             for movable in self.movables:
                 if movable.is_valid() and bomb.collides(movable):
-                    self.explode(movable.x + movable.w // 2, movable.y + movable.h // 2)
+                    self.__explode(movable.x + movable.w // 2, movable.y + movable.h // 2)
                     bomb.valid = False
                     movable.valid = False
-                    self.add_movable()
+                    self.__add_movable()
                     self.points += 1
             for enemy in self.enemymanager.enemies:
                 if enemy.is_valid() and bomb.collides(enemy):
-                    self.explode(enemy.x + enemy.w // 2, enemy.y + enemy.h // 2)
+                    self.__explode(enemy.x + enemy.w // 2, enemy.y + enemy.h // 2)
                     enemy.valid = False
                     bomb.valid = False
                     self.points += 1
         self.movables = [x for x in self.movables if x.is_valid()]
         self.bombs = [x for x in self.bombs if x.is_valid()]
 
-    def create_bomb(self, x, y):
+    def __create_bomb(self, x, y):
         """
         Create bomb at given location
         (and start bomb timer)
@@ -1229,12 +1472,20 @@ class Game:
             self.shooter.timers['bomb-timer'].start(TIMEOUT_BOMB_LOCK)
 
     def shield_event(self):
+        """
+        Handle shield counter event
+        :return: None
+        """
         if self.shield_timer > 0:
             self.shield_timer -= 1
         else:
             self.shooter.timers['game-shield-event'].stop()
 
     def light_event(self):
+        """
+        Handle lightball event
+        :return: None
+        """
         if self.lightball_timer > 0:
             self.lightball_timer -= 1
         else:
@@ -1251,7 +1502,7 @@ class Game:
         else:
             self.shooter.timers['game-freeze-event'].stop()
 
-    def create_firemissile(self, x, y):
+    def __create_firemissile(self, x, y):
         """
         Create fire missile, which in fact contains 3 fireballs
         :param x: initial X position of firemissile
@@ -1261,21 +1512,21 @@ class Game:
         if not self.missile_lock:
             self.missile_lock = True
             self.shooter.timers['missile-timer'].start(TIMEOUT_MISSILE_LOCK)
-            f = FireMissile(x,
+            self.firemissiles.append(
+                FireMissile(x,
                             y,
                             FireballDirection.UP,
-                            self.shooter.images['indicators']['light-ball'])
-            self.firemissiles.append(f)
-            f = FireMissile(x,
+                            self.shooter.images['indicators']['light-ball']))
+            self.firemissiles.append(
+                FireMissile(x,
                             y,
                             FireballDirection.STRAIGHT,
-                            self.shooter.images['indicators']['light-ball'])
-            self.firemissiles.append(f)
-            f = FireMissile(x,
+                            self.shooter.images['indicators']['light-ball']))
+            self.firemissiles.append(
+                FireMissile(x,
                             y,
                             FireballDirection.DOWN,
-                            self.shooter.images['indicators']['light-ball'])
-            self.firemissiles.append(f)
+                            self.shooter.images['indicators']['light-ball']))
 
     def newscore_event(self):
         """
