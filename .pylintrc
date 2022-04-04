@@ -5,5 +5,7 @@ good-names = x, y, dx, dy, fh, db, i, j, w, h, sizeHint, resizeEvent, mousePress
 disable =
     too-many-lines,
     too-many-instance-attributes,
+    too-many-statements,
+    too-many-branches
 
 

@@ -499,8 +499,8 @@ class Arena(QLabel):
                 self.painter.drawText(400, 250 + i * 75, name)
                 self.painter.drawText(1200, 250 + i * 75, napis)
             except IndexError:
-                self.painter.drawText(400, 250 + i * 75, "---")
-                self.painter.drawText(1200, 250 + i * 75, "---")
+                self.painter.drawText(400, 250 + i * 75, "----")
+                self.painter.drawText(1200, 250 + i * 75, "----")
         l_t = locales['standard-line'][self.game.config['lang']]
         l_w = self.metrics['status-line'].horizontalAdvance(l_t)
         l_x = (ARENA_WIDTH - l_w) // 2
@@ -927,23 +927,22 @@ class Arena(QLabel):
         for star in self.game.stars:
             star.paint(self.painter)
         self.painter.setFont(self.fonts['logo'])
-        e_t = locales['newscore']['title'][self.game.config['lang']]
-        e_w = self.metrics['logo'].horizontalAdvance(e_t)
-        e_x = (ARENA_WIDTH - e_w) // 2
+        l_t = locales['newscore']['title'][self.game.config['lang']]
+        l_x = self.metrics['logo'].horizontalAdvance(l_t)
+        l_x = (ARENA_WIDTH - l_x) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         self.painter.drawText(
-            e_x + 5,
+            l_x + 5,
             205,
-            e_t)
+            l_t)
         self.painter.setPen(self.shooter.pens['logofront'])
         self.painter.drawText(
-            e_x,
+            l_x,
             200,
-            e_t)
+            l_t)
         w_x = self.metrics['logo'].horizontalAdvance("W")
         w_h = self.metrics['logo'].height()
-        w_y = (MAX_NICK_LEN + 1) * (w_x + 30)
-        x_0 = (ARENA_WIDTH - w_y) // 2
+        x_0 = (ARENA_WIDTH - (MAX_NICK_LEN + 1) * (w_x + 30)) // 2
         self.painter.setPen(self.shooter.pens['textback'])
         cur = len(self.game.nick)
         for i in range(MAX_NICK_LEN + 1):
@@ -956,9 +955,9 @@ class Arena(QLabel):
                 pass
             if i == cur and self.game.newscore_counter == 0:
                 r_x = QRect(x_0 + cur * (w_x + 30) + 5 + 15,
-                          700 - w_h + 5,
-                          w_x,
-                          w_h)
+                            700 - w_h + 5,
+                            w_x,
+                            w_h)
                 self.painter.fillRect(r_x, QBrush(self.shooter.colors['textback']))
         self.painter.setPen(self.shooter.pens['logofront'])
         for i in range(MAX_NICK_LEN + 1):
@@ -971,9 +970,9 @@ class Arena(QLabel):
                 pass
             if i == cur and self.game.newscore_counter == 0:
                 r_x = QRect(x_0 + cur * (w_x + 30) + 15,
-                          700 - w_h,
-                          w_x,
-                          w_h)
+                            700 - w_h,
+                            w_x,
+                            w_h)
                 self.painter.fillRect(r_x, self.shooter.brushes['logofront'])
         # Status lines:
         l_t = locales['newscore']['line1'][self.game.config['lang']]
@@ -1022,7 +1021,7 @@ class Arena(QLabel):
         # Rysować odtąd...
         for star in self.game.stars:
             star.paint(self.painter)
-        self.__update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter, False)
         level_text = locales[
                          'game']['level-x'][self.game.config['lang']] % {
                          'l': self.game.level + 1}
@@ -1050,78 +1049,82 @@ class Arena(QLabel):
                                           self.full_h,
                                           Qt.IgnoreAspectRatio))
 
-    def __update_pixmap_play(self, painter):
+    def __update_pixmap_play(self, painter, paint_objects=True):
         """
         Prepare common bitmap for Play board
         (pause and killed events will reuse this)
+        Flying objects do not need to be painted on all the
+        Killed, Paused or New Level boards
         :param painter: -- QPainter to draw by
+        :param paint_objects: -- if True, player will be painted
         :return: None
         """
         # Rysować odtąd...
-        for star in self.game.stars:
-            star.paint(painter)
+        for obj in self.game.stars:
+            obj.paint(painter)
         # Drops
         # (drops before movables)
-        for drop in self.game.drops:
-            drop.paint(painter)
+        for obj in self.game.drops:
+            obj.paint(painter)
         # Movables
         for movable in self.game.movables:
             movable.paint(painter)
             # Smoke
             if movable.etype in self.shooter.smoke_spots:
-                spots = self.shooter.smoke_spots[movable.etype]
                 smoke = self.shooter.images['smokes'][self.game.smoke_counter]
-                for spot in spots:
+                for spot in self.shooter.smoke_spots[movable.etype]:
                     x, y = spot
                     x += movable.x - smoke.width()
                     y += movable.y - smoke.height()
                     painter.drawPixmap(x, y, smoke)
-        # IceBoxes:
-        for icebox in self.game.iceboxes:
-            icebox.paint(painter)
-        # Bombs
-        for bomb in self.game.bombs:
-            bomb.paint(painter)
-        # Medkids
-        for medkit in self.game.medkits:
-            medkit.paint(painter)
-        # LightBalls
-        for lightball in self.game.lightballs:
-            lightball.paint(painter)
-        # TNTs
-        for tnt in self.game.tnts:
-            tnt.paint(painter)
-        # Shields
-        for shield in self.game.shields:
-            shield.paint(painter)
-        # Meteorites
-        for meteorite in self.game.meteorites:
-            meteorite.paint(painter)
-        # Player
-        self.game.player.paint(painter)
-        if self.game.shield_timer > 0:
-            painter.fillRect(QRect(self.game.player.shieldx,
-                                   self.game.player.shieldy,
-                                   self.game.player.shieldw,
-                                   self.game.player.shieldh), QBrush(QColor(75, 100, 67, 96)))
-            painter.setPen(QPen(QColor(34, 97, 13, 127), 2, Qt.DashLine))
-            painter.drawRect(QRect(self.game.player.shieldx,
-                                   self.game.player.shieldy,
-                                   self.game.player.shieldw,
-                                   self.game.player.shieldh))
-        # Enemies
-        self.game.enemymanager.paint(painter)
-        # Missiles
-        self.paint_missiles(painter)
-        # Firemissiles
-        for firemissile in self.game.firemissiles:
-            firemissile.paint(painter)
-        # Boss
-        if self.game.boss:
-            self.game.boss.paint(painter)
-        # Explosions
-        for explosion in self.game.explosions:
-            explosion.paint(painter)
+        if paint_objects:
+            # IceBoxes:
+            for obj in self.game.iceboxes:
+                obj.paint(painter)
+            # Bombs
+            for obj in self.game.bombs:
+                obj.paint(painter)
+            # Medkids
+            for obj in self.game.medkits:
+                obj.paint(painter)
+            # LightBalls
+            for obj in self.game.lightballs:
+                obj.paint(painter)
+            # TNTs
+            for obj in self.game.tnts:
+                obj.paint(painter)
+            # Shields
+            for obj in self.game.shields:
+                obj.paint(painter)
+            # Meteorites
+            for obj in self.game.meteorites:
+                obj.paint(painter)
+            # Player
+            self.game.player.paint(painter)
+            if self.game.shield_timer > 0:
+                painter.fillRect(QRect(self.game.player.shieldx,
+                                       self.game.player.shieldy,
+                                       self.game.player.shieldw,
+                                       self.game.player.shieldh),
+                                       self.shooter.brushes['shieldinter'])
+                painter.setPen(self.shooter.pens['shieldline'])
+                painter.drawRect(QRect(self.game.player.shieldx,
+                                       self.game.player.shieldy,
+                                       self.game.player.shieldw,
+                                       self.game.player.shieldh))
+            # Enemies
+            self.game.enemymanager.paint(painter)
+            # Missiles
+            self.paint_missiles(painter)
+            # Firemissiles
+            for obj in self.game.firemissiles:
+                obj.paint(painter)
+            # Boss
+            if self.game.boss:
+                self.game.boss.paint(painter)
+            # Explosions
+            for obj in self.game.explosions:
+                obj.paint(painter)
         self.__paint_bottom_bar(painter)
         # ... dotąd
 
@@ -1157,7 +1160,7 @@ class Arena(QLabel):
         """
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
-        self.__update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter, False)
         self.painter.setFont(self.fonts['logo'])
         t_e = locales['awaiting']['paused'][self.game.config['lang']]
         t_w = self.metrics['logo'].horizontalAdvance(t_e)
@@ -1187,7 +1190,7 @@ class Arena(QLabel):
         self.canvas.fill(self.shooter.colors['background'])
         self.painter.begin(self.canvas)
         # Rysować odtąd...
-        self.__update_pixmap_play(self.painter)
+        self.__update_pixmap_play(self.painter, False)
         self.painter.setFont(self.fonts['logo'])
         self.painter.setPen(self.shooter.pens['textback'])
         t_t = locales['awaiting']['killed'][self.game.config['lang']]
@@ -1404,18 +1407,21 @@ class SpaceShooter(QApplication):
             'logofront': QColor(250, 79, 141, 127),
             'logofront2': QColor(240, 161, 234, 127),
             'textfront': QColor(147, 218, 255, 127),
-            'textbottom': QColor(156, 201, 85)
+            'textbottom': QColor(156, 201, 85),
+            'shieldline': QColor(34, 97, 13, 127)
         }
         self.pens = {
             'textback': QPen(self.colors['textback'], 2, Qt.SolidLine),
             'textfront': QPen(self.colors['textfront'], 2, Qt.SolidLine),
             'logofront': QPen(self.colors['logofront'], 2, Qt.SolidLine),
             'logofront2': QPen(self.colors['logofront2'], 2, Qt.SolidLine),
-            'textbottom': QPen(self.colors['textbottom'], 2, Qt.SolidLine)
+            'textbottom': QPen(self.colors['textbottom'], 2, Qt.SolidLine),
+            'shieldline': QPen(self.colors['shieldline'], 4, Qt.DashLine)
         }
         self.brushes = {
             'bottom-bar': QBrush(QColor(47, 47, 47)),
-            'logofront': QBrush(self.colors['logofront'])
+            'logofront': QBrush(self.colors['logofront']),
+            'shieldinter': QBrush(QColor(75, 100, 67, 96))
         }
         self.smoke_spots = {
             MovableType.FABRYKA1: [(124, 80), (246, 80), (322, 0)],
