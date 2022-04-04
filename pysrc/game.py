@@ -16,7 +16,8 @@ from sdefs import star_ids, ARENA_HEIGHT, ARENA_WIDTH, TIMEOUT_PAINT, TIMEOUT_WE
     TIMEOUT_SMOKE, TIMEOUT_GET_READY, TIMEOUT_NEWSCORE, TIMEOUT_GAME_EVENTS, MAX_LEVEL,\
     TIMEOUT_SETUP_ENTER, TIMEOUT_ENEMIES_EVENTS, TIMEOUT_GAME_UPDATE, TIMEOUT_GAME_COUNTER,\
     MAX_NICK_LEN, BOTTOM_BAR, TIMEOUT_MISSILE_LOCK, TIMEOUT_SHIELD, TIMEOUT_LIGHT,\
-    TIMEOUT_BOMB_LOCK, SHIELD_TIMER, TIMEOUT_FREEZE
+    TIMEOUT_BOMB_LOCK, SHIELD_TIMER, TIMEOUT_FREEZE, MAX_PLAYER_INDEX, LIGHTBALL_TIMER,\
+    FROZEN_TIMER
 from managers import EventManager, EnemyManager
 
 
@@ -257,7 +258,7 @@ class Game:
                 self.player_index -= 1
             return
         if self.player_rectangles[2].contains(event.x, event.y):
-            if self.player_index < 3:  # TODO: const
+            if self.player_index < MAX_PLAYER_INDEX:
                 self.player_index += 1
             return
         if self.player_rectangles[1].contains(event.x, event.y):
@@ -1187,11 +1188,13 @@ class Game:
         """
         if not self.enemymanager.run():
             if self.level == MAX_LEVEL:
-                # TODO
-                # Boss is killed, do some animation here?
                 if self.lives == 0:
                     self.__change_mode(Mode.GAMEOVER)
                 else:
+                    self.explosions.append(
+                        Explosion(self.boss.x + self.boss.image.width() // 2,
+                                  self.boss.y + self.boss.image.height() // 2,
+                                  self.shooter.images['explosions']))
                     self.__change_mode(Mode.CONGRATS)
             else:
                 self.__change_mode(Mode.PREPARE)
@@ -1414,7 +1417,7 @@ class Game:
         """
         for light_ball in self.lightballs:
             if light_ball.collides(self.player):
-                self.lightball_timer = 10
+                self.lightball_timer = LIGHTBALL_TIMER
                 light_ball.valid = False
                 self.lightballs = []
                 self.shooter.timers['game-light-event'].start(TIMEOUT_LIGHT)
@@ -1427,7 +1430,7 @@ class Game:
         for icebox in self.iceboxes:
             if icebox.collides(self.player):
                 icebox.valid = False
-                self.frozen_timer = 10
+                self.frozen_timer = FROZEN_TIMER
                 self.iceboxes = []
                 self.missiles = []  # If frozen mode, no missiles shall be present.
                 self.shooter.timers['game-freeze-event'].start(TIMEOUT_FREEZE)
