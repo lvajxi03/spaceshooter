@@ -6,9 +6,9 @@ Primitive definitions
 
 import math
 import random
-from .sdefs import MOVABLE_SPEED, STAGE_HEIGHT, ARENA_WIDTH, ARENA_HEIGHT,\
+from spaceshooter.sdefs import MOVABLE_SPEED, STAGE_HEIGHT, ARENA_WIDTH, ARENA_HEIGHT,\
     SHIELD_SPEEDX, STAR_SPEED, STAGE_WIDTH, SPEEDX_BOMB
-from .stypes import MovableType, MissileType,FireballDirection
+from spaceshooter.stypes import MovableType, MissileType,FireballDirection
 
 
 class Rect:

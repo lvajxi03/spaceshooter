@@ -1,10 +1,12 @@
-import os
-from setuptools import setup
+#!/usr/bin/env python
 
 """
 Setup module for packaging
 (required by setuptools)
 """
+
+import os
+from setuptools import setup
 
 
 def read(file_name):
@@ -16,7 +18,9 @@ def read(file_name):
     """
     return open(
         os.path.join(
-            os.path.dirname(__file__), file_name)).read()
+            os.path.dirname(__file__),
+            file_name),
+        encoding="UTF-8").read()
 
 
 setup(

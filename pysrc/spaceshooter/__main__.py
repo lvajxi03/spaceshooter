@@ -6,9 +6,9 @@ Main launcher
 
 import sys
 import random
-from .arena import SpaceShooter, Controller, Arena
-from .game import Game, Board
-from .sdefs import ARENA_HEIGHT, ARENA_WIDTH
+from spaceshooter.arena import SpaceShooter, Controller, Arena
+from spaceshooter.game import Game, Board
+from spaceshooter.sdefs import ARENA_HEIGHT, ARENA_WIDTH
 
 
 if __name__ == "__main__":

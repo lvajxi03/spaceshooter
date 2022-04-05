@@ -5,7 +5,7 @@ SpaceShooter configuration
 """
 
 import json
-from .stypes import Key, UserInput, Options
+from spaceshooter.stypes import Key, UserInput, Options
 
 
 class ShooterConfig:

@@ -9,10 +9,10 @@ import random
 import importlib.resources as resources
 
 # Local imports
-from .game import Game, Board
-from .sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
-from .slocales import locales
-from .stypes import MouseButton, MouseEvent, Mode, UserInput, \
+from spaceshooter.game import Game, Board
+from spaceshooter.sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
+from spaceshooter.slocales import locales
+from spaceshooter.stypes import MouseButton, MouseEvent, Mode, UserInput, \
     SetupMode, Key, MovableType, MissileType
 
 # PyQ/PySide imports
