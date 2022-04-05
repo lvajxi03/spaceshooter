@@ -6,7 +6,7 @@ Events used in SpaceShooter
 
 import enum
 import copy
-from sutils import cycle
+from .sutils import cycle
 
 
 @enum.unique

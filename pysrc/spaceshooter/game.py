@@ -6,19 +6,19 @@ Main Game class
 
 import os
 
-from stypes import UserInput, Key, Options, MissileType, MovableType,\
+from .stypes import UserInput, Key, Options, MissileType, MovableType,\
     FireballDirection, Board, Mode, SetupMode
-from primi import Rect, Missile, Player, Movable, Explosion, Bomb,\
+from .primi import Rect, Missile, Player, Movable, Explosion, Bomb,\
     FireMissile, Star
-from sconfig import ShooterConfig
-from slocales import locales
-from sdefs import star_ids, ARENA_HEIGHT, ARENA_WIDTH, TIMEOUT_PAINT, TIMEOUT_WELCOME,\
+from .sconfig import ShooterConfig
+from .slocales import locales
+from .sdefs import star_ids, ARENA_HEIGHT, ARENA_WIDTH, TIMEOUT_PAINT, TIMEOUT_WELCOME,\
     TIMEOUT_SMOKE, TIMEOUT_GET_READY, TIMEOUT_NEWSCORE, TIMEOUT_GAME_EVENTS, MAX_LEVEL,\
     TIMEOUT_SETUP_ENTER, TIMEOUT_ENEMIES_EVENTS, TIMEOUT_GAME_UPDATE, TIMEOUT_GAME_COUNTER,\
     MAX_NICK_LEN, BOTTOM_BAR, TIMEOUT_MISSILE_LOCK, TIMEOUT_SHIELD, TIMEOUT_LIGHT,\
     TIMEOUT_BOMB_LOCK, SHIELD_TIMER, TIMEOUT_FREEZE, MAX_PLAYER_INDEX, LIGHTBALL_TIMER,\
     FROZEN_TIMER
-from managers import EventManager, EnemyManager
+from .managers import EventManager, EnemyManager
 
 
 class Game:

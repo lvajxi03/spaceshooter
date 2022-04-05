@@ -7,13 +7,13 @@ Game managers
 
 import math
 import random
-from stypes import MovableType, MissileType
-from primi import Tnt, Drop, Missile, Medkit,\
+from .stypes import MovableType, MissileType
+from .primi import Tnt, Drop, Missile, Medkit,\
     IceBox, Enemy, LightBall, Boss, Shield
-from sdefs import MAX_EVENTS_FACTOR, ARENA_WIDTH,\
+from .sdefs import MAX_EVENTS_FACTOR, ARENA_WIDTH,\
     ARENA_HEIGHT, STAGE_HEIGHT, MAX_LEVEL
-from sevents import GameEvent, EnemyEvent
-from sutils import cycle
+from .sevents import GameEvent, EnemyEvent
+from .sutils import cycle
 
 
 class EventManager:
