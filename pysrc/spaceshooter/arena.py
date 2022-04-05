@@ -6,7 +6,7 @@ Game Arena (Qt implementation)
 
 # Standard library imports
 import random
-import importlib.resources as resources
+from importlib import resources
 
 # PySide imports
 from PySide6.QtWidgets import QApplication
@@ -96,10 +96,7 @@ class Arena(QLabel):
         :param parent: handle to parent window
         """
         super().__init__()
-        if 'font' in kwargs:
-            font = kwargs['font']
-        else:
-            font = DEFAULT_FONT
+        font = kwargs.get('font', DEFAULT_FONT)
         if not font:
             font = DEFAULT_FONT
         self.parent = parent
