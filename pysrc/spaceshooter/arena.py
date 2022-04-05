@@ -9,43 +9,27 @@ import random
 import importlib.resources as resources
 
 # Local imports
-from spaceshooter.game import Game, Board
+from spaceshooter.game import Game
 from spaceshooter.sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
 from spaceshooter.slocales import locales
 from spaceshooter.stypes import MouseButton, MouseEvent, Mode, UserInput, \
-    SetupMode, Key, MovableType, MissileType
+    SetupMode, Key, MovableType, MissileType, Board
 
-# PyQ/PySide imports
-try:
-    from PySide6.QtWidgets import QApplication
-    from PySide6.QtWidgets import QMainWindow
-    from PySide6.QtWidgets import QLabel
-    from PySide6.QtGui import QPixmap
-    from PySide6.QtGui import QPainter
-    from PySide6.QtGui import QFont
-    from PySide6.QtGui import QFontMetrics
-    from PySide6.QtGui import QColor
-    from PySide6.QtGui import QBrush
-    from PySide6.QtGui import QPen
-    from PySide6.QtCore import QSize
-    from PySide6.QtCore import QTimer
-    from PySide6.QtCore import QRect
-    from PySide6.QtCore import Qt
-except ImportError:
-    from PyQt6.QtWidgets import QApplication
-    from PyQt6.QtWidgets import QMainWindow
-    from PyQt6.QtWidgets import QLabel
-    from PyQt6.QtGui import QPixmap
-    from PyQt6.QtGui import QPainter
-    from PyQt6.QtGui import QFont
-    from PyQt6.QtGui import QFontMetrics
-    from PyQt6.QtGui import QColor
-    from PyQt6.QtGui import QBrush
-    from PyQt6.QtGui import QPen
-    from PyQt6.QtCore import QSize
-    from PyQt6.QtCore import QTimer
-    from PyQt6.QtCore import QRect
-    from PyQt6.QtCore import Qt
+# PySide imports
+from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QLabel
+from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPainter
+from PySide6.QtGui import QFont
+from PySide6.QtGui import QFontMetrics
+from PySide6.QtGui import QColor
+from PySide6.QtGui import QBrush
+from PySide6.QtGui import QPen
+from PySide6.QtCore import QSize
+from PySide6.QtCore import QTimer
+from PySide6.QtCore import QRect
+from PySide6.QtCore import Qt
 
 # Dealing with fonts:
 # 1. Download and install your favourite font
@@ -117,12 +101,18 @@ class Arena(QLabel):
     Game arena
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, **kwargs):
         """
         Create Arena object
         :param parent: handle to parent window
         """
         super().__init__()
+        if 'font' in kwargs:
+            font = kwargs['font']
+        else:
+            font = DEFAULT_FONT
+        if not font:
+            font = DEFAULT_FONT
         self.parent = parent
         self.shooter = None
         self.canvas = QPixmap(ARENA_WIDTH, ARENA_HEIGHT)
@@ -152,12 +142,12 @@ class Arena(QLabel):
         }
 
         self.fonts = {
-            'logo': QFont(DEFAULT_FONT, 96),
-            'menu': QFont(DEFAULT_FONT, 54),
-            'get-ready': QFont(DEFAULT_FONT, 64),
-            'options': QFont(DEFAULT_FONT, 48),
-            'help': QFont(DEFAULT_FONT, 28),
-            'status-line': QFont(DEFAULT_FONT, 28)
+            'logo': QFont(font, 96),
+            'menu': QFont(font, 54),
+            'get-ready': QFont(font, 64),
+            'options': QFont(font, 48),
+            'help': QFont(font, 28),
+            'status-line': QFont(font, 28)
         }
         self.metrics = {
             'logo': QFontMetrics(self.fonts['logo']),

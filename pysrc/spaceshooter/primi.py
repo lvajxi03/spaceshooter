@@ -8,7 +8,7 @@ import math
 import random
 from spaceshooter.sdefs import MOVABLE_SPEED, STAGE_HEIGHT, ARENA_WIDTH, ARENA_HEIGHT,\
     SHIELD_SPEEDX, STAR_SPEED, STAGE_WIDTH, SPEEDX_BOMB
-from spaceshooter.stypes import MovableType, MissileType,FireballDirection
+from spaceshooter.stypes import MovableType, MissileType, FireballDirection
 
 
 class Rect:

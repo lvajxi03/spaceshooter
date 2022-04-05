@@ -39,5 +39,6 @@ setup(
         "Development Status :: 4 - Beta",
         "Topic :: Games/Entertainment :: Side-Scrolling/Arcade Games",
         "License :: OSI Approved :: GNU General Public License (GPL)",
-    ]
+    ],
+    install_requires=['PySide6']
 )
