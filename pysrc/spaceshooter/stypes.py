@@ -6,7 +6,7 @@ Common types and definitions
 
 import enum
 import copy
-from sutils import cycle
+from spaceshooter.sutils import cycle
 
 
 @enum.unique

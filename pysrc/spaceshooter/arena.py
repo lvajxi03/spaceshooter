@@ -6,58 +6,32 @@ Game Arena (Qt implementation)
 
 # Standard library imports
 import random
+from importlib import resources
+
+# PySide imports
+from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QMainWindow
+from PySide6.QtWidgets import QLabel
+from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPainter
+from PySide6.QtGui import QFont
+from PySide6.QtGui import QFontMetrics
+from PySide6.QtGui import QColor
+from PySide6.QtGui import QBrush
+from PySide6.QtGui import QPen
+from PySide6.QtCore import QSize
+from PySide6.QtCore import QTimer
+from PySide6.QtCore import QRect
+from PySide6.QtCore import Qt
 
 # Local imports
-from game import Game, Board
-from sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
-from slocales import locales
-from stypes import MouseButton, MouseEvent, Mode, UserInput, \
-    SetupMode, Key, MovableType, MissileType
+from spaceshooter.game import Game
+from spaceshooter.sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
+from spaceshooter.slocales import locales
+from spaceshooter.stypes import MouseButton, MouseEvent, Mode, UserInput, \
+    SetupMode, Key, MovableType, MissileType, Board
 
-# PyQ/PySide imports
-try:
-    from PySide6.QtWidgets import QApplication
-    from PySide6.QtWidgets import QMainWindow
-    from PySide6.QtWidgets import QLabel
-    from PySide6.QtGui import QPixmap
-    from PySide6.QtGui import QPainter
-    from PySide6.QtGui import QFont
-    from PySide6.QtGui import QFontMetrics
-    from PySide6.QtGui import QColor
-    from PySide6.QtGui import QBrush
-    from PySide6.QtGui import QPen
-    from PySide6.QtCore import QSize
-    from PySide6.QtCore import QTimer
-    from PySide6.QtCore import QRect
-    from PySide6.QtCore import Qt
-except ImportError:
-    from PyQt6.QtWidgets import QApplication
-    from PyQt6.QtWidgets import QMainWindow
-    from PyQt6.QtWidgets import QLabel
-    from PyQt6.QtGui import QPixmap
-    from PyQt6.QtGui import QPainter
-    from PyQt6.QtGui import QFont
-    from PyQt6.QtGui import QFontMetrics
-    from PyQt6.QtGui import QColor
-    from PyQt6.QtGui import QBrush
-    from PyQt6.QtGui import QPen
-    from PyQt6.QtCore import QSize
-    from PyQt6.QtCore import QTimer
-    from PyQt6.QtCore import QRect
-    from PyQt6.QtCore import Qt
-
-# Dealing with fonts:
-# 1. Download and install your favourite font
-# 2. Use its name below in DEFAULT_FONT variable
-# Remark: if font is not found, default one is used
-# (and it's pretty awful)
-
-# Sample fonts:
-# DEFAULT_FONT = "Good Times Rg"
-# DEFAULT_FONT = "Commodore 64"
-# DEFAULT_FONT = "C64 Pro"
 DEFAULT_FONT = "Commodore 64 Rounded"
-
 APPLICATION_TITLE = "SpaceShooter"
 
 
@@ -116,12 +90,15 @@ class Arena(QLabel):
     Game arena
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, **kwargs):
         """
         Create Arena object
         :param parent: handle to parent window
         """
         super().__init__()
+        font = kwargs.get('font', DEFAULT_FONT)
+        if not font:
+            font = DEFAULT_FONT
         self.parent = parent
         self.shooter = None
         self.canvas = QPixmap(ARENA_WIDTH, ARENA_HEIGHT)
@@ -151,12 +128,12 @@ class Arena(QLabel):
         }
 
         self.fonts = {
-            'logo': QFont(DEFAULT_FONT, 96),
-            'menu': QFont(DEFAULT_FONT, 54),
-            'get-ready': QFont(DEFAULT_FONT, 64),
-            'options': QFont(DEFAULT_FONT, 48),
-            'help': QFont(DEFAULT_FONT, 28),
-            'status-line': QFont(DEFAULT_FONT, 28)
+            'logo': QFont(font, 96),
+            'menu': QFont(font, 54),
+            'get-ready': QFont(font, 64),
+            'options': QFont(font, 48),
+            'help': QFont(font, 28),
+            'status-line': QFont(font, 28)
         }
         self.metrics = {
             'logo': QFontMetrics(self.fonts['logo']),
@@ -1106,7 +1083,7 @@ class Arena(QLabel):
                                        self.game.player.shieldy,
                                        self.game.player.shieldw,
                                        self.game.player.shieldh),
-                                       self.shooter.brushes['shieldinter'])
+                                 self.shooter.brushes['shieldinter'])
                 painter.setPen(self.shooter.pens['shieldline'])
                 painter.drawRect(QRect(self.game.player.shieldx,
                                        self.game.player.shieldy,
@@ -1428,82 +1405,83 @@ class SpaceShooter(QApplication):
             MovableType.FABRYKA2: [(95, 130), (165, 0), (253, 0), (328, 0)],
             MovableType.FABRYKA3: [(232, 0)]
         }
+        path = resources.path(__package__, "images")
         self.images = {
-            'star': QPixmap("images/star.png"),
+            'star': QPixmap(f"{path}/star.png"),
             'players': [
-                QPixmap("images/aplayer0.png"),
-                QPixmap("images/aplayer1.png"),
-                QPixmap("images/aplayer2.png"),
-                QPixmap("images/asterowiec.png")
+                QPixmap(f"{path}/aplayer0.png"),
+                QPixmap(f"{path}/aplayer1.png"),
+                QPixmap(f"{path}/aplayer2.png"),
+                QPixmap(f"{path}/asterowiec.png")
             ],
             'big_players': [
-                QPixmap("images/player0.png"),
-                QPixmap("images/player2.png"),
-                QPixmap("images/player3.png"),
-                QPixmap("images/sterowiec.png")
+                QPixmap(f"{path}/player0.png"),
+                QPixmap(f"{path}/player2.png"),
+                QPixmap(f"{path}/player3.png"),
+                QPixmap(f"{path}/sterowiec.png")
             ],
             'movables': {
-                MovableType.DZIALO: QPixmap("images/dzialo.png"),
-                MovableType.DOM1: QPixmap("images/dom1.png"),
-                MovableType.DOM2: QPixmap("images/dom2.png"),
-                MovableType.DOM3: QPixmap("images/dom3.png"),
-                MovableType.FABRYKA1: QPixmap("images/fabryka1.png"),
-                MovableType.FABRYKA2: QPixmap("images/fabryka2.png"),
-                MovableType.FABRYKA3: QPixmap("images/fabryka3.png"),
-                MovableType.WIEZOWIEC1: QPixmap("images/wiezowiec1.png"),
-                MovableType.WIEZOWIEC2: QPixmap("images/wiezowiec2.png"),
-                MovableType.WIEZOWIEC3: QPixmap("images/wiezowiec3.png")
+                MovableType.DZIALO: QPixmap(f"{path}/dzialo.png"),
+                MovableType.DOM1: QPixmap(f"{path}/dom1.png"),
+                MovableType.DOM2: QPixmap(f"{path}/dom2.png"),
+                MovableType.DOM3: QPixmap(f"{path}/dom3.png"),
+                MovableType.FABRYKA1: QPixmap(f"{path}/fabryka1.png"),
+                MovableType.FABRYKA2: QPixmap(f"{path}/fabryka2.png"),
+                MovableType.FABRYKA3: QPixmap(f"{path}/fabryka3.png"),
+                MovableType.WIEZOWIEC1: QPixmap(f"{path}/wiezowiec1.png"),
+                MovableType.WIEZOWIEC2: QPixmap(f"{path}/wiezowiec2.png"),
+                MovableType.WIEZOWIEC3: QPixmap(f"{path}/wiezowiec3.png")
             },
             'smokes': [
-                QPixmap("images/smoke-1.png"),
-                QPixmap("images/smoke-2.png"),
-                QPixmap("images/smoke-3.png"),
-                QPixmap("images/smoke-4.png")
+                QPixmap(f"{path}/smoke-1.png"),
+                QPixmap(f"{path}/smoke-2.png"),
+                QPixmap(f"{path}/smoke-3.png"),
+                QPixmap(f"{path}/smoke-4.png")
             ],
             'enemies': [
-                QPixmap("images/enemy4.png"),
-                QPixmap("images/enemy5.png"),
-                QPixmap("images/enemy6.png"),
-                QPixmap("images/enemy7.png"),
-                QPixmap("images/enemy8.png"),
-                QPixmap("images/enemy9.png"),
+                QPixmap(f"{path}/enemy4.png"),
+                QPixmap(f"{path}/enemy5.png"),
+                QPixmap(f"{path}/enemy6.png"),
+                QPixmap(f"{path}/enemy7.png"),
+                QPixmap(f"{path}/enemy8.png"),
+                QPixmap(f"{path}/enemy9.png"),
             ],
             'explosions': [
-                QPixmap("images/explosion-1.png"),
-                QPixmap("images/explosion-2.png"),
-                QPixmap("images/explosion-3.png"),
-                QPixmap("images/explosion-2.png"),
-                QPixmap("images/explosion-1.png"),
+                QPixmap(f"{path}/explosion-1.png"),
+                QPixmap(f"{path}/explosion-2.png"),
+                QPixmap(f"{path}/explosion-3.png"),
+                QPixmap(f"{path}/explosion-2.png"),
+                QPixmap(f"{path}/explosion-1.png"),
             ],
             'missiles': {
-                MissileType.FROM: QPixmap("images/missile-2.png"),
-                MissileType.TO: QPixmap("images/missile-1.png"),
-                MissileType.TO_NW: QPixmap("images/missile-3.png"),
-                MissileType.TO_SW: QPixmap("images/missile-4.png"),
-                MissileType.TO_NWW: QPixmap("images/missile-5.png"),
-                MissileType.TO_SWW: QPixmap("images/missile-6.png")
+                MissileType.FROM: QPixmap(f"{path}/missile-2.png"),
+                MissileType.TO: QPixmap(f"{path}/missile-1.png"),
+                MissileType.TO_NW: QPixmap(f"{path}/missile-3.png"),
+                MissileType.TO_SW: QPixmap(f"{path}/missile-4.png"),
+                MissileType.TO_NWW: QPixmap(f"{path}/missile-5.png"),
+                MissileType.TO_SWW: QPixmap(f"{path}/missile-6.png")
             },
             'icons': {
-                'pl': QPixmap("images/flag_pl.png"),
-                'en': QPixmap("images/flag_en.png"),
-                'next': QPixmap("images/next.png"),
-                'prev': QPixmap("images/prev.png")
+                'pl': QPixmap(f"{path}/flag_pl.png"),
+                'en': QPixmap(f"{path}/flag_en.png"),
+                'next': QPixmap(f"{path}/next.png"),
+                'prev': QPixmap(f"{path}/prev.png")
             },
-            'boss': QPixmap("images/pzm.png"),
+            'boss': QPixmap(f"{path}/pzm.png"),
             'indicators': {
-                'red': QPixmap('images/indicator_red.png'),
-                'green': QPixmap('images/indicator_green.png'),
-                'yellow': QPixmap('images/indicator_yellow.png'),
-                'black': QPixmap('images/indicator_black.png'),
-                'player': QPixmap('images/player_indicator.png'),
-                'shield': QPixmap('images/shield-green.png'),
-                'tnt': QPixmap('images/tnt.png'),
-                'light-ball': QPixmap('images/light_ball.png'),
-                'frozen-box': QPixmap('images/frozen_box.png'),
-                'medkit': QPixmap('images/apteczka.png'),
-                'drop': QPixmap('images/drop.png'),
-                'bomb': QPixmap('images/bomba.png'),
-                'cup': QPixmap('images/cup.png')
+                'red': QPixmap(f'{path}/indicator_red.png'),
+                'green': QPixmap(f'{path}/indicator_green.png'),
+                'yellow': QPixmap(f'{path}/indicator_yellow.png'),
+                'black': QPixmap(f'{path}/indicator_black.png'),
+                'player': QPixmap(f'{path}/player_indicator.png'),
+                'shield': QPixmap(f'{path}/shield-green.png'),
+                'tnt': QPixmap(f'{path}/tnt.png'),
+                'light-ball': QPixmap(f'{path}/light_ball.png'),
+                'frozen-box': QPixmap(f'{path}/frozen_box.png'),
+                'medkit': QPixmap(f'{path}/apteczka.png'),
+                'drop': QPixmap(f'{path}/drop.png'),
+                'bomb': QPixmap(f'{path}/bomba.png'),
+                'cup': QPixmap(f'{path}/cup.png')
             }
         }
         self.timers = {

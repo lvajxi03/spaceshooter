@@ -1,6 +1,6 @@
 # SpaceShooter
 
-Simple shooter game prototype. Written in `Python`, utilizes `PyQt` library capabilities.
+Simple shooter game prototype. Written in `Python`, utilizes `PySide` library capabilities.
 
 Not decided yet what will be the target platform and SDK: C++/SDL/multiplatform or C++/WinAPI only.
 
@@ -35,52 +35,58 @@ Several items are quite useful and can be collected:
 
 ## Installation and configuration
 
-All you have to do is to clone this repo, install `Python` and `PySide6`/`PyQt6` library.
+When installing from a wheel, all you need to do is
 
-(`PySide6` installation can be done via
 ```bash
-$ python -m pip install PySide6
+$ python -m pip install spaceshooter-0.0.6-py3-none-any.whl
 ```
-while `PyQt6` installation can be done via
-```bash
-$ python -m pip install PyQt6
-```
-)
 
-Default font is ugly, so please download some free `TTF` file that resembles you the 80s and install.
-Then, please let the program know about it: change `DEFAULT_FONT` in `pysrc/shooter_qt.py` file
+`PySide6` will also be installed as it's required to run.
+
+(but at first, point your command line to the directory where you downloaded the wheel file)
+
+### Building
+
+If you want to build the package from scratch, you shall clone this repo and point your commandline to the cloned directory, then:
+
+```bash
+$ python -m build
+```
+
+Package shall be placed in `dist` subdirectory.
 
 ## Running
 
-### Windowed mode
-
-In Windows, please use:
-
-```cmd
-C:\> launch.bat
-```
-
-For Linux/MacOS:
+Running is as easy as typing
 
 ```bash
-$ ./launch.sh
+$ python -m spaceshooter
 ```
 
-### Full screen
+in your terminal.
 
-For full screen, please use `-f` parameter for launcher files.
-
-In Windows, please use:
-
-```cmd
-C:\> launch.bat -f
-```
-
-For Linux/MacOS:
+Default font is ugly, so please download some free `TTF` file that resembles you the 80s and install.
+Then, please let the program know about it -- use `-f "font name"` in the command line:
 
 ```bash
-$ ./launch.sh -f
+python -m spaceshooter -f "Best font I found in all the Internets"
 ```
+
+Rembember about the quotes!
+
+### Windowing mode
+
+By default, application is using full screen to display its content. To run this in windowing mode, please use `-w` parameter:
+
+```bash
+python -m spaceshooter -w
+```
+
+This one:
+```bash
+$ python -m spaceshooter -bash
+```
+gives you the full list of available options and their arguments.
 
 ## Navigation
 
@@ -112,11 +118,6 @@ Default keys are as follows:
 * `q` for leaving game and back to the menu
 
 You can reconfigure navigation keys, missiles, bombs and TNTs.
-
-## MacOS
-
-Application works with MacOS, *however*, there may be issues with `log_usage` decorator in `pysrc/spaceshooter.py` file.
-If so, then please, comment out lines `81-82` and `84-85`
 
 ## Other
 
