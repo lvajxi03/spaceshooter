@@ -1,0 +1,120 @@
+html
+{
+    margin: 0;
+}
+
+body
+{
+    margin: 1cm;
+    background: #fff;
+}
+
+#top
+{
+}
+
+h1
+{
+    font-family: Roboto, monospace;
+    font-size: 48pt;
+    text-align: left;
+    text-indent: 1cm;
+    font-weight: bold;
+    color: #233321;
+}
+
+h2
+{
+    font-family: Roboto, monospace;
+    font-size: 24pt;
+    text-align: left;
+    text-indent: 1cm;
+    font-weight: bold;
+    color: #233327;
+}
+
+p
+{
+    font-family: Roboto, monospace;
+    font-size: 18pt;
+    text-align: left;
+    text-indent: 1cm;
+    color: ##233347;
+}
+
+p.centered
+{
+    text-align: center;
+}
+
+p.centered
+{
+    text-align: center;
+}
+
+p.centered img
+{
+    padding: 10px;
+    border: 1px solid #7c70da;
+    background: #f4f4b9;
+}
+
+div.remark p
+{
+    color: #3c3504;
+}
+
+a
+{
+    color: #7c70da;
+    text-decoration: none;
+    border: 0;
+    font-weight: bold;
+    
+}
+
+a:hover
+{
+    background: #7c70da;
+    color: #f4f4b9;
+    text-decoration: none;
+}
+
+a.button
+{
+    padding: 20px;
+    border: 2px solid #7c70da;
+    border-radius: 10px;
+}
+
+em
+{
+    font-weight: bold;
+    font-style: normal;
+}
+
+span.code
+{
+    padding: 3px;
+    background: #e1e1e1;
+}
+
+div.code
+{
+    padding: 10px;
+    background: #e1e1e1;    
+}
+
+div.imageleft
+{
+    float: left;
+    padding: 20px;
+    margin: 0;
+}
+
+div.imageright
+{
+    float: right;
+    padding: 20px;
+    margin: 0;
+}

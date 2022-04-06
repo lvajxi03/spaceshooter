@@ -49,6 +49,7 @@ class Controller(QMainWindow):
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.parent = parent
+        self.setWindowIcon(parent.images['icons']['app'])
         self.game = None
         self.setWindowTitle(APPLICATION_TITLE)
 
@@ -1462,6 +1463,7 @@ class SpaceShooter(QApplication):
                 MissileType.TO_SWW: QPixmap(f"{path}/missile-6.png")
             },
             'icons': {
+                'app': QPixmap(f"{path}/aicon.png"),
                 'pl': QPixmap(f"{path}/flag_pl.png"),
                 'en': QPixmap(f"{path}/flag_en.png"),
                 'next': QPixmap(f"{path}/next.png"),

@@ -25,10 +25,10 @@ def read(file_name):
 
 setup(
     name="spaceshooter",
-    version="0.0.6",
+    version="0.0.6.1",
     author="Marcin Bielewicz",
     author_email="marcin.bielewicz@gmail.com",
-    description="Simple spaceshooter game, written in PyQt",
+    description="Simple spaceshooter game that uses PySide library",
     license="GPL",
     keywords="pyqt spaceshooter game arcade",
     packages=['spaceshooter'],
