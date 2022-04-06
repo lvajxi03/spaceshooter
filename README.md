@@ -84,7 +84,7 @@ python -m spaceshooter -w
 
 This one:
 ```bash
-$ python -m spaceshooter -bash
+$ python -m spaceshooter -h
 ```
 gives you the full list of available options and their arguments.
 

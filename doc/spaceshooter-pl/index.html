@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>SpaceShooter</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+    <link rel="stylesheet" type="text/css" href="/static-styles/ssh.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta charset="UTF-8" />    
+  </head>
+  <body>
+    <div id="top">
+      <p class="centered"><a href="https://pypi.org/project/spaceshooter">Instaluj</a> | <a href="/spaceshooter-en">English version</a></p>
+    </div>
+    <h1>SpaceShooter</h1>
+    <div class="imageleft">
+      <img src="/static-images/spaceshooter1.jpg" alt="SpaceShooter" />
+    </div>
+    <h2>O programie</h2>
+    <p>Gra jest <em>przewijaną strzelanką</em>: oto statek kosmiczny podąża z lewa na prawo i próbuje przedrzeć się przez gąszcz pojawiających się wrogów, a na końcu pokonać bossa.</p>
+    <p>Początkowo inspiracją byli <em>Przybysze z Matplanety</em>, a konkretnie ich statek, który ostatecznie został bossem. Wrogowie mieli zostawać na ekranie do czasu bycia unicestwionymi, ale z czasem zaczęli przesuwać się w lewo.</p>
+    <p>Program powstał jako prototyp w języku <span class="code">Python</span> z użyciem <span class="code">PySide</span>. Wersja docelowa &mdash; o ile powstanie &mdash; powstanie w <span class="code">C++</span> i będzie się opierać o <span class="code">SDL</span> albo <span class="code">WinAPI</span>.</p>
+    <h2>Wymagania sprzętowe</h2>
+    <p>Dowolny komputer, na którym może działać <span class="code">Python 3.10</span> lub nowszy</p>
+    <h2>Instalacja</h2>
+    <p>Potrzebny jest <span class="code">Python</span> w wersji <span class="code">3.10</span> lub nowszej i <span class="code">pip</span>. Następnie należy &mdash; z poziomu wiersza poleceń &mdash; uruchomić poniższą komendę:</p>
+    <div class="code"><p>$ python -m pip install spaceshooter</p></div>
+    <p>Wszystkie zależności zostaną doinstalowane automatycznie.</p>
+    <h2>Uruchamianie</h2>
+    <div class="imageright">
+      <img src="/static-images/spaceshooter-pl.jpg" alt="Program menu" />
+    </div>
+    <p>Aby uruchomić grę, należy z poziomu wiersza poleceń uruchomić poniższą komendę:</p>
+    <div class="code"><p>$ python -m pip spaceshooter</p></div>
+    <p>Gra oczekuje obecności czcionki <span class="code">Commodore 64 Rounded</span> &mdash; w przeciwnym razie użyje domyślnej (która jest, oczywiście brzydka); Zainstaluj ładniejszą czcionkę, która będzie bardziej pasować do tej gry i wymuś jej użycie, uruchamiając grę poleceniem:</p>
+    <div class="code"><p>$ pip -m spaceshooter -f "Najlepsza czcionka, którą znalazłem w internetach"</p></div>
+    <p>Pamiętaj o podwójnych cudzysłowach!</p>
+    <h2>Podręcznik użytkownika</h2>
+    <p>Celem gry, jak już wspomniano, jest unicestwienie tylu wrogów, ile się da, a na końcu ich bossa. Do tego przeznaczone są zwykłe pociski, bomby, kule światła, TNT (dynamit) lub bomby. Zwykłe pociski i bomby są nielimitowane, podczas gdy TNT musi wpierw zostać złapany (gracz rozpoczyna grę z trzema na zachętę), kule światła po złapaniu działają 10 sekund.</p>
+    <p>Gracz zaczyna grę z trzema punktami życia, z których każdy składa się z dziesięciu minipunktów. Każdy celny strzał wroga, działa lub zderzenie z kometą odbiera jeden minipunkt. Gra kończy się, gdy nie ma już punktów życia. Minipunkty życia można odzyskiwać, łapiąc przelatujące czasami apteczki.</p>
+    <p>Gra posiada cztery poziomy trudności: łatwy, normalny, trudny i nieśmiertelny.</p>
+    <p>Na poziomie łatwym gracz wchodzi w kolizję tylko z wrogami i pociskami, także tymi wystrzelonymi przez działo, na poziomie normalnym dodatkowo z kometami, a na poziomie trudnym także z budynkami. Na poziomie nieśmiertelnym graczowi nie grozi absolutnie nic.</p>
+    <div class="imageleft"><iframe width="560" height="315" src="https://www.youtube.com/embed/QGefyk6W11I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <p>Użycie dynamitu natychmiast zabija trzech wrogów (o ile tylu jest na planszy)</p>
+    <p>Oprócz apteczek, dynamitu i kul światła gracz może łapać kostki lodu (i tym samym mrozić wrogów na 10 sekund) oraz osłony &mdash; przez 10 sekund będzie absolutnie nieśmiertelny</p>
+    <p>Gra składa się z pięciu poziomów gry (leveli), dla których zaprojektowano różne scenariusze i zestawy wrogów. Na końcu piątego poziomu gracza atakuje boss. Boss strzela jednocześnie trzema pociskami w trzech różnych kierunkach, a zabija go 10 pocisków gracza</p>
+    <p>W grze można ustawić inne niż domyślne kombinacje klawiszy &mdash; w sekcji "Ustawienia"</p>
+    <p>Ostatnie ustawienia, poziom trudności oraz lista rekordów zapisywane są do pliku <span class="code">~/.spaceshooterrc</span></p>
+    <h2>Podziękowania</h2>
+    <p>Dziękuję mojemu dziesięcioletniemu synowi, <em>Antoniemu</em>, który towarzyszył mi wiernie podczas tworzenia, testowania i obmyślania koncepcji gry. Wszystkie latające obiekty, typu <em>osłona</em> albo <em>kostka lodu</em>, są jego pomysłu. Dodatkowo, miał wiele uwag, które w efekcie usprawniły logikę gry.</p>
+    <h2>Różne takie</h2>
+    <p>Pierwszy <em>draft</em> powstał pod koniec 2020 roku, gdy rozpaczliwie szukałem pracy. Wrzuciłem na <em>LinkedIn</em> post pokazujący ewentualny pomysł razem z hasłem "szukam pracy, jakiejkolwiek". Grafika powstała na kartce A4 przy pomocy ołówka i kredek; została potem przycięta i użyta do poruszających się obiektów</p>
+    <p>Druga iteracja to już obiekty rysowane w <em>Inkscape</em> i obrabiane w <em>GIMPie</em>.
+    <p>Dźwięków na razie nie ma, ale może w przyszłości jakieś nagramy.</p>
+    <h2>Kontakt</h2>
+    <p>Jeśli chcesz podzielić się uwagami do gry, zgłosić błąd, albo po prostu napisać, użyj <a href="mailto:marcin@iostream.pl?subject=spaceshooter">tego adresu</a></p>
+    <p>Strona programu w serwsie GitHub: <a href="https://github.com/lvajxi03/spaceshooter">https://github.com/lvajxi03/spaceshooter</a></p>
+    <p>Strona programu w serwisie Python Package Index: <a href="https://pypi.org/project/spaceshooter">https://pypi.org/project/spaceshooter</a></p>
+  </body>
+</html>

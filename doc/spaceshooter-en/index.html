@@ -1,0 +1,58 @@
+<html>
+  <head>
+    <title>SpaceShooter</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
+    <link rel="stylesheet" type="text/css" href="/static-styles/ssh.css" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <meta charset="UTF-8" />    
+  </head>
+  <body>
+    <div id="top">
+      <p class="centered"><a href="https://pypi.org/project/spaceshooter">Install</a> | <a href="/spaceshooter-pl">Wersja polska</a></p>
+    </div>
+    <h1>SpaceShooter</h1>
+    <div class="imageleft">
+      <img src="/static-images/spaceshooter1.jpg" alt="SpaceShooter" />
+    </div>
+    <h2>About</h2>
+    <p>SpaceShooter is a <em>side-scroller shooter</em> game: a spaceship travels from left to right and wants to get through the enemies until it will beat the boss.</p>
+    <p>At first, it was inspired by <em>Newcomers from Planet Math</em>, popular Polish TV series from 80s, and especially their spaceship, which, at the end, became a boss to beat. Enemies were to stay at the board until they're beaten, but later they started moving from right to left.</p>
+    <p>This program is made as a prototype, written in <span class="code">Python</span> agains <span class="code">PySide</span> library. Target wersion &mdash; if even created &mdash; will be written in <span class="code">C++</span> against <span class="code">SDL</span> or pure <span class="code">WinAPI</span>.</p>
+    <h2>HW requirements</h2>
+    <p>Any computer, where you can run <span class="code">Python 3.10</span> or newer.</p>
+    <h2>Installation</h2>
+    <p>You need <span class="code">Python</span> version <span class="code">3.10</span> or newer and <span class="code">pip</span>. Then you need to open a terminal and type:</p>
+    <div class="code"><p>$ python -m pip install spaceshooter</p></div>
+    <p>All dependencies will be also installed.</p>
+    <h2>Running</h2>
+    <div class="imageright">
+      <img src="/static-images/spaceshooter-pl.jpg" alt="Menu programu" />
+    </div>
+    <p>To start the program, type the following in the terminal:</p>
+    <div class="code"><p>$ python -m pip spaceshooter</p></div>
+    <p>Game is looking by default for a font <span class="code">Commodore 64 Rounded</span> &mdash; otherwise it will use the default (which is, of course, ugly); please install better one and force using this with the option as below:</p>
+    <div class="code"><p>$ pip -m spaceshooter -f "Najlepsza czcionka, którą znalazłem w internetach"</p></div>
+    <p>Remember about double quotes!</p>
+    <h2>Gamers' manual</h2>
+    <p>The goal is, as mentioned, to kill as much enemies, as it's possible, and their boss at the end. You need to use missiles, lightballs, TNTs or bombs. Plain missiles and bombs are unlimited, where TNT must be first caught (the player has 3 TNTs at the startup), lightballs, when you caught them, work for 10s</p>
+    <p>Every game starts with 3 lives, where every of them contains 10 minipoints. Every shoot at the player removes one minipoint. Game ends, where no lifes are present. Minipoints can be restored by catching those medical kits, flying there or there.</p>
+    <p>There are four difficulty levels: easy, normal, hard and immortal.</p>
+    <p>Easy level means that player can collide only with enemies and missiles (also these from the guns). Normal level is when the player collides also with comets, and the hard one when it collides also with buildings. Being immortal means &mdash; surprise, surprise! &mdash; you're immortal.</p>
+    <div class="imageleft"><iframe width="560" height="315" src="https://www.youtube.com/embed/QGefyk6W11I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <p>Using TNT causes 3 enemies to be dead immediately.</p>
+    <p>Apart from medical kids, TNTs and lightballs you can catch ice boxes (and freeze enemies for 10s) and shields &mdash; for 10s player can be immortal.</p>
+    <p>There are five game levels, with different scenarios and enemies. At the end you need to kill the boss. Boss is trying to kill you with three missiles at once, flying in three directions. Boss can be killed by your 10 missiles.</p>
+    <p>"Settings" section contains all the keys that can be remapped if necessary.</p>
+    <p>Latest settings, difficulty levels and hiscores are saved to <span class="code">~/.spaceshooterrc</span></p>
+    <h2>Kudos</h2>
+    <p>Big thanks for my 10yrs old son, <em>Antoni</em>, who was improving all my game concept and created all of these flying objects (<em>shields</em>, <em>iceboxes</em> and so on); also he reworked most of the game logic.</p>
+    <h2>Misc</h2>
+    <p>First <em>draft</em> was created at the end of 2020, when I was desperately looking for a new job. I put a post to <em>LinkedIn</em> with my proof of concept and the message "looking for ANY job". Graphics were created with crayons on A4 pamer, then scanned and used in the code.</p>
+    <p>Second iteration replaced all those crayon graphics with files made in <em>Inkscape</em> and <em>GIMP</em>.</p>
+    <p>There is no sound, so far, but maybe one day we will record some (who knows?)</p>
+    <h2>Contact</h2>
+    <p>If you want to share your impressions, report a bug, or just write something, please use <a href="mailto:marcin@iostream.pl?subject=spaceshooter">this address</a></p>
+    <p>GitHub project page: <a href="https://github.com/lvajxi03/spaceshooter">https://github.com/lvajxi03/spaceshooter</a></p>
+    <p>Python Package Index project page: <a href="https://pypi.org/project/spaceshooter">https://pypi.org/project/spaceshooter</a></p>
+  </body>
+</html>
