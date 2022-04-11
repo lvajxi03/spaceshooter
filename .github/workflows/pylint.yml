@@ -14,10 +14,17 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install pylint and its dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analysing the code with pylint
+        python -m pip install pylint
+    - name: Analyzing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
+    - name: Install pytest and its dependencies
+      run: |
+        python -m pip install pytest pytest-cov coverage
+    - name: Run unit tests
+      run: |
+        PYTHONPATH=pysrc/spaceshooter python -m pytest pytests/ --cov
+        python -m coverage html
