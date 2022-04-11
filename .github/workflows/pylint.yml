@@ -20,7 +20,7 @@ jobs:
         python -m pip install pylint
     - name: Analyzing application code with pylint
       run: |
-        pylint $(find pysrc -name "*.py)
+        pylint $(find pysrc -name "*.py")
     - name: Analyzing test code with pylint
       run: |
         PYTHONPATH=pysrc/spaceshooter pylint $(find pytests -name "*.py)
