@@ -24,5 +24,9 @@ jobs:
         find .
     - name: Run unit tests
       run: |
-        PYTHONPATH=pysrc/ python -m pytest pytests/ --cov
+        export PYTHONPATH=pysrc/spaceshooter
+        python -m pytest pytests/ --cov
+    - name: Run coverage
+      run: |
+        export PYTHONPATH=pysrc/spaceshooter
         python -m coverage html
