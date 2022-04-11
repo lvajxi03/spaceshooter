@@ -25,10 +25,10 @@ jobs:
     - name: Run unit tests
       run: |
         #!/bin/bash
-        export PYTHONPATH=pysrc/spaceshooter
+        export PYTHONPATH=($pwd)/pysrc/spaceshooter
         python -m pytest pytests/ --cov
     - name: Run coverage
       run: |
         #!/bin/bash
-        export PYTHONPATH=pysrc/spaceshooter
+        export PYTHONPATH=($pwd)/pysrc/spaceshooter
         python -m coverage html
