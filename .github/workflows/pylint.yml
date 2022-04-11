@@ -18,13 +18,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         python -m pip install pylint
-    - name: Analyzing the code with pylint
+    - name: Analyzing application code with pylint
       run: |
-        pylint $(git ls-files '*.py')
-    - name: Install pytest and its dependencies
+        pylint $(find pysrc -name "*.py)
+    - name: Analyzing test code with pylint
       run: |
-        python -m pip install pytest pytest-cov coverage
-    - name: Run unit tests
-      run: |
-        PYTHONPATH=pysrc/spaceshooter python -m pytest pytests/ --cov
-        python -m coverage html
+        PYTHONPATH=pysrc/spaceshooter pylint $(find pytests -name "*.py)

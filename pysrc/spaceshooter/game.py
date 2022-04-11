@@ -25,7 +25,7 @@ class Game:
     """
     Main Game class, with all logic here
     """
-    def __init__(self, shooter, params={}):
+    def __init__(self, shooter, params=None):
         """
         Create game instance
         :param shooter: Shooter handle

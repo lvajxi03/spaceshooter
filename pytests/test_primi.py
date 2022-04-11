@@ -9,13 +9,22 @@ from primi import Rect
 
 
 def test_rect_1():
-    r = Rect(1, 2, 3, 4)
-    assert r.x == 1
-    assert r.y == 2
-    assert r.w == 3
-    assert r.h == 4
+    """
+    Check if a rectangle was created
+    :return: None
+    """
+    rect = Rect(1, 2, 3, 4)
+    assert rect.x == 1
+    assert rect.y == 2
+    assert rect.w == 3
+    assert rect.h == 4
 
 def test_rect_2():
-    r = Rect(1, 2, 5, 6)
-    assert r.contains(3, 3)
-    assert not r.contains(1, 1)
+    """
+    Check if rectangle contains a point
+    and does not contains another one.
+    :return:
+    """
+    rect = Rect(1, 2, 5, 6)
+    assert rect.contains(3, 3)
+    assert not rect.contains(1, 1)
