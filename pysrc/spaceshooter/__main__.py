@@ -32,19 +32,22 @@ def __usage__(msg=None):
 
 
 if __name__ == "__main__":
-    FONT = None
-    WINDOWING = False
+    startup_params = {'lastfont': None,
+                      'windowing': False,
+                      'reset': False}
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "wf:h", [])
+        opts, args = getopt.getopt(sys.argv[1:], "wf:hr", [])
         for o, a in opts:
             if o == "-f":
                 if a.strip():
-                    FONT = a
+                    startup_params['lastfont'] = a
                 else:
                     __usage__("No font name specified!")
                     sys.exit(1)
             elif o == "-w":
-                WINDOWING = True
+                startup_params['windowing'] = True
+            elif o == '-r':
+                startup_params['reset'] = True
             else:
                 __usage__(f"Unknown option: {o}")
                 sys.exit(1)
@@ -53,18 +56,17 @@ if __name__ == "__main__":
         sys.exit(1)
     random.seed()
     shooter = SpaceShooter(sys.argv)
-    shooter.game = Game(shooter)
+    shooter.game = Game(shooter, startup_params)
     window = Controller(shooter)
     window.game = shooter.game
     shooter.window = window
-    arena = Arena(window, font=FONT)
+    arena = Arena(window, font=shooter.game.config['lastfont'])
     arena.shooter = shooter
     shooter.game.arena = arena
     window.setCentralWidget(arena)
-    if WINDOWING:
+    if startup_params['windowing']:
         window.setFixedSize(ARENA_WIDTH, ARENA_HEIGHT)
         window.show()
-
     else:
         window.showFullScreen()
     shooter.game.change_board(Board.WELCOME)

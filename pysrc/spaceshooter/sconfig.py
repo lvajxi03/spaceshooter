@@ -6,6 +6,7 @@ SpaceShooter configuration
 
 import json
 from spaceshooter.stypes import Key, UserInput, Options
+from spaceshooter.sdefs import DEFAULT_FONT
 
 
 class ShooterConfig:
@@ -14,6 +15,7 @@ class ShooterConfig:
     """
     def __init__(self, **kwargs):
         self.filename = None
+        self.forcefont = False
         if 'filename' in kwargs:
             self.filename = kwargs['filename']
         self.db = {
@@ -27,14 +29,23 @@ class ShooterConfig:
                 UserInput.TNT: Key.KEY_T},
             'lang': 'en',
             'hiscores': [],
-            'lastmode': Options.NORMAL}
+            'lastmode': Options.NORMAL,
+            'lastfont': DEFAULT_FONT}
+        font = kwargs.get('lastfont', None)
+        if font:
+            self.forcefont = True
+            self.db['lastfont'] = font
 
     def __getitem__(self, item):
-        if item in self.db:
-            return self.db[item]
-        return None
+        """
+        Square brackets operator (indexing) - getter
+        """
+        return self.db.get(item, None)
 
     def __setitem__(self, key, value):
+        """
+        Square brackets operator (indexing) - setter
+        """
         self.db[key] = value
 
     def get_key(self, keyname: UserInput, fallback=None) -> Key:
@@ -88,11 +99,16 @@ class ShooterConfig:
                 self.db[i] = j[i]
             except KeyError:
                 pass
+        if not self.forcefont:
+            try:
+                self.db['lastfont'] = j['lastfont']
+            except KeyError:
+                pass
         self.db['hiscores'].sort(reverse=True, key=lambda y: y[1])
         self.db['hiscores'] = self.db['hiscores'][:10]
         if 'keys' in j:
             for key in j['keys']:
-                self.db['keys'][int(key)] = Key(int(j['keys'][key]))
+                self.db['keys'][key] = Key(int(j['keys'][key]))
 
     def save(self):
         """

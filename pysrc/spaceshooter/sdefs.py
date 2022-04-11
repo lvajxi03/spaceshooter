@@ -46,6 +46,9 @@ MAX_ENEMIES_ITERATIONS = 1
 MAX_EVENTS_FACTOR = 3000
 MAX_NICK_LEN = 10  # Max length of nickname to enter in new hiscore board
 
+# Misc
+DEFAULT_FONT = "Commodore 64 Rounded"
+
 
 # Stars matrix
 star_ids = [

@@ -25,15 +25,17 @@ class Game:
     """
     Main Game class, with all logic here
     """
-
-    def __init__(self, shooter):
+    def __init__(self, shooter, params={}):
         """
         Create game instance
         :param shooter: Shooter handle
         """
         self.config = ShooterConfig(
-            filename=os.path.expanduser("~/.spaceshooterrc"))
-        self.config.read()
+            filename=os.path.expanduser("~/.spaceshooterrc"),
+            lastfont=params.get('lastfont', None))
+        read = not params.get('reset', False)
+        if read:
+            self.config.read()
         self.counter = {
             'welcome': 1
         }

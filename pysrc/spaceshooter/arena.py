@@ -26,12 +26,11 @@ from PySide6.QtCore import Qt
 
 # Local imports
 from spaceshooter.game import Game
-from spaceshooter.sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN
+from spaceshooter.sdefs import ARENA_WIDTH, ARENA_HEIGHT, BOTTOM_BAR, STAGE_HEIGHT, MAX_NICK_LEN, DEFAULT_FONT
 from spaceshooter.slocales import locales
 from spaceshooter.stypes import MouseButton, MouseEvent, Mode, UserInput, \
     SetupMode, Key, MovableType, MissileType, Board
 
-DEFAULT_FONT = "Commodore 64 Rounded"
 APPLICATION_TITLE = "SpaceShooter"
 
 
@@ -1526,7 +1525,7 @@ class SpaceShooter(QApplication):
         }
         for name, timer in self.timers.items():
             timer.timeout.connect(self.timer_handlers[name])
-        self.game = Game(self)
+        self.game = None
 
     def newscore_event(self):
         """
