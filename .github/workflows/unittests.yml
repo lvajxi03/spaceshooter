@@ -31,5 +31,5 @@ jobs:
     - name: Run coverage
       run: |
         #!/bin/bash
-        export PYTHONPATH=($pwd)/pysrc/spaceshooter
+        export PYTHONPATH=`pwd`/pysrc/spaceshooter
         python -m coverage html
