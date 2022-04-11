@@ -26,7 +26,6 @@ jobs:
       run: |
         #!/bin/bash
         export PYTHONPATH=`pwd`/pysrc/
-        echo $PYTHONPATH
         python -m pytest pytests/ --cov
     - name: Run coverage
       run: |
