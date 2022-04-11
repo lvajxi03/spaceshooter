@@ -26,7 +26,7 @@ jobs:
     - name: Run unit tests
       run: |
         #!/bin/bash
-        export PYTHONPATH=`pwd`/pysrc/
+        export PYTHONPATH=`pwd`/pysrc/spaceshooter
         python -m pytest pytests/ --cov
     - name: Run coverage
       run: |
