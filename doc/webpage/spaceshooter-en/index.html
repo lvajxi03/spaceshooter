@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
     <link rel="stylesheet" type="text/css" href="/static-styles/ssh.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <meta charset="UTF-8" />    
+    <meta charset="UTF-8" />
   </head>
   <body>
     <div id="top">
@@ -31,8 +31,13 @@
     <p>To start the program, type the following in the terminal:</p>
     <div class="code"><p>$ python -m pip spaceshooter</p></div>
     <p>Game is looking by default for a font <span class="code">Commodore 64 Rounded</span> &mdash; otherwise it will use the default (which is, of course, ugly); please install better one and force using this with the option as below:</p>
-    <div class="code"><p>$ pip -m spaceshooter -f "Najlepsza czcionka, którą znalazłem w internetach"</p></div>
+    <div class="code"><p>$ pip -m spaceshooter -f "Best font I found in the Internets"</p></div>
     <p>Remember about double quotes!</p>
+    <p>On the next run, font will be used again, as it's stored in the configuration file now.</p>
+    <p>To reset all the settings (including hi scores, so beware!), you may use:</p>
+    <div class="code"><p>python -m spaceshooter -r</p></div>
+    <p>This will run the program with default settings.</p>
+    <p>Options can be combined.</p>
     <h2>Gamers' manual</h2>
     <p>The goal is, as mentioned, to kill as much enemies, as it's possible, and their boss at the end. You need to use missiles, lightballs, TNTs or bombs. Plain missiles and bombs are unlimited, where TNT must be first caught (the player has 3 TNTs at the startup), lightballs, when you caught them, work for 10s</p>
     <p>Every game starts with 3 lives, where every of them contains 10 minipoints. Every shoot at the player removes one minipoint. Game ends, where no lifes are present. Minipoints can be restored by catching those medical kits, flying there or there.</p>

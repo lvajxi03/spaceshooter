@@ -24,27 +24,31 @@ def __usage__(msg=None):
     print()
     print("where options can be one or more of the following:")
     print()
-    print("-f font-name -- use font-name for default font")
-    print("-w -- use windowing mode instead of full screen")
+    print("-f font-name -- use font-name for default font",)
+    print("-w -- use windowing mode instead of full screen",)
+    print("-r -- reset any previous settings (including hi scores, so beware!),")
     print("-h -- print this help message and terminate")
     print()
     print("That's all, folks!")
 
 
 if __name__ == "__main__":
-    FONT = None
-    WINDOWING = False
+    startup_params = {'lastfont': None,
+                      'windowing': False,
+                      'reset': False}
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "wf:h", [])
+        opts, args = getopt.getopt(sys.argv[1:], "wf:hr", [])
         for o, a in opts:
             if o == "-f":
                 if a.strip():
-                    FONT = a
+                    startup_params['lastfont'] = a
                 else:
                     __usage__("No font name specified!")
                     sys.exit(1)
             elif o == "-w":
-                WINDOWING = True
+                startup_params['windowing'] = True
+            elif o == '-r':
+                startup_params['reset'] = True
             else:
                 __usage__(f"Unknown option: {o}")
                 sys.exit(1)
@@ -53,18 +57,17 @@ if __name__ == "__main__":
         sys.exit(1)
     random.seed()
     shooter = SpaceShooter(sys.argv)
-    shooter.game = Game(shooter)
+    shooter.game = Game(shooter, startup_params)
     window = Controller(shooter)
     window.game = shooter.game
     shooter.window = window
-    arena = Arena(window, font=FONT)
+    arena = Arena(window, font=shooter.game.config['lastfont'])
     arena.shooter = shooter
     shooter.game.arena = arena
     window.setCentralWidget(arena)
-    if WINDOWING:
+    if startup_params['windowing']:
         window.setFixedSize(ARENA_WIDTH, ARENA_HEIGHT)
         window.show()
-
     else:
         window.showFullScreen()
     shooter.game.change_board(Board.WELCOME)

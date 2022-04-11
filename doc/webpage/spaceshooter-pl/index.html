@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto" />
     <link rel="stylesheet" type="text/css" href="/static-styles/ssh.css" />
     <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <meta charset="UTF-8" />    
+    <meta charset="UTF-8" />
   </head>
   <body>
     <div id="top">
@@ -33,6 +33,11 @@
     <p>Gra oczekuje obecności czcionki <span class="code">Commodore 64 Rounded</span> &mdash; w przeciwnym razie użyje domyślnej (która jest, oczywiście brzydka); Zainstaluj ładniejszą czcionkę, która będzie bardziej pasować do tej gry i wymuś jej użycie, uruchamiając grę poleceniem:</p>
     <div class="code"><p>$ pip -m spaceshooter -f "Najlepsza czcionka, którą znalazłem w internetach"</p></div>
     <p>Pamiętaj o podwójnych cudzysłowach!</p>
+    <p>Czcionka jest zapisywana w pliku konfiguracyjnym i następny raz nie wymaga jej specyfikowania z linii poleceń.</p>
+    <p>Aby wyczyścić wszystkie ustawienia (ha, także z tabelą rekordów, więc uważaj!), należy wpisać w linii poleceń:</p>
+    <div class="code"><p>python -m spaceshooter -r</p></div>
+    <p>Ta komenda uruchomi grę z domyślnymi ustawieniami.</p>
+    <p>Opcje mogą być łączone.</p>
     <h2>Podręcznik użytkownika</h2>
     <p>Celem gry, jak już wspomniano, jest unicestwienie tylu wrogów, ile się da, a na końcu ich bossa. Do tego przeznaczone są zwykłe pociski, bomby, kule światła, TNT (dynamit) lub bomby. Zwykłe pociski i bomby są nielimitowane, podczas gdy TNT musi wpierw zostać złapany (gracz rozpoczyna grę z trzema na zachętę), kule światła po złapaniu działają 10 sekund.</p>
     <p>Gracz zaczyna grę z trzema punktami życia, z których każdy składa się z dziesięciu minipunktów. Każdy celny strzał wroga, działa lub zderzenie z kometą odbiera jeden minipunkt. Gra kończy się, gdy nie ma już punktów życia. Minipunkty życia można odzyskiwać, łapiąc przelatujące czasami apteczki.</p>

@@ -72,7 +72,19 @@ Then, please let the program know about it -- use `-f "font name"` in the comman
 python -m spaceshooter -f "Best font I found in all the Internets"
 ```
 
-Rembember about the quotes!
+Remember about the quotes!
+
+On the next run, font will be used again, as it's stored in the configuration file now.
+
+To reset all the settings (including hi scores, so beware!), you may use:
+
+```bash
+python -m spaceshooter -r
+```
+
+This will run the program with default settings.
+
+Options can be combined.
 
 ### Windowing mode
 

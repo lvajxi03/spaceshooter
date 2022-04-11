@@ -14,10 +14,10 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
+    - name: Install pylint and its dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analysing the code with pylint
+        python -m pip install pylint
+    - name: Analyzing application code with pylint
       run: |
-        pylint $(git ls-files '*.py')
+        pylint $(find spaceshooter -name "*.py")
