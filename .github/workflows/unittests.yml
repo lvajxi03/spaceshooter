@@ -22,6 +22,7 @@ jobs:
         whoami
         pwd
         find .
+        python --version
     - name: Run unit tests
       run: |
         #!/bin/bash
