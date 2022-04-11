@@ -17,19 +17,11 @@ jobs:
     - name: Install pytest and its dependencies
       run: |
         python -m pip install pytest pytest-cov coverage
-    - name: Who am i?
-      run: |
-        whoami
-        pwd
-        find .
-        python --version
     - name: Run unit tests
       run: |
         #!/bin/bash
-        export PYTHONPATH=`pwd`/pysrc/
         python -m pytest pytests/ --cov
     - name: Run coverage
       run: |
         #!/bin/bash
-        export PYTHONPATH=`pwd`/pysrc/spaceshooter
         python -m coverage html
