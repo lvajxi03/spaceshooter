@@ -19,5 +19,5 @@ jobs:
         python -m pip install pytest pytest-cov coverage
     - name: Run unit tests
       run: |
-        PYTHONPATH=pysrc/spaceshooter python -m pytest pytests/ --cov
+        PYTHONPATH=pysrc/ python -m pytest pytests/ --cov
         python -m coverage html

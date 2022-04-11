@@ -26,7 +26,7 @@ def __usage__(msg=None):
     print()
     print("-f font-name -- use font-name for default font",)
     print("-w -- use windowing mode instead of full screen",)
-    print"(-r -- reset any previous settings (including hi scores, so beware!),"
+    print("-r -- reset any previous settings (including hi scores, so beware!),"
     print("-h -- print this help message and terminate")
     print()
     print("That's all, folks!")

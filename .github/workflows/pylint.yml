@@ -23,4 +23,4 @@ jobs:
         pylint $(find pysrc -name "*.py")
     - name: Analyzing test code with pylint
       run: |
-        PYTHONPATH=pysrc/spaceshooter pylint $(find pytests -name "*.py)
+        PYTHONPATH=pysrc/ pylint $(find pytests -name "*.py)
