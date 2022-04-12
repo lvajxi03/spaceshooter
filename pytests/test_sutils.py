@@ -5,7 +5,7 @@ Test sutils module
 """
 
 
-from sutils import cycle
+from spaceshooter.sutils import cycle
 
 
 def test_cycle_1():
