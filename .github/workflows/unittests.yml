@@ -20,6 +20,7 @@ jobs:
     - name: Run unit tests
       run: |
         #!/bin/bash
+        export PYTHONPATH=pysrc
         python -m pytest pytests/ --cov
     - name: Run coverage
       run: |
