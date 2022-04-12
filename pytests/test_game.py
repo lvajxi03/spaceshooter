@@ -5,7 +5,7 @@ Test game module
 """
 
 
-from game import Game
+from spaceshooter.game import Game
 from unittest.mock import Mock
 
 

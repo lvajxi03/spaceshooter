@@ -5,7 +5,7 @@ Test primi module
 """
 
 
-from primi import Rect
+from spaceshooter.primi import Rect
 
 
 def test_rect_1():

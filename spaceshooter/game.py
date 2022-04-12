@@ -30,10 +30,15 @@ class Game:
         Create game instance
         :param shooter: Shooter handle
         """
+        if params:
+            lastfont = params.get('lastfont', None)
+            read = params.get('reset', False)
+        else:
+            lastfont = None
+            read = False
         self.config = ShooterConfig(
             filename=os.path.expanduser("~/.spaceshooterrc"),
-            lastfont=params.get('lastfont', None))
-        read = not params.get('reset', False)
+            lastfont=lastfont)
         if read:
             self.config.read()
         self.counter = {
