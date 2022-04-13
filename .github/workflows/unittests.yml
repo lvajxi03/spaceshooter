@@ -1,6 +1,10 @@
 name: UnitTests
 
-on: [push]
+on:
+  push:
+    branches:
+      - 'feature/*'
+      - 'bugfix/*'
 
 jobs:
   build:

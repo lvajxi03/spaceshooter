@@ -11,5 +11,3 @@ disable =
     too-many-statements,
     too-many-branches,
     import-error
-
-
