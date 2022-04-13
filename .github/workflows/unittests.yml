@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - '*'
-    branches-ignore:
-      - 'main'
+      - '!main'
+
 jobs:
   build:
     runs-on: ubuntu-latest
