@@ -730,11 +730,10 @@ class Game:
         """
         self.__stop_timers()
 
-    def __keyrelease_player(self, key, _):
+    def __keyrelease_player(self, key):
         """
         Key handler for Player board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key in (Key.KEY_Q, Key.KEY_ESCAPE):
@@ -748,11 +747,10 @@ class Game:
             if self.player_index < 3:
                 self.player_index += 1
 
-    def __keyrelease_congrats(self, key, _):
+    def __keyrelease_congrats(self, key):
         """
         Key handler for Congratulations board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key in (Key.KEY_ESCAPE, Key.KEY_Q):
@@ -761,21 +759,19 @@ class Game:
             else:
                 self.change_board(Board.HISCORES)
 
-    def __keyrelease_welcome(self, _k, _t):
+    def __keyrelease_welcome(self, _k):
         """
         Key handler for Welcome board
         :param _k: unused
-        :param _t: unused
         :return: None
         """
         self.shooter.timers['stars-update-event'].start(TIMEOUT_PAINT)
         self.change_board(Board.MENU)
 
-    def __keyrelease_menu(self, key, _):
+    def __keyrelease_menu(self, key):
         """
         Key handler for Menu board
         :param key: Key to be handled
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
@@ -789,21 +785,19 @@ class Game:
         elif key == Key.KEY_ENTER:
             self.change_board(self.menupos2board[self.menu_pos])
 
-    def __keyrelease_game(self, key, _):
+    def __keyrelease_game(self, key):
         """
         General key meta-handler for Game
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         handler = self.keyreleasegame_events[self.mode]
-        handler(key, None)
+        handler(key)
 
-    def __keyrelease_options(self, key, _):
+    def __keyrelease_options(self, key):
         """
         Key handler for Options board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
@@ -818,32 +812,29 @@ class Game:
             self.config['lastmode'] = self.optionspos2option[self.options_pos]
             self.change_board(Board.MENU)
 
-    def __keyrelease_hiscores(self, key, _):
+    def __keyrelease_hiscores(self, key):
         """
         Handle heyrelease when in HiScores board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
-    def __keyrelease_prepare(self, key, _):
+    def __keyrelease_prepare(self, key):
         """
         Handle keyrelease when in Prepare board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
-    def __keyrelease_setup(self, key, _):
+    def __keyrelease_setup(self, key):
         """
         Key handler for Setup board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key:
@@ -877,31 +868,28 @@ class Game:
                             self.temp_position += 1
                             self.temp_position = min(self.temp_position, 6)
 
-    def __keyrelease_about(self, key, _):
+    def __keyrelease_about(self, key):
         """
         Key handler for ABOUT board.
         :param key: key to handle
-        :param _: unused
         :return: None
         """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
-    def __keyrelease_quit(self, _k, _t):
+    def __keyrelease_quit(self, _k):
         """
         Key handler for QUIT board
         :param _k: unused
-        :param _t: unused
         :return: None
         """
         self.arena.parent.close()
 
-    def __keyrelease_newscore(self, key, _t):
+    def __keyrelease_newscore(self, key):
         """
         Key handler for NewScore board
         :param key: Key to handle
-        :param _t: unused
         :return: None
         """
         if key:
@@ -922,21 +910,19 @@ class Game:
                     self.config.add_hiscore(self.nick, self.points)
                 self.change_board(Board.HISCORES)
 
-    def __keyrelease_init(self, key, _):
+    def __keyrelease_init(self, key):
         """
         Key handler for Init board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
-    def __keyrelease_play(self, key, _):
+    def __keyrelease_play(self, key):
         """
         Key handler for Play board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
@@ -976,11 +962,10 @@ class Game:
             elif action == UserInput.TNT:
                 self.__explode_tnt()
 
-    def __keyrelease_paused(self, key, _):
+    def __keyrelease_paused(self, key):
         """
         Key handler for Paused board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
@@ -989,11 +974,10 @@ class Game:
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
             self.__change_mode(Mode.PLAY)
 
-    def __keyrelease_killed(self, key, _):
+    def __keyrelease_killed(self, key):
         """
         Key handler for Killed board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key == Key.KEY_Q:
@@ -1003,22 +987,20 @@ class Game:
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
             self.__change_mode(Mode.PLAY)
 
-    def __keyrelease_help(self, key, _):
+    def __keyrelease_help(self, key):
         """
         Key handler for Help board
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
             self.change_board(Board.MENU)
 
-    def __keyrelease_gameover(self, key, _text):
+    def __keyrelease_gameover(self, key):
         """
         Key release handler for Mode.GAMEOVER
         :param key: Released key
-        :param _text: Entered text (not used)
         """
         if key in [Key.KEY_Q,
                    Key.KEY_ESCAPE]:
@@ -1114,14 +1096,13 @@ class Game:
             self.shooter.timers['movable-update-event'].start(TIMEOUT_PAINT)
             self.__change_mode(Mode.PLAY)
 
-    def keyreleased(self, key, _):
+    def keyreleased(self, key):
         """
         Generic key handler
         :param key: Key to handle
-        :param _: unused
         :return: None
         """
-        self.keyrelease_events[self.board](key, None)
+        self.keyrelease_events[self.board](key)
 
     def __create_missile(self, x, y, etype):
         """

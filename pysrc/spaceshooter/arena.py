@@ -80,9 +80,8 @@ class Controller(QMainWindow):
         :return: None
         """
         key = event.key()
-        text = event.text()
         k_x = self.parent.keymapping.get(key, None)
-        self.game.keyreleased(k_x, text)
+        self.game.keyreleased(k_x)
 
 class Arena(QLabel):
     """
