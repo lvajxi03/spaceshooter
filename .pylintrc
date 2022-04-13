@@ -2,7 +2,7 @@
 init-hook='import sys; sys.path.append("pysrc")'
 
 [BASIC]
-good-names = x, y, dx, dy, fh, db, i, j, w, h, sizeHint, resizeEvent, mousePressEvent, keyReleaseEvent, keyPressEvent
+good-names = x, y, dx, dy, fh, db, i, j, w, h, sizeHint, resizeEvent, mousePressEvent, keyReleaseEvent
 
 [MESSAGES-CONTROL]
 disable =
@@ -11,5 +11,3 @@ disable =
     too-many-statements,
     too-many-branches,
     import-error
-
-
