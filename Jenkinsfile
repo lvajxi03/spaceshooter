@@ -45,7 +45,7 @@ pipeline {
             }
             post {
                 success {
-                    archiveArtifacts 'htmlcov'
+                    archiveArtifacts 'htmlcov/*'
                 }
             }
         }
