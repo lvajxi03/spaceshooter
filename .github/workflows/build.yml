@@ -20,7 +20,7 @@ jobs:
     - name: Display tag
       run: |
         echo "${TAG}"
-      env: |
+      env: 
         TAG: ${{ steps.tag_name.outputs.TAG }}
     - uses: actions/checkout@v2
     - name: Set up Python ${{ matrix.python-version }}
