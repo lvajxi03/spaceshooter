@@ -25,7 +25,7 @@ def read(file_name):
 
 setup(
     name="spaceshooter",
-    version="0.0.7",
+    version="%TAG%",
     author="Marcin Bielewicz",
     author_email="marcin.bielewicz@gmail.com",
     description="Simple spaceshooter game that uses PySide library",

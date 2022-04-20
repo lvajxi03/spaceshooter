@@ -38,7 +38,7 @@ Several items are quite useful and can be collected:
 When installing from a wheel, all you need to do is
 
 ```bash
-$ python -m pip install spaceshooter-0.0.6-py3-none-any.whl
+$ python -m pip install spaceshooter-0.0.9-py3-none-any.whl
 ```
 
 `PySide6` will also be installed as it's required to run.
