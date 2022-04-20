@@ -35,6 +35,8 @@ jobs:
         sed -i "s/%TAG%/${TAG}/g" README.md
         sed -i "s/%TAG%/${TAG}/g" setup.cfg
         sed -i "s/%TAG%/${TAG}/g" setup.py
+      env:
+        TAG: ${{ steps.tag_name.outputs.TAG }}
     - name: Build
       run: |
         python -m build
