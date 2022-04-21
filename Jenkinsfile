@@ -16,19 +16,19 @@ pipeline {
                 branch: 'main'
             }
         }
+        stage('Update version') {
+	    steps {
+                sh 'sed -i "s/%TAG%/0.0.0.0/g" README.md'
+	        sh 'sed -i "s/%TAG%/0.0.0.0/g" setup.cfg'
+                sh 'sed -i "s/%TAG%/0.0.0.0/g" setup.py'
+	    }
+        }
         stage('Update tools') {
             steps {
                 sh 'python -m pip install --upgrade build'
                 sh 'python -m pip install --upgrade pytest pytest-cov coverage'
                 sh 'python -m pip install --upgrade pylint'
             }
-        }
-	stage('Update version') {
-	    steps {
-                sh 'sed -i "s/%TAG%/0.0.0.0/g" README.md'
-	        sh 'sed -i "s/%TAG%/0.0.0.0/g" setup.cfg'
-                sh 'sed -i "s/%TAG%/0.0.0.0/g" setup.py'
-	    }
         }
         stage('Build') {
             steps {
