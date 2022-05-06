@@ -2,6 +2,11 @@ pipeline {
     agent any
 
     stages {
+        stage('Clean') {
+            steps {
+                sh 'git clean -f -d -x .'
+            }
+        }
         stage('Checkout') {
             steps {
                 script {
@@ -10,6 +15,13 @@ pipeline {
                 git url: 'https://github.com/lvajxi03/spaceshooter.git/',
                 branch: 'main'
             }
+        }
+        stage('Update version') {
+	    steps {
+                sh 'sed -i "s/%TAG%/0.0.0.0/g" README.md'
+	        sh 'sed -i "s/%TAG%/0.0.0.0/g" setup.cfg'
+                sh 'sed -i "s/%TAG%/0.0.0.0/g" setup.py'
+	    }
         }
         stage('Update tools') {
             steps {
@@ -29,6 +41,12 @@ pipeline {
                 }
             }
         }
+	stage ('Install') {
+	    steps {
+                sh 'python -m pip uninstall spaceshooter || exit 0'
+                sh 'python -m pip install dist/spaceshooter*.whl'
+            }
+	}
         stage ('Lint') {
             steps {
                 sh 'python -m pylint $(find pysrc -name "*.py")'
