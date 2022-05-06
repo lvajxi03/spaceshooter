@@ -174,7 +174,7 @@ locales = {
         },
         'en': [
             "SIMPLE SHOOTER GAME TO PASS THE TIME",
-            "WRITTEN IN PYQT",
+            "WRITTEN IN PySide6",
             "AUTHOR: MARCIN BIELEWICZ",
             "(C) 2021-?",
             "LICENSED UNDER GNU GPL",
@@ -185,7 +185,7 @@ locales = {
         ],
         'pl': [
             "PROSTA STRZELANKA DLA ZABICIA CZASU",
-            "NAPISANA W PYQT",
+            "NAPISANA W PySide6",
             "AUTOR: MARCIN BIELEWICZ",
             "(C) 2021-?",
             "LICENCJA: GNU GPL",
