@@ -174,25 +174,25 @@ locales = {
         },
         'en': [
             "SIMPLE SHOOTER GAME TO PASS THE TIME",
-            "WRITTEN IN PYQT",
+            "WRITTEN IN PySide6",
             "AUTHOR: MARCIN BIELEWICZ",
             "(C) 2021-?",
             "LICENSED UNDER GNU GPL",
             "",
             "SOURCE CODE WRITTEN IN EMACS, ALL GRAPHICS MADE IN INKSCAPE",
             "",
-            "MORE AT: HTTPS://PRINTF.PL/SPACESHOOTER-EN"
+            "MORE AT: HTTPS://IOSTREAM.pl/SPACESHOOTER-EN"
         ],
         'pl': [
             "PROSTA STRZELANKA DLA ZABICIA CZASU",
-            "NAPISANA W PYQT",
+            "NAPISANA W PySide6",
             "AUTOR: MARCIN BIELEWICZ",
             "(C) 2021-?",
             "LICENCJA: GNU GPL",
             "",
             "KOD ZRODLOWY POWSTAL W EDYTORZE EMACS, A GRAFIKI W INKSCAPE",
             "",
-            "WIECEJ NA: HTTPS://PRINTF.PL/SPACESHOOTER-PL"
+            "WIECEJ NA: HTTPS://IOSTREAM.pl/SPACESHOOTER-PL"
         ]
     },
     'awaiting': {
