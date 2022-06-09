@@ -181,7 +181,7 @@ locales = {
             "",
             "SOURCE CODE WRITTEN IN EMACS, ALL GRAPHICS MADE IN INKSCAPE",
             "",
-            "MORE AT: HTTPS://IOSTREAM.pl/SPACESHOOTER-EN"
+            "MORE AT: https://iostream.pl/spaceshooter-en"
         ],
         'pl': [
             "PROSTA STRZELANKA DLA ZABICIA CZASU",
@@ -192,7 +192,7 @@ locales = {
             "",
             "KOD ZRODLOWY POWSTAL W EDYTORZE EMACS, A GRAFIKI W INKSCAPE",
             "",
-            "WIECEJ NA: HTTPS://IOSTREAM.pl/SPACESHOOTER-PL"
+            "WIECEJ NA: https://iostream.pl/spaceshooter-pl"
         ]
     },
     'awaiting': {

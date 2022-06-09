@@ -35,25 +35,13 @@ Several items are quite useful and can be collected:
 
 ## Installation and configuration
 
-When installing from a wheel, all you need to do is
+All you need to do is
 
 ```bash
-$ python -m pip install spaceshooter-%TAG%-py3-none-any.whl
+$ python -m pip install spaceshooter
 ```
 
 `PySide6` will also be installed as it's required to run.
-
-(but at first, point your command line to the directory where you downloaded the wheel file)
-
-### Building
-
-If you want to build the package from scratch, you shall clone this repo and point your commandline to the cloned directory, then:
-
-```bash
-$ python -m build
-```
-
-Package shall be placed in `dist` subdirectory.
 
 ## Running
 

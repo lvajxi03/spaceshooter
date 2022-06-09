@@ -83,6 +83,17 @@ class Controller(QMainWindow):
         k_x = self.parent.keymapping.get(key, None)
         self.game.keyreleased(k_x)
 
+    def keyPressEvent(self, event) -> None:
+        """
+        Keypress event handler
+        :param event: Event description
+        :return: None
+        """
+        key = event.key()
+        k_x = self.parent.keymapping.get(key, None)
+        self.game.keypressed(k_x)
+
+
 class Arena(QLabel):
     """
     Game arena

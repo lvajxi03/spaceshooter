@@ -115,6 +115,9 @@ class Game:
             Board.QUIT: self.__keyrelease_quit,
             Board.NEWSCORE: self.__keyrelease_newscore
         }
+        self.keypress_events = {
+            Board.GAME: self.__keypress_game
+        }
         self.keyreleasegame_events = {
             Mode.INIT: self.__keyrelease_init,
             Mode.PLAY: self.__keyrelease_play,
@@ -123,6 +126,9 @@ class Game:
             Mode.PREPARE: self.__keyrelease_prepare,
             Mode.GAMEOVER: self.__keyrelease_gameover,
             Mode.CONGRATS: self.__keyrelease_congrats
+        }
+        self.keypressgame_events = {
+            Mode.PLAY: self.__keypress_play
         }
         self.board_initializers = {
             Board.WELCOME: self.__init_welcome,
@@ -787,12 +793,23 @@ class Game:
 
     def __keyrelease_game(self, key):
         """
-        General key meta-handler for Game
+        General key meta-handler for Game -- release event
         :param key: Key to handle
         :return: None
         """
-        handler = self.keyreleasegame_events[self.mode]
-        handler(key)
+        if self.mode in self.keyreleasegame_events:
+            handler = self.keyreleasegame_events[self.mode]
+            handler(key)
+
+    def __keypress_game(self, key):
+        """
+        General key meta-handler for Game -- press event
+        :param key: Key to handle
+        :return: None
+        """
+        if self.mode in self.keypressgame_events:
+            handler = self.keypressgame_events[self.mode]
+            handler(key)
 
     def __keyrelease_options(self, key):
         """
@@ -919,19 +936,13 @@ class Game:
         if key == Key.KEY_Q:
             self.change_board(Board.MENU)
 
-    def __keyrelease_play(self, key):
+    def __keypress_play(self, key):
         """
-        Key handler for Play board
+        Key handler for Play board -- press event
         :param key: Key to handle
         :return: None
         """
-        if key == Key.KEY_Q:
-            self.__stop_timers()
-            self.change_board(Board.MENU)
-        elif key == Key.KEY_ESCAPE:
-            self.shooter.timers['movable-update-event'].stop()
-            self.__change_mode(Mode.PAUSED)
-        elif key in self.useractions:
+        if key in self.useractions:
             action = self.useractions[key]
             if action == UserInput.TOP:
                 if self.player.y > 20:
@@ -945,7 +956,22 @@ class Game:
             elif action == UserInput.LEFT:
                 if self.player.x > 20:
                     self.player.go_left()
-            elif action == UserInput.FIRE:
+
+    def __keyrelease_play(self, key):
+        """
+        Key handler for Play board -- release event
+        :param key: Key to handle
+        :return: None
+        """
+        if key == Key.KEY_Q:
+            self.__stop_timers()
+            self.change_board(Board.MENU)
+        elif key == Key.KEY_ESCAPE:
+            self.shooter.timers['movable-update-event'].stop()
+            self.__change_mode(Mode.PAUSED)
+        elif key in self.useractions:
+            action = self.useractions[key]
+            if action == UserInput.FIRE:
                 if self.lightball_timer > 0:
                     self.__create_firemissile(
                         self.player.x + self.player.w,
@@ -1098,11 +1124,21 @@ class Game:
 
     def keyreleased(self, key):
         """
-        Generic key handler
+        Generic key handler -- released event
         :param key: Key to handle
         :return: None
         """
-        self.keyrelease_events[self.board](key)
+        if self.board in self.keyrelease_events:
+            self.keyrelease_events[self.board](key)
+
+    def keypressed(self, key):
+        """
+        Generic key handler -- pressed event
+        :param key: Key to handle
+        :return: None
+        """
+        if self.board in self.keypress_events:
+            self.keypress_events[self.board](key)
 
     def __create_missile(self, x, y, etype):
         """
