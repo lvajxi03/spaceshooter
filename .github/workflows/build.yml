@@ -32,9 +32,8 @@ jobs:
         python -m pip install build setuptools
     - name: Update version
       run: |
-        sed -i "s/%TAG%/${TAG}/g" README.md
-        sed -i "s/%TAG%/${TAG}/g" setup.cfg
-        sed -i "s/%TAG%/${TAG}/g" setup.py
+        sed -i "s/xTAGx/${TAG}/g" setup.cfg
+        sed -i "s/xTAGx/${TAG}/g" setup.py
       env:
         TAG: ${{ steps.tag_name.outputs.TAG }}
     - name: Build
