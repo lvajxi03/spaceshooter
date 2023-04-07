@@ -2,7 +2,10 @@ module github.com/lvajxi03/traffiq
 
 go 1.18
 
-require github.com/hajimehoshi/ebiten/v2 v2.4.5
+require (
+	github.com/hajimehoshi/ebiten/v2 v2.4.5
+	github.com/lvajxi03/bdlist v0.0.0-20220926182910-36b992635cbc
+)
 
 require (
 	github.com/ebitengine/purego v0.0.0-20220905075623-aeed57cda744 // indirect
